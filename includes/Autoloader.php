@@ -30,6 +30,7 @@ final class Autoloader
         }
 
         echo "Classe non trouvée : " . $S_className . "<br>"; // Ajout pour débogage
+
         return false;
     }
 }
