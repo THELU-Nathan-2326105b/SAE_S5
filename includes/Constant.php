@@ -1,9 +1,9 @@
 <?php
 final class Constant
 {
-    const VIEW_DIR = '/Modules/view/';
-    const MODEL_DIR = '/Modules/model/';
-    const CONTROLLER_DIR = '/Modules/controller/';
+    const VIEW_DIR = '/modules/view/';
+    const MODEL_DIR = '/modules/model/';
+    const CONTROLLER_DIR = '/modules/controller/';
     const INCLUDES_DIR = '/includes/';
 
     // Retourne le chemin racine du projet

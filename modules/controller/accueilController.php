@@ -14,7 +14,7 @@ class accueilController
      */
     public function login()
     {
-        ViewHandler::show("../view/accueilView.php");
+        ViewHandler::show("../view/accueilView");
     }
 }
 ?>
