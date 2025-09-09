@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<h1>Choisissez vos entreprises</h1>
+<h1><span class="first-word">Choisissez</span> vos entreprises</h1>
 
 <?php if (empty($selected)): ?>
     <!-- État 1 : formulaire avec checkboxes -->

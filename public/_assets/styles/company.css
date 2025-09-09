@@ -1,3 +1,40 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.first-word {
+    color: #008b57;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+form {
+    padding: 30px 40px;
+    max-width: 400px;
+    width: 100%;
+}
+
+form div {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+label {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
 .info {
     display: inline-block;
     width: 16px;
@@ -16,3 +53,4 @@
 .info:hover {
     background-color: #008b57;
 }
+
