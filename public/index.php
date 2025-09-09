@@ -45,8 +45,8 @@ register_shutdown_function(function() {
     }
 });
 
-$S_controller = $_GET['controller'] ?? 'accueil';
-$S_action = $_GET['action'] ?? 'login';
+$S_controller = $_GET['controller'] ?? 'Home';
+$S_action = $_GET['action'] ?? 'display';
 // Ouvre le tampon d'affichage pour stocker la sortie
 // /public/index.php (ou routeur principal)
 
