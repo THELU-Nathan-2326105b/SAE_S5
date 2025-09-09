@@ -1,0 +1,18 @@
+.info {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+    border-radius: 50%;
+    background-color: #008b57;
+    color: white;
+    font-weight: bold;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.info:hover {
+    background-color: #008b57;
+}
