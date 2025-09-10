@@ -1,9 +1,5 @@
 <?php
 
-namespace blog\controller;
-
-use ViewHandler;
-
 class ForumController
 {
     /**

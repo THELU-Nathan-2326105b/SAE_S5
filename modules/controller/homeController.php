@@ -1,7 +1,5 @@
 <?php
 
-namespace blog\controller;
-use ViewHandler;
 
 /**
  * Contrôleur de la page d'accueil.

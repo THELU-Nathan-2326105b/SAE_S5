@@ -26,7 +26,7 @@ if (isset($_SESSION['last_activity'])) {
 }
 
 $_SESSION['last_activity'] = time(); // Met à jour le temps d'activité
-header("Content-Security-Policy: default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline'; img-src 'self' https://www.google.com; font-src 'self'; frame-src 'self' https://www.google.com https://www.recaptcha.net;");
+header("Content-Security-Policy: style-src 'self' 'unsafe-inline'; img-src 'self' https://www.google.com; font-src 'self'; frame-src 'self' https://www.google.com https://www.recaptcha.net;");
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
