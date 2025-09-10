@@ -1,5 +1,8 @@
 <?php
 
+namespace blog\controller;
+use ViewHandler;
+
 /**
  * Contrôleur de la page d'accueil.
  * Ce contrôleur est responsable de l'affichage de la vue de la page d'accueil.
@@ -14,7 +17,7 @@ class HomeController
      */
     public function display()
     {
-        ViewHandler::show("../view/HomeView");
+        ViewHandler::show("HomeView");
     }
 
     /**
