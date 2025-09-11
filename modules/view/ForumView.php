@@ -16,8 +16,19 @@
         <span class="title-text_start">Choisissez</span>
         <span class="title-text_end">vos entreprises</span>
     </div>
-    <section class="company-section">
 
+    <!--à mettre dans une boucle php pour chaque entreprise-->
+    <section class="company-section">
+        <div class="company-list">
+            <label class="company">
+                <input type="checkbox">
+                <span class="checkmark"></span>
+                <span class="company-name">Entreprise</span>
+                <span class="info">i</span>
+            </label>
+        </div>
+        <button class="validate-btn">Valider les choix</button>
+        <p class="note">(Cliquable si 1 choix ou plus effectué)</p>
     </section>
 </main>
 </body>

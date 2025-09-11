@@ -73,9 +73,10 @@ body, html {
 }
 
 
+
 /*======================== Style de la navbar ========================*/
 
-/* Navbar */
+
 .navbar {
     width: 100%;
     background-color: #008b57;
@@ -83,7 +84,7 @@ body, html {
     align-items: center;
     justify-content: space-between;
     padding: 0 30px;
-    height: 70px;
+    height: 100px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     position: sticky;
     top: 0;
@@ -143,3 +144,129 @@ body, html {
     background: #22aa69;
     color: white;
 }
+
+
+/*======================== Style de la page forum ========================*/
+
+
+.forumpage {
+    text-align: center;
+    padding: 30px;
+}
+
+.title {
+    font-size: 3rem;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+.title-text_start {
+    color: #008060; /* vert */
+    font-weight: 700;
+}
+.title-text_end {
+    font-weight: 700;
+    color: #333;
+}
+
+.company-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px 25px;
+    max-width: 900px;
+    margin: 0 auto 25px auto;
+}
+
+.company {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid #000;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.company:hover {
+    border-color: #008060;
+}
+
+/* Case à cocher personnalisée */
+.company input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 10px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.company input[type="checkbox"]:checked + .checkmark {
+    background: #008060;
+    border-color: #008060;
+}
+
+.company input[type="checkbox"]:checked + .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Texte */
+.company-name {
+    flex: 1;
+    text-align: left;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Bouton info */
+.info {
+    font-weight: bold;
+    border: 1px solid #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    font-size: 0.8rem;
+}
+
+/* ----- BOUTON VALIDATION ----- */
+.validate-btn {
+    background: #008060;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.validate-btn:hover {
+    background: #006b50;
+}
+
+.note {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #555;
+}
+
