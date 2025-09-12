@@ -3,8 +3,8 @@
 class ForumController
 {
     /**
-     * Affiche la vue de la page d'accueil.
-     * Cette méthode charge et affiche la vue associée à la page d'accueil de l'application.
+     * Affiche la vue de la page forum.
+     * Cette méthode charge et affiche la vue associée à la page forum de l'application.
      *
      * @return void
      */
