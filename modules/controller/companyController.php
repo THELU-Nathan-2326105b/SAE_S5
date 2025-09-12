@@ -15,15 +15,21 @@ class companyController
      */
     public function show(): void
     {
+        $model =new companyModel();
+        $companies = $model->getCompanies();
+
         $selected = [];
 
         // Vérifie si le formulaire a été soumis
         if (!empty($_POST['entreprises'])) {
-            $selected = $_POST['entreprises']; // tableau des entreprises cochées
+            $selected = $_POST['entreprises'];
         }
 
         // Passe les données à la vue
-        ViewHandler::show("company/companyView", ['selected' => $selected]);
+        ViewHandler::show("company/companyView", [
+            'selected' => $selected,
+            'companies' => $companies
+        ]);
     }
 }
 

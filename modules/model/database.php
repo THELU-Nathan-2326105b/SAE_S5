@@ -46,21 +46,23 @@ abstract class Database
      */
     private static function setBdd()
     {
-        // Charger les variables d'environnement
         self::loadEnv();
 
-        // Récupérer les valeurs des variables d'environnement
-        $host = $_ENV['DB_HOST'];
+        $driver = $_ENV['DB_CONNECTION'] ?? 'pgsql';
+        $host   = $_ENV['DB_HOST'];
+        $port   = $_ENV['DB_PORT'] ?? '5432';
         $dbname = $_ENV['DB_NAME'];
-        $user = $_ENV['DB_USER'];
-        $pass = $_ENV['DB_PASS'];
+        $user   = $_ENV['DB_USER'];
+        $pass   = $_ENV['DB_PASS'];
 
         try {
-            // Créer la connexion PDO à la base de données
-            self::$_bdd = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+            self::$_bdd = new PDO(
+                "$driver:host=$host;port=$port;dbname=$dbname",
+                $user,
+                $pass
+            );
             self::$_bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         } catch (PDOException $e) {
-            // En cas d'erreur, afficher un message d'erreur et stopper l'exécution
             die("Erreur de connexion à la base de données : " . $e->getMessage());
         }
     }

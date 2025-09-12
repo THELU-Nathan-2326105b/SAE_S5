@@ -1,3 +1,8 @@
+<?php
+/** @var array $companies */
+/** @var array $selected */
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,49 +19,22 @@
 <?php if (empty($selected)): ?>
     <!-- État 1 : formulaire avec checkboxes -->
     <form action="" method="post" enctype="multipart/form-data">
-        <div class="bubble">
-            <div class="left">
-                <input type="checkbox" id="entreprise1" name="entreprises[]" value="Entreprise A">
-                <label for="entreprise1">Entreprise A</label>
+        <?php foreach ($companies as $company): ?>
+            <div class="bubble">
+                <div class="left">
+                    <input type="checkbox"
+                           id="entreprise<?= htmlspecialchars($company['company_name']) ?>"
+                           name="entreprises[]"
+                           value="<?= htmlspecialchars($company['company_name']) ?>">
+                    <label for="entreprise<?= htmlspecialchars($company['company_name']) ?>">
+                        <?= htmlspecialchars($company['company_name']) ?>
+                    </label>
+                </div>
+                <span class="info" title="<?= htmlspecialchars($company['company_description']) ?>">i</span>
             </div>
-            <span class="info" title="Entreprise A : spécialisée dans le développement web">i</span>
-        </div>
-
-        <div class="bubble">
-            <div class="left">
-                <input type="checkbox" id="entreprise2" name="entreprises[]" value="Entreprise B">
-                <label for="entreprise2">Entreprise B</label>
-            </div>
-            <span class="info" title="Entreprise B : spécialisée dans le marketing digital">i</span>
-        </div>
-
-        <div class="bubble">
-            <div class="left">
-                <input type="checkbox" id="entreprise3" name="entreprises[]" value="Entreprise C">
-                <label for="entreprise3">Entreprise C</label>
-            </div>
-            <span class="info" title="Entreprise C : spécialisée dans la data science">i</span>
-        </div>
-
-        <div class="bubble">
-            <div class="left">
-                <input type="checkbox" id="entreprise4" name="entreprises[]" value="Entreprise D">
-                <label for="entreprise4">Entreprise D</label>
-            </div>
-            <span class="info" title="Entreprise D : spécialisée dans le cloud computing">i</span>
-        </div>
-
-        <div class="bubble">
-            <div class="left">
-                <input type="checkbox" id="entreprise5" name="entreprises[]" value="Entreprise E">
-                <label for="entreprise5">Entreprise E</label>
-            </div>
-            <span class="info" title="Entreprise E : spécialisée dans le commerce">i</span>
-        </div>
-
+        <?php endforeach; ?>
         <button type="submit">Valider les choix</button>
     </form>
-
 
 <?php else: ?>
     <!-- État 2 : page dédiée aux entreprises sélectionnées -->
