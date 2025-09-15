@@ -40,7 +40,7 @@ register_shutdown_function(function() {
         error_log("Erreur fatale : " . $error['message']);
 
         // Redirection vers la page 404
-        header("Location: /404.php");
+        //header("Location: /404.php");
         exit();
     }
 });
@@ -61,8 +61,8 @@ try {
     $C_controller->execute();
 } catch (Exception $e) {
     // En cas d'exception, redirection vers la page 404
-    header("Location: /404.php");
-    //var_dump($e->getMessage()); 
+    /*header("Location: /404.php");*/
+    var_dump($e->getMessage());
     exit();
 }
 
