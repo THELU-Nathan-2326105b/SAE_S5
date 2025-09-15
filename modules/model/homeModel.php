@@ -7,7 +7,7 @@
  * Elle hérite de la classe `database` afin de bénéficier de la connexion à la base de données.
  * Le modèle peut être utilisé pour interagir avec la base de données concernant la page d'accueil.
  */
-class homePageModel extends database {
+class accueilModel extends database {
     
     /**
      * homePageModel constructor.
