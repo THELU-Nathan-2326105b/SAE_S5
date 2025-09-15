@@ -7,6 +7,11 @@
  */
 class companyController
 {
+    private $companyModel;
+
+    public function __construct() {
+        $this->companyModel = new companyModel(); // Créer une instance du modèle
+    }
     /**
      * Affiche la vue de la page des entreprises.
      * Cette méthode charge et affiche la vue associée à la page des entreprises.
@@ -15,11 +20,9 @@ class companyController
      */
     public function show(): void
     {
-        $model =new companyModel();
-        $companies = $model->getCompanies();
 
+        $companies = $this->companyModel->getCompanies();
         $selected = [];
-
         // Vérifie si le formulaire a été soumis
         if (!empty($_POST['entreprises'])) {
             $selected = $_POST['entreprises'];
@@ -27,8 +30,8 @@ class companyController
 
         // Passe les données à la vue
         ViewHandler::show("company/companyView", [
-            'selected' => $selected,
-            'companies' => $companies
+            'companies' => $companies,
+            'selected' => $selected
         ]);
     }
 }

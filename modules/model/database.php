@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Classe abstraite pour la gestion de la connexion à la base de données.
- * Cette classe permet de charger les variables d'environnement, 
- * de se connecter à la base de données et de récupérer la connexion.
+ * Classe abstraite pour la gestion de la connexion à la base de données PostgreSQL.
  */
 abstract class Database
 {
@@ -12,25 +10,17 @@ abstract class Database
 
     /**
      * Charge les variables d'environnement depuis le fichier .env.
-     * Ce fichier contient les informations de connexion à la base de données.
-     * Les variables sont chargées dans la variable globale $_ENV.
-     * 
-     * @throws Exception Si le fichier .env est introuvable.
      */
     private static function loadEnv()
     {
-        // Chemin vers le fichier .env
-        $envFile = __DIR__ . '/../../.env'; 
+        $envFile = __DIR__ . '/../../.env';
 
-        // Vérifier si le fichier .env existe
         if (!file_exists($envFile)) {
-            die("Erreur 404");
+            die("Erreur : fichier .env introuvable");
         }
 
-        // Lire chaque ligne du fichier .env
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
-            // Si la ligne contient un signe égal, elle est considérée comme une variable d'environnement
             if (strpos($line, '=') !== false) {
                 list($key, $value) = explode('=', $line, 2);
                 $_ENV[trim($key)] = trim($value);
@@ -39,47 +29,37 @@ abstract class Database
     }
 
     /**
-     * Instancie la connexion à la base de données à l'aide des variables d'environnement.
-     * Les informations de connexion sont récupérées depuis $_ENV.
-     * 
-     * @throws PDOException Si la connexion à la base de données échoue.
+     * Instancie la connexion à la base de données PostgreSQL.
      */
     private static function setBdd()
     {
         self::loadEnv();
 
-        $driver = $_ENV['DB_CONNECTION'] ?? 'pgsql';
-        $host   = $_ENV['DB_HOST'];
-        $port   = $_ENV['DB_PORT'] ?? '5432';
+        $host = $_ENV['DB_HOST'];
+        $port = $_ENV['DB_PORT'] ?? 5432; // valeur par défaut PostgreSQL
         $dbname = $_ENV['DB_NAME'];
-        $user   = $_ENV['DB_USER'];
-        $pass   = $_ENV['DB_PASS'];
+        $user = $_ENV['DB_USER'];
+        $pass = $_ENV['DB_PASS'];
 
         try {
-            self::$_bdd = new PDO(
-                "$driver:host=$host;port=$port;dbname=$dbname",
-                $user,
-                $pass
-            );
-            self::$_bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            // Chaîne DSN pour PostgreSQL
+            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$pass";
+
+            self::$_bdd = new PDO($dsn);
+            self::$_bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données : " . $e->getMessage());
+            die("Erreur de connexion PostgreSQL : " . $e->getMessage());
         }
     }
 
     /**
-     * Récupère la connexion à la base de données.
-     * Si la connexion n'a pas encore été établie, elle est créée en appelant la méthode setBdd().
-     * 
-     * @return PDO La connexion à la base de données.
+     * Récupère la connexion PDO.
      */
     public function getBdd()
     {
-        // Si la connexion n'existe pas encore, la créer
-        if (self::$_bdd == null) {
+        if (self::$_bdd === null) {
             self::setBdd();
         }
         return self::$_bdd;
     }
 }
-?>

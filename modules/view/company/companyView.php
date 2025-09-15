@@ -1,8 +1,3 @@
-<?php
-/** @var array $companies */
-/** @var array $selected */
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
