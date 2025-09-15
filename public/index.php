@@ -62,6 +62,7 @@ try {
 } catch (Exception $e) {
     // En cas d'exception, redirection vers la page 404
     header("Location: /404.php");
+    //var_dump($e->getMessage()); 
     exit();
 }
 
