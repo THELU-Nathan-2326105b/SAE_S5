@@ -1,10 +1,11 @@
 <?php
 
+
 /**
  * Contrôleur de la page d'accueil.
  * Ce contrôleur est responsable de l'affichage de la vue de la page d'accueil.
  */
-class accueilController
+class HomeController
 {
     /**
      * Affiche la vue de la page d'accueil.
@@ -12,9 +13,20 @@ class accueilController
      * 
      * @return void
      */
-    public function login()
+    public function display()
     {
-        ViewHandler::show("../view/accueilView");
+        ViewHandler::show("HomeView");
+    }
+
+    /**
+     * Redirige vers la page du forum.
+     *
+     * @return void
+     */
+    public function handleForumClick()
+    {
+        header("Location: /index.php?controller=Forum&action=display");
+        exit();
     }
 }
 ?>
