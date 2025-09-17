@@ -34,15 +34,11 @@
         font-weight: 500;
         transition: color 0.3s;
         position: relative;
+        display: inline-block;
     }
 
-    /* Soulignement au hover + actif */
-    .navbar-links li a:hover,
-    .navbar-links li a.active {
-        color: #f5f5f5;
-    }
-
-    .navbar-links li a.active::after {
+    /* Soulignement au hover avec effet de scale */
+    .navbar-links li a::after {
         content: "";
         position: absolute;
         width: 100%;
@@ -50,6 +46,18 @@
         background: white;
         left: 0;
         bottom: -5px;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease;
+    }
+
+    .navbar-links li a:hover::after {
+        transform: scaleX(1);
+    }
+
+    /* Soulignement pour le lien actif */
+    .navbar-links li a.active::after {
+        transform: scaleX(1);
     }
 
     /* Bouton connexion */
@@ -59,14 +67,13 @@
         border-radius: 10px;
         color: #222223;
         text-decoration: none;
-        transition: background 0.3s;
+        transition: background 0.3s, color 0.3s;
     }
 
     .navbar-button:hover {
         background: #22aa69;
         color: white;
     }
-
 </style>
 <nav class="navbar">
     <div class="navbar-logo">
