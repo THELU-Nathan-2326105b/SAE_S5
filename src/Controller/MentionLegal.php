@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MentionLegal extends AbstractController
 {
-    #[Route('/mentionlegal', name: 'mentionlegal')]
+    #[Route('/mention-legal', name: 'mention-legal')]
     public function index(): Response
     {
         return $this->render('mentionlegal.html.twig');
