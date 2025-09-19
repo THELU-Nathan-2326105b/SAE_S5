@@ -65,7 +65,7 @@
             display: inline-block;
             margin-top: 20px;
             padding: 12px 24px;
-            background-color: #00a34a;
+            background-color: #008b57;
             color: white;
             text-decoration: none;
             font-size: 1rem;
@@ -74,8 +74,54 @@
         }
 
         .button1:hover {
-            background-color: #008b57;
+            background-color: #00a34a;
         }
+
+        .forum-section {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            margin: 150px auto;
+            background-color: transparent;
+            border-radius: 0;
+            overflow: hidden;
+            height: 400px; /* Réduction de la hauteur */
+        }
+
+        .forum-text {
+            flex: 0 0 500px;
+            padding: 30px;
+            background-color: #008b57;
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .text-title {
+            font-size: 48px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            margin-bottom: 20px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .text-main {
+            font-size: 16px;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+        }
+
+        .forum-section img {
+            flex: 1;
+            height: 100%;
+            object-fit: cover;
+        }
+
     </style>
     <script src="/assets/script/script.js"></script>
 </head>
@@ -95,6 +141,14 @@
             </div>
         </div>
     </section>
+    <section class="forum-section">
+        <div class="forum-text">
+            <h2 class="text-title">Le Forum</h2>
+            <p class="text-main">Le forum est vraiment top Lorem Ipsum et tout</p>
+        </div>
+        <img src="/assets/images/fames_illustration.jpg" alt="photo du FAMES">
+    </section>
 </main>
+{% include "footer.html.twig" %}
 </body>
 </html>
