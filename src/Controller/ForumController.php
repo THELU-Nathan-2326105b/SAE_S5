@@ -11,13 +11,20 @@ use Doctrine\DBAL\Connection;
 class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'forum')]
-    public function index(Connection $conn): Response
+    public function index(Request $request,Connection $conn): Response
     {
-        $companies = $conn->fetchAllAssociative('SELECT company_name, company_description FROM company');
+        $query = 'SELECT company_name, company_description FROM company';
+        $stmt = $conn->prepare($query);
+
+        $result = $stmt->executeQuery();
+
+        $companies = $result->fetchAllAssociative();
+
+        $selected = $request->request->all('entreprises');
 
         return $this->render('forum/forum.html.twig', [
             'companies' => $companies,
-            'selected' => [],
+            'selected'  => $selected,
         ]);
     }
 }
