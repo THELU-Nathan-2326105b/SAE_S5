@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <title>AMOS FAMES - Mentions légales</title>
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+
+    <style>
+        /* Général */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        main.mention_legale {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .mention_legale h3 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #008b57;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mention_legale h4 {
+            font-size: 1.3rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 12px;
+            color: #222;
+        }
+
+        .mention_legale h4::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 100%;
+            background-color: #00a34a;
+            border-radius: 2px;
+        }
+
+        .mention_legale p {
+            margin: 0 0 20px;
+            text-align: justify;
+        }
+
+        .mention_legale a {
+            color: #00a34a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .mention_legale a:hover {
+            text-decoration: underline;
+        }
+
+        /* Bloc des contacts */
+        .contact-list {
+            background: #f3fdf8;
+            border-left: 5px solid #00a34a;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .contact-list br {
+            margin-bottom: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            main.mention_legale {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .mention_legale h3 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include "navbar.html.twig" %}
+
+<main class="mention_legale">
+    <h3>Mentions légales</h3>
+
+    <h4>Éditeur</h4>
+    <p>Directeur de la publication : Marion PAGET.</p>
+
+    <h4>Raison sociale et dénomination</h4>
+    <p>
+        Le directeur de la publication est une personne physique désireuse de garder son anonymat.
+        Les coordonnées exactes de l'éditeur ont donc été transmises de manière complète à l'hébergeur.
+        L'hébergeur peut être tenu de communiquer les informations sur l'éditeur, mais uniquement
+        dans le cadre d'une procédure judiciaire.
+    </p>
+
+    <h4>Conception et réalisation du site</h4>
+    <div class="contact-list">
+        AVIAS Daphné <br>Courriel : daphne.avias@etu.univ-amu.fr <br>
+        CURT Elien <br>Courriel : elien.curt@etu.univ-amu.fr <br>
+        DARIETTO Nicolas <br>Courriel : nicolas.darietto@etu.univ-amu.fr <br>
+        DAUBREGE Simon <br>Courriel : simon.daubrege@etu.univ-amu.fr <br>
+        PELLET Casimir <br>Courriel : casimir.pellet@etu.univ-amu.fr <br>
+        THELU Nathan <br>Courriel : nathan.thelu@etu.univ-amu.fr
+    </div>
+
+    <h4>Hébergement</h4>
+    <p>Alwaysdata</p>
+
+    <h4>Contenu éditorial et mise à jour</h4>
+    <p>
+        Les informations mises à disposition sur le site n'ont qu'une valeur indicative.
+        Nous rappelons que le contenu du site Web peut comporter des erreurs ou oublis,
+        et qu'il est susceptible d'être modifié ou mis à jour sans préavis. <br>
+        La responsabilité du directeur de la publication ne peut, en aucune manière,
+        être engagée quant au contenu des informations figurant sur son site ou aux
+        conséquences pouvant résulter de leur utilisation ou interprétation. <br>
+        Les liens hypertextes de ce site Web pointent vers d'autres ressources sur le réseau Internet ;
+        la responsabilité du responsable de la publication ne saurait être engagée au titre
+        d'un site tiers atteint via ce présent site Web.
+    </p>
+
+    <h4>Propriété intellectuelle</h4>
+    <p>
+        L'ensemble de ce site Web relève des législations françaises et internationales
+        sur le droit d'auteur et la propriété intellectuelle.
+        Tous les droits de reproduction sont réservés, y compris pour les documents iconographiques
+        et photographiques. <br>
+        Selon <a href="https://fr.wikipedia.org/wiki/Convention_de_Berne_pour_la_protection_des_%C5%93uvres_litt%C3%A9raires_et_artistiques">
+            la Convention de Berne pour la protection des œuvres littéraires et artistiques</a>,
+        les œuvres ayant pour pays d'origine l'un des États contractants doivent bénéficier
+        dans chacun des autres États contractants de la même protection que celle que cet État
+        accorde aux œuvres de ses propres nationaux. <br>
+        <!-- L'ensemble du site Web et des œuvres disponibles sont soumises à la
+        <a href="https://github.com/AVIAS-Daphne-2326010/Tuteurs-Enseignants/edit/main/LICENSE">
+            licence MIT</a>. -->
+    </p>
+
+    <h4>Données personnelles</h4>
+    <p>
+        Soucieux du respect de la vie privée des utilisateurs du site Web, l'éditeur,
+        responsable de traitement, s'engage à ce que la collecte et le traitement de ces informations
+        soient effectués conformément au RGPD. <br>
+        Tout utilisateur dispose, à tout moment et quelle qu'en soit la raison,
+        d'un droit d'accès, de modification, de rectification et de suppression des données personnelles
+        qu'il aurait indiquées lors de l'utilisation du site. <br>
+        Pour exercer ses droits, l'utilisateur peut demander la suppression de son compte
+        ou des données collectées auprès de l'éditeur (également concepteur et réalisateur).
+    </p>
+
+    <h4>Procédure de notification</h4>
+    <p>
+        L'utilisateur qui constaterait des inexactitudes, des informations erronées
+        ou des informations de caractère manifestement illicite est tenu d'en informer
+        le responsable de la publication afin que celui-ci y mette fin.
+    </p>
+
+    <h4>Modification de la notice légale</h4>
+    <p>
+        AMOS Sport Business School Aix-en-Provence, propriétaire et exploitant du site,
+        se réserve le droit de modifier la présente notice à tout moment.
+        L'utilisateur s'engage donc à la consulter régulièrement.
+    </p>
+
+    <h4>Informatique et liberté</h4>
+    <p>
+        Ce site Web comporte des informations nominatives concernant des personnels,
+        des étudiants ou des partenaires de l'école. <br>
+        Conformément à la loi n°78-17 du 6 janvier 1978, relative à l'Informatique,
+        aux Fichiers et aux Libertés (articles 38, 39, 40), vous disposez d'un droit d'accès,
+        de rectification et de suppression des données vous concernant, en ligne sur ce site Web. <br>
+        Pour exercer ce droit, vous pouvez vous adresser au directeur de la publication.
+    </p>
+</main>
+</body>
+</html>
