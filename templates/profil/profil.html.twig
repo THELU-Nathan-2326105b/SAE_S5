@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Profil</title>
+    <link rel="stylesheet" href="/assets/styles/style.css">
+    <script src="/assets/javascript/script.js"></script>
+</head>
+{% block body %}
+{% include "navbar.html.twig" %}
+    <h1>Profil</h1>
+
+    <p><strong>Prénom :</strong> {{ firstname }}</p>
+    <p><strong>Nom :</strong> {{ lastname }}</p>
+    <p><strong>Niveau :</strong> {{ level }}</p>
+{% endblock %}
+</html>
