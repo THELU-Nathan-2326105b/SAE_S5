@@ -2,34 +2,39 @@
 
 namespace App\Controller;
 
+use App\Entity\Users;
+use App\Repository\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\DBAL\Connection;
 
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil')]
-    public function index(Connection $conn): Response
+    public function index(Request $request, UsersRepository $usersRepository): Response
     {
-        // ⚠️ Ici on récupère directement l'utilisateur "alice.b1@example.com"
-        $query = 'SELECT user_firstname, user_lastname, user_level 
-                  FROM users 
-                  WHERE user_email = :email';
+        $session = $request->getSession();
+        $userSession = $session->get('user');
 
-        $stmt = $conn->prepare($query);
-        $result = $stmt->executeQuery(['email' => 'alice.b1@example.com']);
+        if (!$userSession) {
+            // ⚠️ pas connecté → redirection vers login
+            return $this->redirectToRoute('login');
+        }
 
-        $dbUser = $result->fetchAssociative();
+        // Utilisation de Doctrine pour récupérer l’utilisateur
+        /** @var Users|null $dbUser */
+        $dbUser = $usersRepository->find($userSession['id']);
 
         if (!$dbUser) {
             throw $this->createNotFoundException("Utilisateur introuvable en base");
         }
 
         return $this->render('profil/profil.html.twig', [
-            'firstname' => $dbUser['user_firstname'],
-            'lastname'  => $dbUser['user_lastname'],
-            'level'     => $dbUser['user_level'],
+            'firstname' => $dbUser->getUserFirstname(),
+            'lastname'  => $dbUser->getUserLastname(),
+            'level'     => $dbUser->getUserLevel(),
+            'mail'      => $dbUser->getUserEmail(),
+            'role'      => $dbUser->getUserRole(),
         ]);
     }
 }

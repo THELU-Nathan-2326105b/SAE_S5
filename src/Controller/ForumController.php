@@ -2,24 +2,21 @@
 
 namespace App\Controller;
 
+use App\Repository\CompanyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\DBAL\Connection;
 
 class ForumController extends AbstractController
 {
     #[Route('/forum', name: 'forum')]
-    public function index(Request $request,Connection $conn): Response
+    public function index(Request $request, CompanyRepository $companyRepository): Response
     {
-        $query = 'SELECT company_name, company_description FROM company';
-        $stmt = $conn->prepare($query);
+        //Récupération de toutes les entreprises
+        $companies = $companyRepository->findAllOrderedByName();
 
-        $result = $stmt->executeQuery();
-
-        $companies = $result->fetchAllAssociative();
-
+        //Récupération des entreprises sélectionnées (checkboxes)
         $selected = $request->request->all('entreprises');
 
         return $this->render('forum/forum.html.twig', [
