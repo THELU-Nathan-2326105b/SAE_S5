@@ -15,7 +15,11 @@
         <span class="title-text_end">à votre compte</span>
     </div>
     <section class="login-section">
-        <form action="/login-handler" method="POST" class="login-form">
+        {% if error %}
+            <div style="color:red; margin-bottom:10px;">{{ error }}</div>
+        {% endif %}
+
+        <form action="{{ path('login_handler') }}" method="POST" class="login-form">
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" required placeholder="Votre email">
@@ -30,22 +34,7 @@
             </div>
             <button type="submit" class="validate-btn">Se connecter</button>
         </form>
-        <a href="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+
+        {#<a href="{{ path('forgot_password') }}" class="forgot-link">Mot de passe oublié ?</a>#}
     </section>
 </main>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const showPasswordCheckbox = document.getElementById('showPassword');
-        const passwordInput = document.getElementById('password');
-
-        showPasswordCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
-        });
-    });
-</script>
-</body>
-</html>
