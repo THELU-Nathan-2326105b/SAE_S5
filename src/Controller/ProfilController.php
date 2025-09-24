@@ -4,21 +4,30 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\DBAL\Connection;
 
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil')]
-    public function index(Connection $conn): Response
+    public function index(Request $request, Connection $conn): Response
     {
-        // ⚠️ Ici on récupère directement l'utilisateur "alice.b1@example.com"
-        $query = 'SELECT user_firstname, user_lastname, user_level 
+        $session = $request->getSession();
+        $userSession = $session->get('user');
+
+        if (!$userSession) {
+            // ⚠️ pas connecté → redirection vers login
+            return $this->redirectToRoute('login');
+        }
+
+        // récupérer les infos utilisateur à jour depuis la BDD
+        $query = 'SELECT user_firstname, user_lastname, user_level, user_email, user_role
                   FROM users 
-                  WHERE user_email = :email';
+                  WHERE user_id = :id';
 
         $stmt = $conn->prepare($query);
-        $result = $stmt->executeQuery(['email' => 'alice.b1@example.com']);
+        $result = $stmt->executeQuery(['id' => $userSession['id']]);
 
         $dbUser = $result->fetchAssociative();
 
@@ -30,6 +39,8 @@ class ProfilController extends AbstractController
             'firstname' => $dbUser['user_firstname'],
             'lastname'  => $dbUser['user_lastname'],
             'level'     => $dbUser['user_level'],
+            'mail'      => $dbUser['user_email'],
+            'role'      => $dbUser['user_role'],
         ]);
     }
 }
