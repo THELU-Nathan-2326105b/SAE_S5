@@ -1,0 +1,17 @@
+{# Formulaire partagé entre new & edit #}
+{{ form_start(form) }}
+  {{ form_row(form.user_email) }}
+  {{ form_row(form.plainPassword) }}
+  {{ form_row(form.user_role) }}
+  {# {{ form_row(form.user_firstconnexion) }} #}
+  {{ form_row(form.user_firstname) }}
+  {{ form_row(form.user_lastname) }}
+  {{ form_row(form.user_level) }}
+  {# {{ form_row(form.user_lastconnexion) }} #}
+  <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-success">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+        {# <a class="btn btn-link" href="{{ path('app_user_index') }}">← Retour</a> #}
+    </div>
+{{ form_end(form, { render_rest: false }) }}
