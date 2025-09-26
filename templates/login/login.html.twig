@@ -38,3 +38,20 @@
         {#<a href="{{ path('forgot_password') }}" class="forgot-link">Mot de passe oublié ?</a>#}
     </section>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const passwordInput = document.getElementById('password');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
+    });
+</script>
+{% include "footer.html.twig" %}
+</body>
+</html>
