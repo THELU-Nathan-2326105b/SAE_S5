@@ -82,12 +82,20 @@
         </a>
     </div>
     <ul class="navbar-links">
-        <li><a href="/">ACCUEIL</a></li>
-        <li><a href="/forum">FORUM</a></li>
-        <li><a href="/planning">PLANNING</a></li>
-        <li><a href="/admin">INTERFACE ADMIN</a></li>
+    <li><a href="{{ path('home') }}">ACCUEIL</a></li>
+    {% if app.session.get('user') is not null and (app.session.get('user').role|lower != 'admin') %}
+        <li><a href="{{ path('forum') }}">FORUM</a></li>
+        <li><a href="{{ path('planning') }}">PLANNING</a></li>
+        <li><a href="{{ path('admin') }}">INTERFACE ADMIN</a></li>
+        <li><a href="{{ path('profil') }}">PROFIL</a></li>
+    {% endif %}
     </ul>
+
     <div class="navbar-action">
-        <a href="/login" class="navbar-button">Se connecter</a>
+    {% if app.session.get('user') %}
+        <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
+    {% else %}
+        <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
+    {% endif %}
     </div>
 </nav>
