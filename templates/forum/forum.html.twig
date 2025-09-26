@@ -5,156 +5,96 @@
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
     <meta charset="UTF-8" />
     <title>AMOS FAMES - Forum</title>
-    <link rel="stylesheet" href="/assets/styles/app.css">
-    <style>
-
-        .forumpage {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .title {
-            font-size: 3rem;
-            margin-top: 50px;
-            margin-bottom: 50px;
-        }
-        .title-text_start {
-            color: #008060; /* vert */
-            font-weight: 700;
-        }
-        .title-text_end {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .company-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px 25px;
-            max-width: 900px;
-            margin: 0 auto 25px auto;
-        }
-
-        .company {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 2px solid #000;
-            border-radius: 25px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-        }
-
-        .company:hover {
-            border-color: #008060;
-        }
-
-        /* Case à cocher personnalisée */
-        .company input[type="checkbox"] {
-            display: none;
-        }
-
-        .checkmark {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #000;
-            border-radius: 3px;
-            display: inline-block;
-            margin-right: 10px;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .company input[type="checkbox"]:checked + .checkmark {
-            background: #008060;
-            border-color: #008060;
-        }
-
-        .company input[type="checkbox"]:checked + .checkmark::after {
-            content: "";
-            position: absolute;
-            left: 4px;
-            top: 0px;
-            width: 6px;
-            height: 12px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        /* Texte */
-        .company-name {
-            flex: 1;
-            text-align: left;
-            font-size: 1rem;
-            color: #333;
-            font-weight: 500;
-        }
-
-        /* Bouton info */
-        .info {
-            font-weight: bold;
-            border: 1px solid #000;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 10px;
-            font-size: 0.8rem;
-        }
-
-        /* ----- BOUTON VALIDATION ----- */
-        .validate-btn {
-            background: #008060;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .validate-btn:hover {
-            background: #006b50;
-        }
-
-        .note {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: #555;
-        }
-    </style>
-
+    <link rel="stylesheet" href="/assets/styles/forum.css">
 </head>
-
 <body>
+
 {% include "navbar.html.twig" %}
 
-<main class="forumpage">
-    <div class="title">
-        <span class="title-text_start">Choisissez</span>
-        <span class="title-text_end">vos entreprises</span>
-    </div>
+<div class="main-content">
+    <h1><span class="first-word">Choisissez</span> vos entreprises</h1>
 
-    <!--à mettre dans une boucle php pour chaque entreprise-->
-    <section class="company-section">
-        <div class="company-list">
-            <label class="company">
-                <input type="checkbox">
-                <span class="checkmark"></span>
-                <span class="company-name">Entreprise</span>
-                <span class="info">i</span>
-            </label>
+    {% if selected is empty %}
+        <form action="" method="post" enctype="multipart/form-data">
+            {% for company in companies %}
+                <div class="bubble">
+                    <div class="left">
+                        <input type="checkbox"
+                               id="entreprise{{ company.getCompanyName()|e }}"
+                               name="entreprises[]"
+                               value="{{ company.getCompanyName() }}">
+                        <label for="entreprise{{ company.getCompanyName()|e }}">
+                            {{ company.getCompanyName() }}
+                        </label>
+                    </div>
+                    <span class="info" title="{{ company.getCompanyDescription() }}">
+                        i
+                    </span>
+                </div>
+            {% endfor %}
+            <button type="submit">Valider les choix</button>
+        </form>
+
+    {% else %}
+        <div class="step2-container">
+            <h2><span class="first-word">Entreprises</span> sélectionnées</h2>
+
+            <div class="selected-companies">
+                {% for entreprise in selected %}
+                    <div class="company-bubble">
+                        {{ entreprise }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <form action="" method="post" enctype="multipart/form-data" class="upload-form">
+                <div class="file-upload-container">
+                    <label for="cv" class="file-label">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Déposez votre CV</span>
+                    </label>
+                    <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
+                    <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
+                </div>
+
+                <div class="buttons-container">
+                    <a href="" class="back-button">Revenir au formulaire</a>
+                    <button type="submit" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
+                </div>
+            </form>
         </div>
-        <button class="validate-btn">Valider les choix</button>
-        <p class="note">(Cliquable si 1 choix ou plus effectué)</p>
-    </section>
-</main>
+        <script>
+            const fileInput = document.getElementById('cv');
+            const submitBtn = document.getElementById('submitBtn');
+            const fileInfo = document.getElementById('fileInfo');
+
+            fileInput.addEventListener('change', function() {
+                const files = fileInput.files;
+                submitBtn.disabled = files.length === 0;
+
+                if (files.length > 0) {
+                    fileInfo.textContent = `${files[0].name} (${formatFileSize(files[0].size)})`;
+                    fileInfo.style.color = '#008b57';
+                } else {
+                    fileInfo.textContent = 'Aucun fichier sélectionné';
+                    fileInfo.style.color = '#666';
+                }
+            });
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        </script>
+    {% endif %}
+</div>
 {% include "footer.html.twig" %}
 </body>
 </html>

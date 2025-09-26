@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Profil</title>
+    <link rel="stylesheet" href="/assets/styles/style.css">
+    <script src="/assets/javascript/script.js"></script>
+</head>
+{% block body %}
+{% include "navbar.html.twig" %}
+
+<div class="profile-page">
+    <div class="profile-card">
+        <h1>Profil</h1>
+
+        <div class="profile-grid">
+            <div class="profile-row">
+                <span class="label">Prénom</span>
+                <span class="value">{{ firstname }}</span>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">Nom</span>
+                <span class="value">{{ lastname }}</span>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">Niveau</span>
+                <span class="value">{{ level }}</span>
+            </div>
+
+            <div class="profile-row">
+                <span class="label">Mail</span>
+                <span class="value email">{{ mail }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+</html>
