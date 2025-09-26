@@ -90,7 +90,8 @@ class UserController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if($request->isMethod('POST')){ 
+        // if($request->isMethod('POST')){ 
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var string|null $plainPassword */
             // dd($user);
             $plainPassword = $form->get('plainPassword')->getData();
@@ -138,7 +139,8 @@ class UserController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if($request->isMethod('POST')){ 
+        // if($request->isMethod('POST')){ 
+        if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
