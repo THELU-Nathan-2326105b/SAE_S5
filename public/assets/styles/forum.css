@@ -16,7 +16,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 50px;
 }
 
 .first-word {
@@ -60,13 +61,13 @@ label {
     font-size: 14px;
     flex-shrink: 0;
     margin-left: 10px;
-    position: relative; /* nécessaire pour le tooltip */
+    position: relative;
 }
 
 .info::after {
     content: attr(title);
     position: absolute;
-    bottom: 125%; /* au-dessus du i */
+    bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
     background: #008b57;
@@ -104,7 +105,7 @@ label {
     align-items: center;
     gap: 12px;
     flex: 1;
-    overflow: visible; /* <-- changé de hidden à visible */
+    overflow: visible;
 }
 
 .bubble:hover {
@@ -418,8 +419,7 @@ button:disabled {
 }
 
 footer {
-    background-color:#008b57;
-    color:white;
-    text-align: center;
-    padding: 15px;
+    position: static !important;
+    margin-top: auto;
 }
+

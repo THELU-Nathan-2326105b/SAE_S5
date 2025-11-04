@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+{#  #}<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1"/>
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>AMOS FAMES - Forum</title>
     <link rel="stylesheet" href="/assets/styles/forum.css">
 </head>
@@ -28,13 +28,12 @@
                         </label>
                     </div>
                     <span class="info" title="{{ company.getCompanyDescription() }}">
-                        i
-                    </span>
+                            i
+                        </span>
                 </div>
             {% endfor %}
             <button type="submit">Valider les choix</button>
         </form>
-
     {% else %}
         <div class="step2-container">
             <h2><span class="first-word">Entreprises</span> sélectionnées</h2>
@@ -50,7 +49,8 @@
             <form action="" method="post" enctype="multipart/form-data" class="upload-form">
                 <div class="file-upload-container">
                     <label for="cv" class="file-label">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -72,7 +72,7 @@
             const submitBtn = document.getElementById('submitBtn');
             const fileInfo = document.getElementById('fileInfo');
 
-            fileInput.addEventListener('change', function() {
+            fileInput.addEventListener('change', function () {
                 const files = fileInput.files;
                 submitBtn.disabled = files.length === 0;
 
@@ -98,3 +98,6 @@
 {% include "footer.html.twig" %}
 </body>
 </html>
+
+
+
