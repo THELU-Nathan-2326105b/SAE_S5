@@ -284,7 +284,32 @@ footer {
 }
 
 /* Responsive mobile */
+@media (max-width: 900px) {
+    .headline-text {
+        font-size: 3.5rem;
+    }
+    .head-content {
+        padding-left: 4%;
+    }
+    .login-section {
+        max-width: 320px;
+    }
+    .profile-card {
+        padding: 25px;
+    }
+}
+
 @media (max-width: 600px) {
+    .headline-text {
+        font-size: 2.5rem;
+    }
+    .head-content {
+        padding-left: 3%;
+    }
+    .login-section {
+        width: 90%;
+        padding: 25px 15px;
+    }
     .profile-row {
         flex-direction: column;
         align-items: flex-start;
@@ -295,6 +320,20 @@ footer {
     }
     .profile-row .value {
         text-align: left;
-        white-space: normal; /* permet retour à la ligne sur petit écran */
+        white-space: normal;
+    }
+}
+
+@media (max-width: 400px) {
+    .headline-text {
+        font-size: 2rem;
+    }
+    .button1 {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    .title {
+        font-size: 2rem;
+        margin-bottom: 30px;
     }
 }
