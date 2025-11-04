@@ -1,4 +1,6 @@
-
+main{
+    flex: 1;
+}
 
 /*==================== PAGE LOGIN ==================== */
 /* ----- PAGE LOGIN ----- */
@@ -121,4 +123,46 @@
 }
 .signup-text a:hover {
     color: #006b50;
+}
+
+/*==================== PAGE ADMIN ==================== */
+
+.etudiant-box,
+.forum-box {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.etudiant-box img,
+.forum-box img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+/* Texte */
+.etudiant-box p,
+.forum-box p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Effet hover */
+.etudiant-box:hover,
+.forum-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #eef3ff, #ffffff);
 }

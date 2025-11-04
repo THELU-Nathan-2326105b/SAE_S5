@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Accueil</title>
+    <link rel="stylesheet" href="/assets/styles/admin.css">
+    <link rel="stylesheet" href="/assets/styles/app.css">
+</head>
+<body>
+{% include "navbar.html.twig" %}
+<main  class="adminpage">
+    <div class="admin-buttons">
+        <section class="etudiant-box">
+            <img src="/assets/images/etudiant-couleur.png" alt="etudiants-icone">
+            <p>Gestion des étudiants</p>
+        </section>
+        <section class="forum-box">
+            <img src="/assets/images/etablissement-couleur.png" alt="etablissement-icone">
+            <p>Gestion du forum</p>
+        </section>
+        <section class="entreprise-box">
+            <img src="/assets/images/entreprise-couleur.png" alt="entreprise-icone">
+            <p>Gestion des entreprises</p>
+        </section>
+    </div>
+</main>
+{% include "footer.html.twig" %}
+</body>
+</html>
