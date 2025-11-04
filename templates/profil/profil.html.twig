@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/assets/styles/style.css">
     <script src="/assets/javascript/script.js"></script>
 </head>
-{% block body %}
+<body>
 {% include "navbar.html.twig" %}
 
 <div class="profile-page">
+    <div class="profile-content">
     <div class="profile-card">
         <h1>Profil</h1>
 
@@ -37,7 +38,8 @@
             </div>
         </div>
     </div>
+    </div>
+    {% include "footer.html.twig" %}
 </div>
-{% endblock %}
-{% include "footer.html.twig" %}
+</body>
 </html>

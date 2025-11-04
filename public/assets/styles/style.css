@@ -6,10 +6,13 @@ body, html {
 }
 
 footer {
-    background-color:#008b57;
-    color:white;
-    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
     padding: 15px;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
 }
 
 /*==================== PAGE LOGIN ==================== */
@@ -205,13 +208,10 @@ footer {
 /* ================== PAGE PROFIL ================== */
 
 .profile-page {
-    min-height: calc(100vh - 72px); /* laisse la place pour la navbar */
-    background: #f9fbf9;
-    padding: 40px 20px;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    font-family: "Helvetica Nue", sans-serif;
+    flex-direction: column;
+    font-family: "Helvetica Neue", sans-serif;
+    min-height: 80vh;
 }
 
 /* Carte principale */
@@ -222,6 +222,13 @@ footer {
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.profile-content {
+    flex: 1;                    /* prend tout l’espace restant */
+    display: flex;
+    justify-content: center;     /* centre horizontalement */
+    align-items: center;         /* centre verticalement */
 }
 
 /* Titre */
