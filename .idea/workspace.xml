@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="affichage du footer dans la page forum et fix de sa position">
+    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="dernier fix du footer de la page profil">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/assets/styles/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/styles/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/apropos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/apropos.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/footer.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/footer.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/navbar.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/navbar.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/profil/profil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profil/profil.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -406,7 +403,8 @@
       <workItem from="1758050626644" duration="94000" />
       <workItem from="1758091219862" duration="2126000" />
       <workItem from="1762241193872" duration="10132000" />
-      <workItem from="1762259616545" duration="5518000" />
+      <workItem from="1762259616545" duration="6435000" />
+      <workItem from="1762333774669" duration="4655000" />
     </task>
     <task id="LOCAL-00001" summary="page d'accueil v1 pur visuel uniquement">
       <option name="closed" value="true" />
@@ -488,7 +486,23 @@
       <option name="project" value="LOCAL" />
       <updated>1762253414720</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix de la position du footer dans la page profil">
+      <option name="closed" value="true" />
+      <created>1762265242227</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1762265242227</updated>
+    </task>
+    <task id="LOCAL-00012" summary="responsive général par terminé">
+      <option name="closed" value="true" />
+      <created>1762266093771</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1762266093771</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -513,6 +527,9 @@
     <MESSAGE value="migration" />
     <MESSAGE value="symfony" />
     <MESSAGE value="affichage du footer dans la page forum et fix de sa position" />
-    <option name="LAST_COMMIT_MESSAGE" value="affichage du footer dans la page forum et fix de sa position" />
+    <MESSAGE value="fix de la position du footer dans la page profil" />
+    <MESSAGE value="responsive général par terminé" />
+    <MESSAGE value="dernier fix du footer de la page profil" />
+    <option name="LAST_COMMIT_MESSAGE" value="dernier fix du footer de la page profil" />
   </component>
 </project>

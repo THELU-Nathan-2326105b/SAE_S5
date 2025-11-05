@@ -6,7 +6,7 @@ body, html {
 }
 
 footer {
-    position: fixed;
+    position: static;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -214,6 +214,13 @@ footer {
     min-height: 80vh;
 }
 
+.page-profil footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
 /* Carte principale */
 .profile-card {
     width: 100%;
@@ -225,10 +232,10 @@ footer {
 }
 
 .profile-content {
-    flex: 1;                    /* prend tout l’espace restant */
+    flex: 1;
     display: flex;
-    justify-content: center;     /* centre horizontalement */
-    align-items: center;         /* centre verticalement */
+    justify-content: center;
+    align-items: center;
 }
 
 /* Titre */
