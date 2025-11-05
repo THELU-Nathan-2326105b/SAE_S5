@@ -12,18 +12,27 @@
 {% include "navbar.html.twig" %}
 <main  class="adminpage">
     <div class="admin-buttons">
-        <section class="etudiant-box">
-            <img src="/assets/images/etudiant-couleur.png" alt="etudiants-icone">
-            <p>Gestion des étudiants</p>
-        </section>
-        <section class="forum-box">
-            <img src="/assets/images/forum-couleur.png" alt="forum-icone">
-            <p>Gestion du forum</p>
-        </section>
-        <section class="entreprise-box">
-            <img src="/assets/images/entreprise-couleur.png" alt="entreprise-icone">
-            <p>Gestion des entreprises</p>
-        </section>
+        <a href="/admin/users">
+            <section class="etudiant-box">
+                <img src="/assets/images/etudiant-couleur.png" alt="etudiants-icone">
+                <p>Gestion des étudiants</p>
+            </section>
+        </a>
+
+        <a href="/admin/forum">
+            <section class="forum-box">
+                <img src="/assets/images/forum-couleur.png" alt="forum-icone">
+                <p>Gestion du forum</p>
+            </section>
+        </a>
+
+        <a href="/admin/entreprises">
+            <section class="entreprise-box">
+                <img src="/assets/images/entreprise-couleur.png" alt="entreprise-icone">
+                <p>Gestion des entreprises</p>
+            </section>
+        </a>
+
     </div>
 </main>
 {% include "footer.html.twig" %}
