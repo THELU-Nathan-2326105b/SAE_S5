@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-
-use App\Repository\UsersRepository; 
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-#[ORM\Entity(repositoryClass: UsersRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 class Users
 {
