@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="dernier fix du footer de la page profil">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="symfony">
+      <change afterPath="$PROJECT_DIR$/assets/images/fames_illustration.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/footer.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/styles/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/styles/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/profil/profil.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profil/profil.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/forum/forum.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/forum/forum.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/forgotpwd.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/forgotpwd.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/login.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,11 +60,11 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:THELU-Nathan-2326105b/SAE_S5.git&quot;,
-    &quot;accountId&quot;: &quot;b2c8414c-a8ef-43fe-b9ec-02ba43764224&quot;
+    &quot;url&quot;: &quot;https://github.com/THELU-Nathan-2326105b/SAE_S5.git&quot;,
+    &quot;accountId&quot;: &quot;2f3b82bd-1bbb-42e0-8c8e-47ce369fd34c&quot;
   }
 }</component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="D:\php-8.3.19-Win32-vs16-x64\php.exe">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/polyfill-mbstring" />
@@ -336,13 +339,8 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;footer&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Daphné/PhpstormProjects/SAE_S5/public/assets&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;page-admin&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/laragon/www/SAE_S5&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -354,14 +352,7 @@
   }
 }</component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Daphné\PhpstormProjects\SAE_S5\public\assets" />
-      <recent name="C:\laragon\www\SAE_S5\assets\images" />
-      <recent name="C:\laragon\www\SAE_S5\assets" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\laragon\www\SAE_S5\public\assets" />
-      <recent name="C:\laragon\www\SAE_S5\public" />
       <recent name="C:\laragon\www\SAE_S5\assets" />
       <recent name="C:\laragon\www\SAE_S5\public\assets\images" />
     </key>
@@ -375,12 +366,11 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
-        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PS-251.28293.47" />
+        <option value="bundled-php-predefined-a98d8de5180a-e5747d4f5a45-com.jetbrains.php.sharedIndexes-PS-251.28293.47" />
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="" />
@@ -402,6 +392,7 @@
       <workItem from="1758023382248" duration="316000" />
       <workItem from="1758050626644" duration="94000" />
       <workItem from="1758091219862" duration="2126000" />
+      <workItem from="1762332848743" duration="267000" />
       <workItem from="1762241193872" duration="10132000" />
       <workItem from="1762259616545" duration="6435000" />
       <workItem from="1762333774669" duration="4655000" />
@@ -472,37 +463,13 @@
     </task>
     <task id="LOCAL-00009" summary="symfony">
       <option name="closed" value="true" />
-      <created>1758265233901</created>
+      <created>1762253662400</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1758265233901</updated>
+      <updated>1762253662400</updated>
     </task>
-    <task id="LOCAL-00010" summary="affichage du footer dans la page forum et fix de sa position">
-      <option name="closed" value="true" />
-      <created>1762253414718</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1762253414720</updated>
-    </task>
-    <task id="LOCAL-00011" summary="fix de la position du footer dans la page profil">
-      <option name="closed" value="true" />
-      <created>1762265242227</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1762265242227</updated>
-    </task>
-    <task id="LOCAL-00012" summary="responsive général par terminé">
-      <option name="closed" value="true" />
-      <created>1762266093771</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1762266093771</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -526,10 +493,6 @@
     <MESSAGE value="finition navbar - front page de connexion" />
     <MESSAGE value="migration" />
     <MESSAGE value="symfony" />
-    <MESSAGE value="affichage du footer dans la page forum et fix de sa position" />
-    <MESSAGE value="fix de la position du footer dans la page profil" />
-    <MESSAGE value="responsive général par terminé" />
-    <MESSAGE value="dernier fix du footer de la page profil" />
-    <option name="LAST_COMMIT_MESSAGE" value="dernier fix du footer de la page profil" />
+    <option name="LAST_COMMIT_MESSAGE" value="symfony" />
   </component>
 </project>
