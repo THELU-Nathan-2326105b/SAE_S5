@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning du Forum{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Générer le planning</h1>
+
+    <form method="get" action="{{ path('planning_algo_run') }}">
+        <div class="mb-3">
+            <label for="forum" class="form-label">Choisir un forum :</label>
+            <select id="forum" name="forum_id" class="form-select" required>
+                {% for forum in forums %}
+                    <option value="{{ forum.forum_id }}">Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" name="execute" value="1" class="btn btn-primary">Générer le planning</button>
+    </form>
+
+    
+
+    {% if planning is defined %}
+        <hr class="my-4">
+        <h2>Résultat du planning</h2>
+
+        {% if planning is empty %}
+            <p>Aucun rendez-vous n'a pu être généré.</p>
+        {% else %}
+            <table class="table table-bordered table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Entreprise</th>
+                        <th>Horaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in planning %}
+                    <tr>
+                        <td>{{ row.user_firstname }} {{ row.user_lastname }}</td>
+                        <td>{{ row.company_name }}</td>
+                        <td>{{ row.appointment_time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
