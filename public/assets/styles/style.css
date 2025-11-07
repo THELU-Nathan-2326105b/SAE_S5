@@ -5,13 +5,6 @@ body, html {
     font-family: "Helvetica Nue", sans-serif;
 }
 
-footer {
-    background-color:#008b57;
-    color:white;
-    text-align: center;
-    padding: 15px;
-}
-
 /*==================== PAGE LOGIN ==================== */
 /* ----- PAGE LOGIN ----- */
 .loginpage {
@@ -261,13 +254,10 @@ footer {
 /* ================== PAGE PROFIL ================== */
 
 .profile-page {
-    min-height: calc(100vh - 72px); /* laisse la place pour la navbar */
-    background: #f9fbf9;
-    padding: 40px 20px;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    font-family: "Helvetica Nue", sans-serif;
+    flex-direction: column;
+    font-family: "Helvetica Neue", sans-serif;
+    min-height: 77.8vh;
 }
 
 /* Carte principale */
@@ -278,6 +268,13 @@ footer {
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.profile-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Titre */
@@ -333,7 +330,32 @@ footer {
 }
 
 /* Responsive mobile */
+@media (max-width: 900px) {
+    .headline-text {
+        font-size: 3.5rem;
+    }
+    .head-content {
+        padding-left: 4%;
+    }
+    .login-section {
+        max-width: 320px;
+    }
+    .profile-card {
+        padding: 25px;
+    }
+}
+
 @media (max-width: 600px) {
+    .headline-text {
+        font-size: 2.5rem;
+    }
+    .head-content {
+        padding-left: 3%;
+    }
+    .login-section {
+        width: 90%;
+        padding: 25px 15px;
+    }
     .profile-row {
         flex-direction: column;
         align-items: flex-start;
@@ -344,6 +366,20 @@ footer {
     }
     .profile-row .value {
         text-align: left;
-        white-space: normal; /* permet retour à la ligne sur petit écran */
+        white-space: normal;
+    }
+}
+
+@media (max-width: 400px) {
+    .headline-text {
+        font-size: 2rem;
+    }
+    .button1 {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    .title {
+        font-size: 2rem;
+        margin-bottom: 30px;
     }
 }
