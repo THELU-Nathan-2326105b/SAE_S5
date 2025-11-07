@@ -1,98 +1,59 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, maximum-scale=1"/>
     <title>AMOS FAMES - À propos</title>
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
-
-    <style>
-        /* Général */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        main.a_propos {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .a_propos h3 {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            text-align: center;
-            color: #008b57;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .a_propos p {
-            margin: 0 0 20px;
-            text-align: justify;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            main.a_propos {
-                margin: 20px;
-                padding: 20px;
-            }
-
-            .a_propos h3 {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/styles/apropos.css">
 </head>
 <body>
 {% include "navbar.html.twig" %}
 
-<main class="a_propos">
-    <h3>À propos</h3>
+<main>
+    <div class="apropos-content">
+        <div class="a_propos">
 
-    <p>
-        Ce site a été développé dans le cadre d’une
-        Situation d’Apprentissage et d’Évaluation (SAE),
-        avec pour objectif de faciliter l’organisation des
-        <strong>forums étudiants</strong> dédiés aux stages,
-        alternances ou autres opportunités professionnelles.
-    </p>
+            <h3>À propos</h3>
 
-    <p>
-        L’outil permet aux étudiants de se connecter, de choisir
-        les entreprises qu’ils souhaitent rencontrer et de déposer
-        leur CV pour valider leur inscription. Côté
-        administration, il offre la possibilité d’ajouter les
-        étudiants, les entreprises et les forums, puis de
-        verrouiller les inscriptions afin de générer automatiquement
-        un <strong>planning optimisé</strong> pour toutes les parties
-        prenantes.
-    </p>
+            <p>
+                Ce site a été développé dans le cadre d’une
+                Situation d’Apprentissage et d’Évaluation (SAE),
+                avec pour objectif de faciliter l’organisation des
+                <strong>forums étudiants</strong> dédiés aux stages,
+                alternances ou autres opportunités professionnelles.
+            </p>
 
-    <p>
-        Ce projet met l’accent sur la simplicité d’utilisation et
-        la centralisation des informations afin de gagner du temps
-        et de rendre la planification plus équitable pour
-        l’ensemble des étudiants comme des entreprises.
-    </p>
+            <p>
+                L’outil permet aux étudiants de se connecter, de choisir
+                les entreprises qu’ils souhaitent rencontrer et de déposer
+                leur CV pour valider leur inscription. Côté
+                administration, il offre la possibilité d’ajouter les
+                étudiants, les entreprises et les forums, puis de
+                verrouiller les inscriptions afin de générer automatiquement
+                un <strong>planning optimisé</strong> pour toutes les parties
+                prenantes.
+            </p>
 
-    <p>
-        Réalisé par une équipe d’étudiants en BUT Informatique, ce projet
-        nous a permis de mettre en pratique nos compétences en développement web,
-        bases de données, cybersécurité et gestion collaborative. Il illustre
-        comment l’informatique peut répondre à des besoins concrets d’organisation,
-        tout en garantissant l’efficacité et la protection des données
-        sensibles des utilisateurs.
-    </p>
+            <p>
+                Ce projet met l’accent sur la simplicité d’utilisation et
+                la centralisation des informations afin de gagner du temps
+                et de rendre la planification plus équitable pour
+                l’ensemble des étudiants comme des entreprises.
+            </p>
+
+            <p>
+                Réalisé par une équipe d’étudiants en BUT Informatique, ce projet
+                nous a permis de mettre en pratique nos compétences en développement web,
+                bases de données, cybersécurité et gestion collaborative. Il illustre
+                comment l’informatique peut répondre à des besoins concrets d’organisation,
+                tout en garantissant l’efficacité et la protection des données
+                sensibles des utilisateurs.
+            </p>
+        </div>
+    </div>
+
 </main>
+{% include "footer.html.twig" %}
 </body>
 </html>
