@@ -1,0 +1,56 @@
+/*==================== PAGE ADMIN ==================== */
+.admin-buttons{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    gap: 5rem;
+    margin: 10% auto;
+    justify-content: center;
+}
+
+.etudiant-box,
+.forum-box,
+.entreprise-box{
+    background: #008b57;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.etudiant-box img,
+.forum-box img,
+.entreprise-box img{
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+/* Texte */
+.etudiant-box p,
+.forum-box p,
+.entreprise-box p{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+}
+
+/* Effet hover */
+.etudiant-box:hover,
+.forum-box:hover ,
+.entreprise-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px #00a34a;
+}
+
+a{
+    text-decoration: none;
+}
