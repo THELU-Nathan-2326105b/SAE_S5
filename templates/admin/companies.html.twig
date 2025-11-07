@@ -4,15 +4,128 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1" />
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
     <meta charset="UTF-8" />
-    <title>AMOS FAMES - Accueil</title>
+    <title>AMOS FAMES - Gestion des entreprises</title>
     <link rel="stylesheet" href="/assets/styles/admin.css">
     <link rel="stylesheet" href="/assets/styles/app.css">
 </head>
 <body>
 {% include "navbar.html.twig" %}
-<main  class="admincompaniespage">
-    <h1>GESTION DES ENTREPRISES</h1>
+
+<main class="admincompaniespage">
+    <h1 class="title-entreprises">GESTION DES ENTREPRISES</h1>
+
+    <section class="companies-list">
+        {% if companies is not empty %}
+            <div class="companies-grid">
+                {% for company in companies %}
+                    <div class="company-card" data-name="{{ company.companyName }}">
+                        <div class="company-logo">
+                            <img src="/assets/images/{{ company.companyLogo }}" alt="{{ company.companyName }}">
+                        </div>
+                        <div class="company-info">
+                            <h2 class="company-name">{{ company.companyName }}</h2>
+                            <p class="company-description">{{ company.companyDescription }}</p>
+                        </div>
+                        <div class="company-actions">
+                            <button class="btn btn-edit" data-name="{{ company.companyName }}">Modifier</button>
+                            <button class="btn btn-delete" data-name="{{ company.companyName }}">Supprimer</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-company">Aucune entreprise enregistrée pour le moment.</p>
+        {% endif %}
+    </section>
 </main>
+
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h2>Modifier une entreprise</h2>
+        <form id="editForm">
+            <label>Nom :</label>
+            <textarea name="companyName" id="editCompanyName"></textarea>
+            <label>Description :</label>
+            <textarea name="companyDescription" id="editCompanyDescription"></textarea>
+            <label>Logo (nom du fichier) :</label>
+            <input type="text" name="companyLogo" id="editCompanyLogo">
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn btn-edit">Enregistrer</button>
+                <button type="button" class="btn modal-close" id="closeModal">Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% include "footer.html.twig" %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("editModal");
+        const form = document.getElementById("editForm");
+        const closeModal = document.getElementById("closeModal");
+
+        document.querySelectorAll(".btn-edit").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const card = btn.closest(".company-card");
+                const name = card.dataset.name;
+                const desc = card.querySelector(".company-description").textContent.trim();
+                const logo = card.querySelector("img").src.split("/").pop();
+
+                form.editCompanyName.value = name;
+                form.editCompanyDescription.value = desc;
+                form.editCompanyLogo.value = logo;
+
+                modal.style.display = "flex";
+                document.body.style.overflow = "hidden";
+            });
+        });
+
+        closeModal.addEventListener("click", () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = {
+                companyName: form.editCompanyName.value,
+                companyDescription: form.editCompanyDescription.value,
+                companyLogo: form.editCompanyLogo.value
+            };
+
+            const response = await fetch("/admin/company/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const card = document.querySelector(`.company-card[data-name='${data.companyName}']`);
+                card.querySelector(".company-description").textContent = data.companyDescription;
+                card.querySelector("img").src = "/assets/images/" + data.companyLogo;
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            } else {
+                alert("Erreur lors de la mise à jour.");
+            }
+        });
+
+        document.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const name = btn.dataset.name;
+                if (!confirm(`Supprimer l'entreprise "${name}" ?`)) return;
+
+                const response = await fetch(`/admin/company/delete/${name}`, { method: "DELETE" });
+                if (response.ok) {
+                    btn.closest(".company-card").remove();
+                } else {
+                    alert("Erreur lors de la suppression.");
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
