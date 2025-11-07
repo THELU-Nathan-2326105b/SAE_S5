@@ -19,4 +19,10 @@ final class AdminController extends AbstractController
     {
         return $this->render('admin/users.html.twig');
     }
+
+    #[Route('/admin/companies', name: 'admin-companies')]
+    public function companies(): Response
+    {
+        return $this->render('admin/companies.html.twig');
+    }
 }

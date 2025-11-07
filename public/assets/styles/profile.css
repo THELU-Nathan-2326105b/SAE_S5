@@ -1,0 +1,89 @@
+/* ================== PAGE PROFIL ================== */
+
+.profile-page {
+    min-height: calc(100vh - 72px); /* laisse la place pour la navbar */
+    background: #f9fbf9;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: "Helvetica Nue", sans-serif;
+}
+
+/* Carte principale */
+.profile-card {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Titre */
+.profile-card h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+}
+
+/* Grille infos */
+.profile-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Chaque ligne */
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(0,128,96,0.03), #fff);
+}
+
+/* Label (Prénom, Nom...) */
+.profile-row .label {
+    font-weight: 600;
+    color: #006b50;
+    font-size: 1rem;
+    min-width: 120px;
+}
+
+/* Valeur (Alice, Martin...) */
+.profile-row .value {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+    white-space: nowrap;        /* pas de retour à la ligne */
+    overflow: hidden;           /* si trop long */
+    text-overflow: ellipsis;    /* ajoute "..." si ça dépasse */
+}
+
+/* Email = monospace pour lisibilité */
+.profile-row .value.email {
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+/* Responsive mobile */
+@media (max-width: 600px) {
+    .profile-row {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .profile-row .label {
+        margin-bottom: 5px;
+    }
+    .profile-row .value {
+        text-align: left;
+        white-space: normal; /* permet retour à la ligne sur petit écran */
+    }
+}
