@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel utilisateur{% endblock %}
+
+{% block body %}
+  <div class="container py-4">
+    <h1 class="mb-3">Créer un utilisateur</h1>
+
+    {% include 'user/_form.html.twig' with {
+      form: form,
+      button_label: 'Créer',
+      include_submit: true
+    } %}
+  </div>
+{% endblock %}

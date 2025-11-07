@@ -1,0 +1,12 @@
+{# templates/company/_form.html.twig #}
+{{ form_start(form) }}
+  {{ form_errors(form) }}
+  {{ form_row(form.company_name) }}
+  {{ form_row(form.company_description) }}
+  {{ form_row(form.company_logo) }}
+
+  <button type="submit">
+    {{ button_label|default('Enregistrer') }}
+  </button>
+  <a href="{{ path('app_company_index') }}">← Retour</a>
+{{ form_end(form) }}

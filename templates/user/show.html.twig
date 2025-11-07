@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur{% endblock %}
+
+{% block body %}
+<h1>Utilisateur</h1>
+
+{# <p>ID : {{ user.userId }}</p> #}
+<p>Email : {{ user.userEmail|default('') }}</p>
+{# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
+{# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
+<p>Rôle : {{ user.userRole }}</p>
+<p>Première connexion : {{ user.userFirstconnexion ? 'oui' : 'non' }}</p>
+<p>Prénom : {{ user.userFirstname|default('') }}</p>
+<p>Nom : {{ user.userLastname|default('') }}</p>
+<p>Niveau : {{ user.userLevel|default('') }}</p>
+{# <p>Dernière connexion : {{ user.userLastconnexion ? user.userLastconnexion|date('Y-m-d H:i:s') : '' }}</p> #}
+
+<p>
+  <a href="{{ path('app_user_edit', {id: user.userId}) }}">Éditer</a>
+  <a href="{{ path('app_user_index', { id: user.userId }) }}">Retour</a>
+  <a href="{{ path('app_user_delete', { id: user.userId }) }}">Supprimer</a>
+</p>
+
+{# <form method="post" action="{{ path('app_user_delete', {id: user.userId}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+  <button>Supprimer</button>
+</form> #}
+{% endblock %}
