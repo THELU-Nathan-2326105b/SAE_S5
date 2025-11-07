@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des entreprises{% endblock %}
+
+{% block body %}
+    <h1>Entreprises</h1>
+
+    <a href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Logo</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for company in companies %}
+            <tr>
+                <td>
+                    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">
+                        {{ company.companyName }}
+                    </a>
+                </td>
+                <td>{{ company.companyDescription ?: '—' }}</td>
+                <td>
+                    {% if company.companyLogo %}
+                        <img src="{{ company.companyLogo }}" alt="Logo {{ company.companyName }}" style="max-height:40px;">
+                    {% else %}
+                        Aucun
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a> |
+                    <a href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a> |
+                    <form method="post"
+                          action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
+                          style="display:inline"
+                          onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
+                        <button>Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune entreprise trouvée.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
