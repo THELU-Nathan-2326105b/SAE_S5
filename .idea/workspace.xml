@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="symfony">
+    <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="tri css, footer sur la page a propos et profil">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/home/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/navbar.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/navbar.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/MentionLegale.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MentionLegale.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +41,7 @@
     </excluded-from-favorite>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="simon" />
+        <entry key="$PROJECT_DIR$" value="new-prod" />
         <entry key="$PROJECT_DIR$/AMOS_FAMES" value="simon" />
       </map>
     </option>
@@ -54,13 +53,13 @@
     &quot;assignee&quot;: &quot;DAUBREGE-Simon-2326036aa&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/THELU-Nathan-2326105b/SAE_S5.git&quot;,
-    &quot;accountId&quot;: &quot;2f3b82bd-1bbb-42e0-8c8e-47ce369fd34c&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:THELU-Nathan-2326105b/SAE_S5.git",
+    "accountId": "b2c8414c-a8ef-43fe-b9ec-02ba43764224"
   }
-}</component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe">
+}]]></component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="D:\php-8.3.19-Win32-vs16-x64\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/polyfill-mbstring" />
@@ -335,8 +334,8 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "simon",
-    "last_opened_file_path": "C:/laragon/www/SAE_S5/assets",
+    "git-widget-placeholder": "footer-propre",
+    "last_opened_file_path": "C:/laragon/www/SAE_S5",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -348,12 +347,7 @@
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\laragon\www\SAE_S5\assets" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\laragon\www\SAE_S5\public\assets" />
-      <recent name="C:\laragon\www\SAE_S5\public" />
       <recent name="C:\laragon\www\SAE_S5\assets" />
       <recent name="C:\laragon\www\SAE_S5\public\assets\images" />
     </key>
@@ -367,11 +361,12 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PS-251.28293.47" />
-        <option value="bundled-php-predefined-a98d8de5180a-e5747d4f5a45-com.jetbrains.php.sharedIndexes-PS-251.28293.47" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
+        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="" />
@@ -393,6 +388,7 @@
       <workItem from="1758023382248" duration="316000" />
       <workItem from="1758050626644" duration="94000" />
       <workItem from="1758091219862" duration="2126000" />
+      <workItem from="1762332848743" duration="267000" />
     </task>
     <task id="LOCAL-00001" summary="page d'accueil v1 pur visuel uniquement">
       <option name="closed" value="true" />
@@ -458,7 +454,31 @@
       <option name="project" value="LOCAL" />
       <updated>1758022190864</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="front end de la première page de l'interface admin">
+      <option name="closed" value="true" />
+      <created>1762253662400</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1762253662400</updated>
+    </task>
+    <task id="LOCAL-00010" summary="front end de la première page de l'interface admin et images">
+      <option name="closed" value="true" />
+      <created>1762254054798</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1762254054798</updated>
+    </task>
+    <task id="LOCAL-00011" summary="tri css, footer sur la page a propos et profil">
+      <option name="closed" value="true" />
+      <created>1762523148844</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1762523148844</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -482,6 +502,9 @@
     <MESSAGE value="finition navbar - front page de connexion" />
     <MESSAGE value="migration" />
     <MESSAGE value="symfony" />
-    <option name="LAST_COMMIT_MESSAGE" value="symfony" />
+    <MESSAGE value="front end de la première page de l'interface admin" />
+    <MESSAGE value="front end de la première page de l'interface admin et images" />
+    <MESSAGE value="tri css, footer sur la page a propos et profil" />
+    <option name="LAST_COMMIT_MESSAGE" value="tri css, footer sur la page a propos et profil" />
   </component>
 </project>

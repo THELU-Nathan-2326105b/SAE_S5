@@ -1,0 +1,124 @@
+-- Delete
+DROP TABLE IF EXISTS appointment CASCADE;
+DROP TABLE IF EXISTS is_present CASCADE;
+DROP TABLE IF EXISTS company CASCADE;
+DROP TABLE IF EXISTS forum CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP FUNCTION IF EXISTS is_valid_search_level(TEXT);
+DROP FUNCTION IF EXISTS delete_inactive_users();
+DROP TYPE IF EXISTS user_role_type;
+DROP TYPE IF EXISTS level_type;
+DROP TYPE IF EXISTS level_enum;
+
+
+-- create
+-- Table des utilisateurs
+CREATE TABLE users (
+   user_id SERIAL PRIMARY KEY,
+   user_email VARCHAR(320) UNIQUE CHECK (
+     length(user_email) <= 320 AND
+     position('@' in user_email) > 1 AND
+     position('@' in user_email) <= 65
+   ),
+   user_pwd VARCHAR(60) NOT NULL,
+   User_token_resetpwd VARCHAR(100) UNIQUE,
+   User_time_delete_token TIMESTAMP,
+   user_role VARCHAR(10) NOT NULL CHECK (user_role IN ('alternance', 'internship', 'admin')),
+   user_firstconnexion BOOLEAN NOT NULL DEFAULT TRUE,
+   user_firstname VARCHAR(50),
+   user_lastname VARCHAR(50),
+   user_level VARCHAR(2) CHECK (user_level IN ('B1', 'B2', 'B3', 'M1', 'M2')),
+   user_lastconnexion DATE NOT NULL,
+   user_url_cv VARCHAR(200) UNIQUE
+);
+
+-- Table des forums
+CREATE TABLE forum (
+   forum_id SMALLINT PRIMARY KEY,
+   forum_date DATE NOT NULL,
+   forum_address VARCHAR(200),
+   forum_name VARCHAR(50) NOT NULL
+);
+
+-- Table des entreprises
+CREATE TABLE company (
+   company_name VARCHAR(100) PRIMARY KEY,
+   company_description VARCHAR(300),
+   company_logo VARCHAR(100)
+);
+
+-- Table de présence des entreprises aux forums
+CREATE TABLE is_present (
+   forum_id SMALLINT,
+   company_name VARCHAR(100),
+   start_time TIMESTAMP NOT NULL,
+   end_time TIMESTAMP NOT NULL,
+   search_type VARCHAR(50) NOT NULL DEFAULT 'internship;alternance' CHECK (search_type IN ('internship', 'alternance', 'internship;alternance')),
+   search_level VARCHAR(14) NOT NULL,
+   PRIMARY KEY (forum_id, company_name),
+   FOREIGN KEY (forum_id) REFERENCES forum(forum_id),
+   FOREIGN KEY (company_name) REFERENCES company(company_name)
+);
+
+-- Table des rendez-vous
+CREATE TABLE appointment (
+   user_id INTEGER,
+   forum_id SMALLINT,
+   company_name VARCHAR(100),
+   appointment_request BOOLEAN NOT NULL,
+   appointment_time TIMESTAMP NOT NULL UNIQUE,
+   PRIMARY KEY (user_id, forum_id, company_name),
+   FOREIGN KEY (user_id) REFERENCES users(user_id),
+   FOREIGN KEY (forum_id) REFERENCES forum(forum_id),
+   FOREIGN KEY (company_name) REFERENCES company(company_name)
+);
+
+-- validation function for search_level of table is_present
+CREATE TYPE level_enum AS ENUM ('B1', 'B2', 'B3', 'M1', 'M2');
+
+CREATE OR REPLACE FUNCTION is_valid_search_level(levels TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    parts TEXT[];
+    part TEXT;
+    seen TEXT[];
+BEGIN
+    parts := string_to_array(levels, ';');
+    seen := '{}';
+
+    FOREACH part IN ARRAY parts LOOP
+        IF part NOT IN ('B1', 'B2', 'B3', 'M1', 'M2') THEN
+            RETURN FALSE;
+        END IF;
+
+        IF part = ANY(seen) THEN
+            RETURN FALSE;
+        END IF;
+
+        seen := array_append(seen, part);
+    END LOOP;
+
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- Function to delete an inactive user (used in a cron request)
+CREATE OR REPLACE FUNCTION delete_inactive_users()
+RETURNS void AS $$
+BEGIN
+  DELETE FROM users WHERE user_lastconnexion < CURRENT_DATE - INTERVAL '12 months';
+END;
+$$ LANGUAGE plpgsql;
+
+-- delete tokens if the deadline is exceeded (used in a cron request)
+CREATE OR REPLACE FUNCTION clear_expired_reset_tokens()
+RETURNS void AS $$
+BEGIN
+  UPDATE users
+  SET user_token_resetpwd = NULL,
+      user_time_delete_token = NULL
+  WHERE user_time_delete_token IS NOT NULL
+    AND user_time_delete_token < NOW();
+END;
+$$ LANGUAGE plpgsql;
+
