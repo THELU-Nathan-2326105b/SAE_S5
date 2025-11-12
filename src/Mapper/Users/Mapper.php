@@ -1,14 +1,11 @@
 <?php
 
 namespace App\Mapper\Users;
+
 use App\Entity\Users;
 use InvalidArgumentException;
-use DateTimeImmutable;
-use Dom\Entity;
 
 use App\Mapper\Contract\Mapper as MapperContract;
-
-use function PHPUnit\Framework\isNull;
 
 /**
  * UsersMapper
@@ -44,6 +41,7 @@ final class Mapper implements MapperContract{
         $user->setUserRole($row['user_role']);
         $user->setUserLastconnexion($this->parseDateTime($row['user_lastconnexion'] ?? null));
         $user->setUserLevel($row['user_level']);
+        $user->setUserPwd($row['user_pwd']);
         return $user;
     }
 
@@ -61,6 +59,7 @@ final class Mapper implements MapperContract{
             $row['user_email']=$entity->getUserEmail();
             $row['user_firstname']=$entity->getUserFirstname();
             $row['user_lastname']=$entity->getUserLastname();
+            $row['user_pwd']=$entity->getUserPwd();
             $row['user_role']=$entity->getUserRole();
             $row['user_lastconnexion'] = $entity->getUserLastconnexion()?->format('Y-m-d H:i:s');
             $row['user_level']=$entity->getUserLevel();
@@ -75,18 +74,20 @@ final class Mapper implements MapperContract{
      *  - soit tu rends le setter nullable dans l'entité et tu retournes null.
      */
     private function parseDateTime(?string $raw): \DateTimeImmutable
-{
-    $raw = trim((string) $raw);
-    if (isNull($raw)) {
-        return new \DateTimeImmutable('now'); // ou retourne null si ta propriété est nullable
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return new \DateTimeImmutable('now'); 
+        }
+        else{
+            try {
+                return new \DateTimeImmutable($raw);
+            } 
+            catch (\Throwable $e) {
+                throw new \InvalidArgumentException('Date invalide pour user_lastconnexion: "' . $raw . '"');
+            }
+        }    
     }
-
-    try {
-        return new \DateTimeImmutable($raw);
-    } catch (\Throwable $e) {
-        throw new \InvalidArgumentException('Date invalide pour user_lastconnexion: "' . $raw . '"');
-    }
-}
 
 
 }
