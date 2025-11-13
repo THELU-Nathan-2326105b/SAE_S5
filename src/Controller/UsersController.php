@@ -211,7 +211,24 @@ class UsersController extends AbstractController
         return $this->render('user/delete.html.twig', ['user' => $user, ]);
     }
 
-
+    /**
+     * Importe des utilisateurs depuis un fichier CSV uploadé.
+     *
+     * - Affiche un formulaire d’upload sur la page index .
+     * - Vérifie et traite le formulaire UsersCsvImportType.
+     * - Déplace le fichier dans var/tmp.
+     * - Utilise ImporterFactory pour récupérer l’importeur CSV des "users".
+     * - Convertit chaque ligne du CSV en entité Users, puis les persiste en base.
+     * - Ajoute un message flash de succès ou d’erreur selon le résultat.
+     *
+     * @param Request              $request         Requête HTTP contenant le fichier
+     * @param EntityManagerInterface $em            Gestionnaire Doctrine pour sauvegarder les entités.
+     * @param ImporterFactory      $importerFactory Factory fournissant l’importeur adapté (ici CSV/users).
+     *
+     * @return Response            Redirection vers la liste des utilisateurs (route app_user_index).
+     *
+     * Route: POST /users/import (name: app_user_import)
+     */
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(Request $request,EntityManagerInterface $em ,ImporterFactory $importerFactory): Response
     {

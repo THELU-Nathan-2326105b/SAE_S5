@@ -11,7 +11,7 @@ use InvalidArgumentException;
 
 
 
-final class Importer implements ImporterContract
+class Importer implements ImporterContract
 {
     private string $delimiter = ',';
     private string $enclosure = '"';
@@ -52,9 +52,9 @@ final class Importer implements ImporterContract
 
  
 
-    private function openFile(string $path): \SplFileObject
+    private function openFile(string $path,string $mode="r"): \SplFileObject
     {
-        $f =new \SplFileObject($path,'r');
+        $f =new \SplFileObject($path,$mode);
         $f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         $f->rewind();
         return $f;
@@ -72,8 +72,8 @@ final class Importer implements ImporterContract
             static fn($h) => $h !== ''
         ));
 
-        if ($headers === []) {
-            throw new \RuntimeException('Entêtes CSV vides ou invalides.');
+        if ($headers==[])  {
+            throw new \RuntimeException('Entêtes CSV invalides.');
         }
         return $headers;
     }
@@ -82,7 +82,7 @@ final class Importer implements ImporterContract
     private function readRow(\SplFileObject $f): ?array
     {
         $row = $f->fgetcsv($this->delimiter, $this->enclosure, $this->escape);
-        if ($row === false || $row === [null]) {
+        if ($row===false || $row===[null]) {
             return null;
         }
         return $row;
@@ -91,7 +91,7 @@ final class Importer implements ImporterContract
     private function isEmptyRow(array $row): bool
     {
         foreach ($row as $v) {
-            if ($v !== null && trim((string) $v) !== '') {
+            if ( !is_null($v) && trim((string) $v) !== '') {
                 return false;
             }
         }
@@ -104,17 +104,23 @@ final class Importer implements ImporterContract
         $cR = count($row);
         if ($cR < $cH) {
             return array_pad($row, $cH, null);
+        }else{
+            if ($cR > $cH) {
+                return array_slice($row, 0, $cH);
+            }
+            return $row;
         }
-        if ($cR > $cH) {
-            return array_slice($row, 0, $cH);
-        }
-        return $row;
+        
+        
     }
 
     private function combineRow(array $headers, array $row): ?array
     {
         $assoc = @array_combine($headers, $row);
-        return $assoc === false ? null : $assoc;
+        if($assoc){
+            return $assoc;
+        }    
+        return null;
     }
 
 
