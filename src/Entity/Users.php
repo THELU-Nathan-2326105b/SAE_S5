@@ -43,6 +43,9 @@ class Users
     #[ORM\Column(name: 'user_lastconnexion', type: 'datetime')]
     private \DateTimeInterface $user_lastconnexion;
 
+    #[ORM\Column(name: 'user_url_cv', type: 'string', length: 255, nullable: true)]
+    private ?string $user_url_cv = null;
+
     // Relations (décommenter si Appointment existe)
     /*
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class)]
@@ -159,6 +162,17 @@ class Users
     public function setUserLastconnexion(\DateTimeInterface $user_lastconnexion): self
     {
         $this->user_lastconnexion = $user_lastconnexion;
+        return $this;
+    }
+
+    public function getUserUrlCv(): ?string
+    {
+        return $this->user_url_cv;
+    }
+
+    public function setUserUrlCv(?string $user_url_cv): self
+    {
+        $this->user_url_cv = $user_url_cv;
         return $this;
     }
 
