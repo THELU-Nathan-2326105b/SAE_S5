@@ -92,7 +92,7 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
             return ['success' => false, 'message' => 'Forum not found', 'appointments' => []];
         }
 
-        // Companies present at this forum with their windows
+        // 1. Charger les entreprises présentes avec leurs disponibilités
         $windows = $conn->fetchAllAssociative(
             'SELECT ip.company_name, ip.start_time, ip.end_time
              FROM is_present ip
@@ -101,191 +101,364 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
             [$forum_id]
         );
 
-        // Students list
-        $students = $conn->fetchAllAssociative(
-            "SELECT user_id, user_firstname, user_lastname FROM users WHERE user_role IN ('internship','alternance') ORDER BY user_lastname, user_firstname"
+        // 2. Charger les DEMANDES de rendez-vous (appointment_request = 1)
+        $requests = $conn->fetchAllAssociative(
+            'SELECT a.user_id, a.company_name, u.user_firstname, u.user_lastname, u.user_level, u.user_role
+             FROM appointment a
+             INNER JOIN users u ON u.user_id = a.user_id
+             WHERE a.forum_id = ? AND a.appointment_request = ?
+             ORDER BY a.user_id, a.company_name',
+            [$forum_id, 1]
         );
 
-        if (empty($students)) {
-            $students = $conn->fetchAllAssociative(
-                'SELECT DISTINCT u.user_id, u.user_firstname, u.user_lastname
-                 FROM appointment a
-                 INNER JOIN users u ON u.user_id = a.user_id
-                 WHERE a.forum_id = ? AND a.appointment_request = ?
-                 ORDER BY u.user_lastname, u.user_firstname',
-                [$forum_id, 1]
-            );
+        if (empty($requests)) {
+            return [
+                'success' => false, 
+                'message' => 'Aucune demande de rendez-vous trouvée pour ce forum',
+                'appointments' => []
+            ];
         }
 
     } catch (\Throwable $e) {
         return ['success' => false, 'message' => 'DB error: '.$e->getMessage(), 'appointments' => []];
     }
 
-    $windows_count = count($windows);
-    $students_count = count($students);
-    if ($windows_count === 0 || $students_count === 0) {
-        $parts = [];
-        if ($windows_count === 0) $parts[] = 'no companies (is_present rows) for this forum';
-        if ($students_count === 0) $parts[] = 'no students found';
-        return [
-            'success' => false,
-            'message' => 'No scheduling possible: ' . implode(' and ', $parts) . '.',
-            'windows_count' => $windows_count,
-            'students_count' => $students_count,
-            'appointments' => [],
-        ];
+    // 3. Structurer les données : étudiants avec leurs entreprises demandées
+    $students_requests = [];
+    foreach ($requests as $request) {
+        $user_id = $request['user_id'];
+        if (!isset($students_requests[$user_id])) {
+            $students_requests[$user_id] = [
+                'user_id' => $user_id,
+                'firstname' => $request['user_firstname'],
+                'lastname' => $request['user_lastname'],
+                'level' => $request['user_level'],
+                'role' => $request['user_role'],
+                'requested_companies' => [],
+                'priority' => 0
+            ];
+        }
+        $students_requests[$user_id]['requested_companies'][] = $request['company_name'];
     }
 
-    // Build availability windows per company
+    // 4. Structurer les disponibilités par entreprise
     $availability = [];
     foreach ($windows as $w) {
         $cname = $w['company_name'];
-        if (!isset($availability[$cname])) $availability[$cname] = [];
+        if (!isset($availability[$cname])) {
+            $availability[$cname] = [];
+        }
         $availability[$cname][] = ['start' => $w['start_time'], 'end' => $w['end_time']];
     }
 
-    // Helper: create slots for a company
-    $createSlots = function (string $forum_date, string $start_ts, string $end_ts, int $duration_minutes = 15) {
-        $slots = [];
-        try {
-            $s = new \DateTime($start_ts);
-            $e = new \DateTime($end_ts);
-        } catch (\Throwable $ex) {
-            return [];
+    // 5. Analyser la demande par entreprise
+    $company_demand = [];
+    foreach ($students_requests as $student) {
+        foreach ($student['requested_companies'] as $company) {
+            if (!isset($company_demand[$company])) {
+                $company_demand[$company] = 0;
+            }
+            $company_demand[$company]++;
         }
+    }
 
-        try {
-            $f = new \DateTime($forum_date);
-            $s->setDate((int)$f->format('Y'), (int)$f->format('m'), (int)$f->format('d'));
-            $e->setDate((int)$f->format('Y'), (int)$f->format('m'), (int)$f->format('d'));
-        } catch (\Throwable $ignore) {
+    // 6. Calculer la capacité par entreprise
+    $company_capacity = [];
+    foreach ($availability as $cname => $windows) {
+        $total_minutes = 0;
+        foreach ($windows as $window) {
+            try {
+                $start = new \DateTime($window['start']);
+                $end = new \DateTime($window['end']);
+                $diff = $end->getTimestamp() - $start->getTimestamp();
+                $total_minutes += floor($diff / 60);
+            } catch (\Throwable $e) {
+                continue;
+            }
         }
+        $company_capacity[$cname] = $total_minutes;
+    }
 
-        $interval = new \DateInterval('PT'.(int)$duration_minutes.'M');
-        while ($s < $e) {
-            $slotEnd = (clone $s)->add($interval);
-            if ($slotEnd > $e) break;
-            $slots[] = ['start' => $s->format('Y-m-d H:i:s'), 'end' => $slotEnd->format('Y-m-d H:i:s')];
-            $s->add($interval);
-        }
-        return $slots;
-    };
-
-    $slots_by_company = [];
-    $forum_date = $forum['forum_date'] ?? date('Y-m-d');
-    
-    foreach ($availability as $cname => $wins) {
-        $slots_by_company[$cname] = [];
-        foreach ($wins as $win) {
-            $slots = $createSlots($forum_date, $win['start'], $win['end'], 15);
-            foreach ($slots as $s) {
-                $slots_by_company[$cname][] = [
-                    'start' => $s['start'], 
-                    'end' => $s['end'], 
-                    'used' => false
+    // 7. Identifier les entreprises surbookées
+    $overbooked_companies = [];
+    foreach ($company_demand as $company => $demand) {
+        if (isset($company_capacity[$company])) {
+            $max_slots = floor($company_capacity[$company] / 15);
+            if ($demand > $max_slots) {
+                $overbooked_companies[$company] = [
+                    'demand' => $demand,
+                    'capacity' => $max_slots,
+                    'overflow' => $demand - $max_slots
                 ];
             }
         }
-        // Sort company slots by start time
-        usort($slots_by_company[$cname], function ($a, $b) { 
-            return strcmp($a['start'], $b['start']); 
-        });
     }
 
-    // Assign students to companies (round-robin or other distribution)
-    $assignments = [];
-    $company_names = array_keys($slots_by_company);
-    $company_count = count($company_names);
-    $company_index = 0;
-    
-    // Track student assignments to avoid double-booking students
-    $student_assigned = [];
-    
-    foreach ($students as $student) {
-        $student_id = $student['user_id'];
+    // 8. Attribuer un score de priorité aux étudiants
+    foreach ($students_requests as &$student) {
+        $student['priority'] = 0;
         
-        if (isset($student_assigned[$student_id])) {
-            continue; // Student already assigned
+        foreach ($student['requested_companies'] as $company) {
+            if (isset($overbooked_companies[$company])) {
+                $student['priority'] -= $overbooked_companies[$company]['overflow'];
+            }
         }
         
-        // Try to assign student to next company in round-robin
-        $assigned = false;
-        $attempts = 0;
+        $level_bonus = [
+            'B1' => 0, 'B2' => 1, 'B3' => 2, 
+            'M1' => 3, 'M2' => 4
+        ];
+        if (isset($level_bonus[$student['level']])) {
+            $student['priority'] += $level_bonus[$student['level']];
+        }
+    }
+    unset($student);
+
+    // 9. Trier les étudiants par priorité
+    uasort($students_requests, function($a, $b) {
+        return $b['priority'] - $a['priority'];
+    });
+
+    // 10. Helper pour créer des créneaux
+    $createOptimizedSlots = function (string $forum_date, array $availability, array $company_demand) {
+        $all_slots = [];
+        $used_times = [];
         
-        while ($attempts < $company_count && !$assigned) {
-            $cname = $company_names[$company_index];
-            $company_index = ($company_index + 1) % $company_count;
-            $attempts++;
+        foreach ($availability as $cname => $wins) {
+            $demand = $company_demand[$cname] ?? 0;
             
-            // Find first available slot in this company
-            foreach ($slots_by_company[$cname] as &$slot) {
+            foreach ($wins as $win) {
+                try {
+                    $start = new \DateTime($win['start']);
+                    $end = new \DateTime($win['end']);
+                    $forum_dt = new \DateTime($forum_date);
+                    
+                    $start->setDate((int)$forum_dt->format('Y'), (int)$forum_dt->format('m'), (int)$forum_dt->format('d'));
+                    $end->setDate((int)$forum_dt->format('Y'), (int)$forum_dt->format('m'), (int)$forum_dt->format('d'));
+                    
+                    $slot_duration = 15;
+                    if ($demand > 10) {
+                        $slot_duration = 10;
+                    }
+                    
+                    $interval = new \DateInterval('PT' . $slot_duration . 'M');
+                    $current = clone $start;
+                    
+                    while ($current < $end) {
+                        $slot_end = (clone $current)->add($interval);
+                        if ($slot_end > $end) break;
+                        
+                        $time_str = $current->format('Y-m-d H:i:s');
+                        
+                        $attempts = 0;
+                        $base_time = $time_str;
+                        while (in_array($time_str, $used_times) && $attempts < 8 && $slot_end <= $end) {
+                            $current->modify('+2 minutes');
+                            $slot_end = (clone $current)->add($interval);
+                            $time_str = $current->format('Y-m-d H:i:s');
+                            $attempts++;
+                        }
+                        
+                        if (!in_array($time_str, $used_times) && $slot_end <= $end) {
+                            $all_slots[] = [
+                                'company' => $cname,
+                                'start' => $time_str,
+                                'end' => $slot_end->format('Y-m-d H:i:s'),
+                                'used' => false,
+                                'duration' => $slot_duration
+                            ];
+                            $used_times[] = $time_str;
+                        }
+                        
+                        $current->add($interval);
+                    }
+                } catch (\Throwable $e) {
+                    continue;
+                }
+            }
+        }
+        
+        usort($all_slots, function ($a, $b) { 
+            return strcmp($a['start'], $b['start']); 
+        });
+        
+        return $all_slots;
+    };
+
+    // 11. Générer les créneaux
+    $forum_date = $forum['forum_date'] ?? date('Y-m-d');
+    $all_slots = $createOptimizedSlots($forum_date, $availability, $company_demand);
+
+    if (empty($all_slots)) {
+        return ['success' => false, 'message' => 'No available slots generated', 'appointments' => []];
+    }
+
+    // 12. Organiser les créneaux par entreprise
+    $slots_by_company = [];
+    foreach ($all_slots as $slot) {
+        $company = $slot['company'];
+        if (!isset($slots_by_company[$company])) {
+            $slots_by_company[$company] = [];
+        }
+        $slots_by_company[$company][] = $slot;
+    }
+
+    // 13. Assigner les rendez-vous
+    $assignments = [];
+    $student_assigned_count = [];
+    $max_appointments_per_student = 3;
+    $unassigned_students = [];
+
+    // Premier passage
+    foreach ($students_requests as $student_id => $student_data) {
+        $student_assigned_count[$student_id] = 0;
+        $assigned_companies = [];
+        
+        foreach ($student_data['requested_companies'] as $requested_company) {
+            if ($student_assigned_count[$student_id] >= $max_appointments_per_student) {
+                break;
+            }
+            
+            if (!isset($slots_by_company[$requested_company]) || in_array($requested_company, $assigned_companies)) {
+                continue;
+            }
+            
+            foreach ($slots_by_company[$requested_company] as &$slot) {
                 if (!$slot['used']) {
-                    // Assign this slot to student
                     $assignments[] = [
                         'user_id' => $student_id,
-                        'company_name' => $cname,
+                        'company_name' => $requested_company,
                         'forum_id' => $forum_id,
                         'appointment_time' => $slot['start'],
+                        'firstname' => $student_data['firstname'],
+                        'lastname' => $student_data['lastname']
                     ];
+                    
                     $slot['used'] = true;
-                    $student_assigned[$student_id] = true;
-                    $assigned = true;
+                    $student_assigned_count[$student_id]++;
+                    $assigned_companies[] = $requested_company;
+                    break;
+                }
+            }
+        }
+        
+        if ($student_assigned_count[$student_id] < count($student_data['requested_companies'])) {
+            $unassigned_students[$student_id] = $student_assigned_count[$student_id];
+        }
+    }
+
+    // 14. Deuxième passage : alternatives
+    $alternative_assignments = [];
+    foreach ($unassigned_students as $student_id => $assigned_count) {
+        if ($assigned_count >= $max_appointments_per_student) continue;
+        
+        $student_data = $students_requests[$student_id];
+        $missing_slots = $max_appointments_per_student - $assigned_count;
+        
+        foreach ($slots_by_company as $company => $slots) {
+            if ($missing_slots <= 0) break;
+            
+            if (in_array($company, $student_data['requested_companies'])) continue;
+            
+            foreach ($slots as &$slot) {
+                if (!$slot['used'] && $missing_slots > 0) {
+                    $alternative_assignments[] = [
+                        'user_id' => $student_id,
+                        'company_name' => $company,
+                        'forum_id' => $forum_id,
+                        'appointment_time' => $slot['start'],
+                        'firstname' => $student_data['firstname'],
+                        'lastname' => $student_data['lastname'],
+                        'alternative' => true
+                    ];
+                    
+                    $slot['used'] = true;
+                    $missing_slots--;
+                    $student_assigned_count[$student_id]++;
                     break;
                 }
             }
         }
     }
 
-    // Persist assignments
+    $all_assignments = array_merge($assignments, $alternative_assignments);
+
+    // 15. Persister les assignations
     $inserted = [];
     $conn->beginTransaction();
     try {
-        // Delete existing scheduled appointments for this forum
-        $conn->executeStatement(
+        $deleted_count = $conn->executeStatement(
             'DELETE FROM appointment WHERE forum_id = ? AND appointment_time IS NOT NULL',
             [$forum_id]
         );
 
-        $skipped_pk_exists = 0;
+        $skipped_conflicts = 0;
         
-        foreach ($assignments as $a) {
+        foreach ($all_assignments as $a) {
             $ts = $a['appointment_time'];
-
-            // NO MORE GLOBAL TIME CONFLICT CHECK - each company has its own room/timeline
-
-            // Try to update existing row
-            $affected = $conn->executeStatement(
-                'UPDATE appointment SET appointment_time = ?, appointment_request = ? WHERE forum_id = ? AND company_name = ? AND user_id = ?',
-                [$ts, 0, $a['forum_id'], $a['company_name'], $a['user_id']]
-            );
+            $max_retries = 3;
+            $retry_count = 0;
+            $inserted_successfully = false;
             
-            if ($affected > 0) {
-                $inserted[] = $a;
-                continue;
+            while ($retry_count < $max_retries && !$inserted_successfully) {
+                try {
+                    $time_exists = $conn->fetchOne(
+                        'SELECT 1 FROM appointment WHERE appointment_time = ?',
+                        [$ts]
+                    );
+                    
+                    if ($time_exists !== false) {
+                        try {
+                            $dt = new \DateTime($ts);
+                            $dt->modify('+'.($retry_count + 1).' minutes');
+                            $new_ts = $dt->format('Y-m-d H:i:s');
+                            
+                            $new_time_exists = $conn->fetchOne(
+                                'SELECT 1 FROM appointment WHERE appointment_time = ?',
+                                [$new_ts]
+                            );
+                            
+                            if ($new_time_exists === false) {
+                                $ts = $new_ts;
+                                $a['appointment_time'] = $ts;
+                            }
+                        } catch (\Throwable $e) {
+                            break;
+                        }
+                    }
+                    
+                    $affected = $conn->executeStatement(
+                        'UPDATE appointment SET appointment_time = ?, appointment_request = ? WHERE forum_id = ? AND company_name = ? AND user_id = ?',
+                        [$ts, 0, $a['forum_id'], $a['company_name'], $a['user_id']]
+                    );
+                    
+                    if ($affected > 0) {
+                        $inserted[] = $a;
+                        $inserted_successfully = true;
+                        break;
+                    }
+                    
+                    $conn->insert('appointment', [
+                        'user_id' => $a['user_id'],
+                        'forum_id' => $a['forum_id'],
+                        'company_name' => $a['company_name'],
+                        'appointment_request' => 0,
+                        'appointment_time' => $ts,
+                    ]);
+                    
+                    $inserted[] = $a;
+                    $inserted_successfully = true;
+                    
+                } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+                    $retry_count++;
+                    if ($retry_count >= $max_retries) {
+                        $skipped_conflicts++;
+                    }
+                } catch (\Throwable $e) {
+                    $retry_count = $max_retries;
+                    $skipped_conflicts++;
+                }
             }
-
-            // Check if primary key already exists
-            $pkExists = $conn->fetchOne(
-                'SELECT 1 FROM appointment WHERE forum_id = ? AND company_name = ? AND user_id = ?',
-                [$a['forum_id'], $a['company_name'], $a['user_id']]
-            );
-            
-            if ($pkExists !== false) {
-                $skipped_pk_exists++;
-                continue;
-            }
-
-            // Insert new appointment
-            $row = [
-                'user_id' => $a['user_id'],
-                'forum_id' => $a['forum_id'],
-                'company_name' => $a['company_name'],
-                'appointment_request' => 0,
-                'appointment_time' => $a['appointment_time'],
-            ];
-
-            $conn->insert('appointment', $row);
-            $inserted[] = $row;
         }
         
         $conn->commit();
@@ -294,20 +467,32 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
         return ['success' => false, 'message' => 'Insert failed: '.$e->getMessage(), 'appointments' => []];
     }
 
+    // 16. Statistiques et retour FINAL
+    $students_with_appointments = count(array_unique(array_column($inserted, 'user_id')));
+    $companies_used = count(array_unique(array_column($inserted, 'company_name')));
+    $alternative_count = count($alternative_assignments);
+    
     $result = [
         'success' => true, 
-        'message' => 'Planning generated successfully', 
+        'message' => "Planning généré avec succès", 
         'count' => count($inserted), 
         'appointments' => $inserted,
-        'companies_used' => count(array_unique(array_column($inserted, 'company_name'))),
-        'students_scheduled' => count(array_unique(array_column($inserted, 'user_id')))
+        'stats' => [
+            'total_students' => count($students_requests),
+            'students_with_appointments' => $students_with_appointments,
+            'companies_used' => $companies_used,
+            'total_requests' => count($requests),
+            'assigned_requests' => count($inserted) - $alternative_count,
+            'alternative_assignments' => $alternative_count,
+            'overbooked_companies' => $overbooked_companies,
+            'skipped_conflicts' => $skipped_conflicts
+        ]
     ];
     
-    if ($skipped_pk_exists > 0) {
-        $result['skipped_pk_exists'] = $skipped_pk_exists;
-        $result['message'] .= ' (' . $skipped_pk_exists . ' skipped due to existing appointment records)';
+    if ($skipped_conflicts > 0) {
+        $result['message'] .= " ($skipped_conflicts conflits de temps)";
     }
 
     return $result;
-}
+}   
 }
