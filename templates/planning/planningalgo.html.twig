@@ -21,7 +21,45 @@
 
     
 
-    {% if planning is defined %}
+    {# Prefer the new planning_result provided by the controller. Keep backward compatibility with `planning`. #}
+    {% if planning_result is defined %}
+        <hr class="my-4">
+        <h2>Résultat du planning</h2>
+
+        {% if planning_result.success is defined and planning_result.success %}
+            <div class="alert alert-success">
+                {{ planning_result.message ?? 'Planning généré' }} — {{ planning_result.count|default(0) }} rendez-vous.
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                {{ planning_result.message ?? 'Aucun planning généré' }}
+            </div>
+        {% endif %}
+
+        {% if appointments is defined and appointments is not empty %}
+            <table class="table table-bordered table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Utilisateur (ID)</th>
+                        <th>Entreprise</th>
+                        <th>Horaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in appointments %}
+                    <tr>
+                        <td>{{ row.user_id }}</td>
+                        <td>{{ row.company_name }}</td>
+                        <td>{{ row.appointment_time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucun rendez-vous inséré en base.</p>
+        {% endif %}
+
+    {% elseif planning is defined %}
         <hr class="my-4">
         <h2>Résultat du planning</h2>
 

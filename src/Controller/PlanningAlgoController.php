@@ -32,17 +32,19 @@ final class PlanningAlgoController extends AbstractController
 #[Route('/planning/run', name: 'planning_algo_run')]
 public function run(Request $request, Connection $conn): Response
 {
-    $forum_id = $request->query->get('forum_id');
+    $forum_id = $request->query->getInt('forum_id');
 
-    // Lancer l'algorithme
-    $planning = PlanningAlgo::run($conn, $forum_id);
-
+    // Call the new planning generator which reads data and writes appointments
+    $result = PlanningAlgo::generatePlanning($conn, $forum_id);
 
     $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
 
+    // Pass result to the template: message, count and appointments list
     return $this->render('planning/planningalgo.html.twig', [
         'forums' => $forums,
-    'planning' => $planning,
+        'planning_result' => $result,
+        'appointments' => $result['appointments'] ?? [],
+        'appointments_count' => $result['count'] ?? 0,
     ]);
 }
 
@@ -57,7 +59,7 @@ public function run(Request $request, Connection $conn): Response
             $mapBusy[$key] = [];
         }
 
-        // Insérer le nouvel intervalle dans la liste en maintenant l'ordre croissant de début
+        // Insert the new interval into the list while keeping start order
         $intervals = $mapBusy[$key];
         $inserted = false;
         for ($i = 0; $i < count($intervals); $i++) {
@@ -71,7 +73,7 @@ public function run(Request $request, Connection $conn): Response
             $intervals[] = [$start, $end];
         }
 
-        // Fusionner les intervalles qui se chevauchent
+        // Merge overlapping intervals
         $merged = [];
         foreach ($intervals as $interval) {
             if (empty($merged) || $merged[count($merged) - 1][1] < $interval[0]) {
@@ -250,7 +252,7 @@ public function run(Request $request, Connection $conn): Response
 
     public static function charger_donnees(int $forum_id, Connection $conn): array
     {
-        // 1. Charger le forum (note: dump uses forum_id)
+        // 1. Load the forum 
         $forum = $conn->fetchAssociative('SELECT * FROM forum WHERE forum_id = ?', [$forum_id]);
 
         // Helper: convert timestamp string to decimal hour (e.g. 9:30 -> 9.5)
@@ -263,7 +265,7 @@ public function run(Request $request, Connection $conn): Response
             return $h + ($m / 60.0) + ($s / 3600.0);
         };
 
-        // 2. Charger les entreprises présentes à ce forum (use company_name as key)
+        // 2. Load companies present at this forum (use company_name as key)
         $companies = $conn->fetchAllAssociative(
             'SELECT DISTINCT c.company_name, c.company_description
              FROM company c
@@ -277,22 +279,22 @@ public function run(Request $request, Connection $conn): Response
         }
         unset($c);
 
-        // 3. Charger les disponibilités des entreprises (fenêtres) from is_present
+        // 3. Load company availabilities (windows) from is_present
         $windows = $conn->fetchAllAssociative(
             'SELECT ip.company_name, ip.start_time, ip.end_time
              FROM is_present ip
              WHERE ip.forum_id = ?', [$forum_id]
         );
 
-        // 4. Charger les demandes de rendez-vous des étudiants (appointment rows where appointment_request = true)
+        // 4. Load students' appointment requests (appointment rows where appointment_request = true)
         $reqs = $conn->fetchAllAssociative(
             'SELECT a.user_id, a.company_name, a.appointment_request, u.user_firstname, u.user_lastname, u.user_level, u.user_role
              FROM appointment a
              INNER JOIN users u ON u.user_id = a.user_id
-             WHERE a.forum_id = ? AND a.appointment_request = ?', [$forum_id, true]
+             WHERE a.forum_id = ? AND a.appointment_request = ?', [$forum_id, 1]
         );
 
-        // 5. Scinder les fenêtres en AM/PM and build availability_by_company keyed by company_name
+        // 5. Split windows into AM/PM and build availability_by_company keyed by company_name
         $availability_by_company = [];
         foreach ($windows as $w) {
             $start_h = $toHour($w['start_time']);
@@ -306,7 +308,7 @@ public function run(Request $request, Connection $conn): Response
             if ($pm) $availability_by_company[$cname][] = $pm;
         }
 
-        // 6. Partitionner les demandes : company_name -> type -> level
+        // 6. Partition requests: company_name -> type -> level
         $partitioned_reqs = [];
         foreach ($reqs as $r) {
             $cname = $r['company_name'];
@@ -339,22 +341,22 @@ public function run(Request $request, Connection $conn): Response
         foreach ($companies as $company) {
             $cid = $company['id'];
             $duration_type_by_company[$cid] = [];
-            // Pour chaque type (stage, alternance, etc.)
+            // For each type (stage, apprenticeship, etc.)
             if (!isset($reqs[$cid])) continue;
             foreach ($reqs[$cid] as $type => $levels) {
-                // Total minutes disponibles (AM+PM)
+                // Total available minutes (AM+PM)
                 $total_minutes = 0;
                 if (isset($availability[$cid])) {
                     foreach ($availability[$cid] as $window) {
                         $total_minutes += self::minutes($window);
                     }
                 }
-                // Nombre de demandes pour ce type
+                // Number of requests for this type
                 $demande = 0;
                 foreach ($levels as $level => $lst) {
                     $demande += count($lst);
                 }
-                // Calcul de la durée optimale
+                // Compute the optimal duration
                 $dur = self::compute_duration($total_minutes, $demande);
                 $duration_type_by_company[$cid][$type] = $dur;
             }
@@ -388,7 +390,7 @@ public function run(Request $request, Connection $conn): Response
                             foreach ($reqs[$cid][$type][$level] as $student) {
                                 $sid = $student['student_id'];
                                 $dur = $durations[$cid][$type] ?? 15;
-                                // Chercher un créneau libre pour l'entreprise ET l'étudiant
+                                // Find a free slot for both the company AND the student
                                 $company_busys = $busy_company[$cid] ?? [];
                                 $student_busys = $busy_student[$sid] ?? [];
                                 $all_busys = array_merge($company_busys, $student_busys);
@@ -416,7 +418,7 @@ public function run(Request $request, Connection $conn): Response
                             }
                         }
                     }
-                    // Insérer jusqu'à 2 pauses de 10 min dans la demi-journée
+                    // Insert up to 2 breaks of 10 minutes in the half-day
                     $slots_with_breaks = self::insert_company_breaks($slots, $halfday, 2, 10);
                     $planning[$cid][] = [
                         'window' => $halfday,
@@ -435,7 +437,7 @@ public function run(Request $request, Connection $conn): Response
 
     public static function compacter_attente_etudiants(array $planning, array &$busy_company, array &$busy_student, array $availability): array
     {
-        // 1. Regrouper tous les slots par étudiant
+        // 1. Group all slots by student
         $slots_by_student = [];
         foreach ($planning as $cid => $company_days) {
             foreach ($company_days as $day) {
@@ -451,28 +453,28 @@ public function run(Request $request, Connection $conn): Response
             }
         }
 
-        // 2. Pour chaque étudiant, essayer de compacter ses rendez-vous
+        // 2. For each student, try to compact their appointments
         foreach ($slots_by_student as $sid => &$student_slots) {
-            // Trier par heure de début
+            // Sort by start time
             usort($student_slots, function($a, $b) {
                 return $a['slot']['start'] <=> $b['slot']['start'];
             });
 
-            // Deux passes pour améliorer la compaction
+            // Two passes to improve compaction
             for ($pass = 0; $pass < 2; $pass++) {
                 for ($i = 0; $i < count($student_slots) - 1; $i++) {
                     $s1 = &$student_slots[$i];
                     $s2 = &$student_slots[$i+1];
                     $gap = $s2['slot']['start'] - $s1['slot']['end'];
-                    $objectif = 0.17; // 10 min en heures décimales
+                    $objectif = 0.17; // 10 minutes in decimal hours
 
                     if ($gap <= $objectif + 1e-6) continue;
 
-                    // Essayer d'avancer s2 (pull-forward)
+                    // Try to advance s2 (pull-forward)
                     $new_start = $s1['slot']['end'];
                     $new_end = $new_start + ($s2['slot']['end'] - $s2['slot']['start']);
 
-                    // Vérifier si le créneau avancé est dans la fenêtre de l'entreprise et sans conflit
+                    // Check if the advanced slot is within the company's window and conflict-free
                     $company_window = null;
                     foreach ($availability[$s2['company_id']] as $w) {
                         if ($new_start >= $w[0] && $new_end <= $w[1]) {
@@ -482,7 +484,7 @@ public function run(Request $request, Connection $conn): Response
                     }
                     $conflict = false;
                     if ($company_window) {
-                        // Vérifier conflits côté entreprise et étudiant
+                        // Check conflicts for company and student
                         foreach (($busy_company[$s2['company_id']] ?? []) as $b) {
                             if (self::overlapsTime($new_start, $new_end, $b[0], $b[1]) && !($b[0] == $s2['slot']['start'] && $b[1] == $s2['slot']['end'])) {
                                 $conflict = true;
@@ -500,14 +502,14 @@ public function run(Request $request, Connection $conn): Response
                     }
 
                     if (!$conflict) {
-                        // Appliquer le décalage
-                        // Mettre à jour le slot dans le planning
+                        // Apply the shift
+                        // Update the slot in the planning
                         $old_start = $s2['slot']['start'];
                         $old_end = $s2['slot']['end'];
                         $s2['slot']['start'] = $new_start;
                         $s2['slot']['end'] = $new_end;
 
-                        // Mettre à jour les busy
+                        // Update busy arrays
                         foreach ($busy_company[$s2['company_id']] as &$b) {
                             if ($b[0] == $old_start && $b[1] == $old_end) {
                                 $b = [$new_start, $new_end];
@@ -523,7 +525,7 @@ public function run(Request $request, Connection $conn): Response
                         continue;
                     }
 
-                    // Sinon, essayer de reculer s1 (push-back)
+                    // Otherwise, try to push back s1 (push-back)
                     $new_end = $s2['slot']['start'];
                     $new_start = $new_end - ($s1['slot']['end'] - $s1['slot']['start']);
                     $company_window = null;
@@ -552,7 +554,7 @@ public function run(Request $request, Connection $conn): Response
                     }
 
                     if (!$conflict) {
-                        // Appliquer le décalage
+                        // Apply the shift
                         $old_start = $s1['slot']['start'];
                         $old_end = $s1['slot']['end'];
                         $s1['slot']['start'] = $new_start;
@@ -570,13 +572,13 @@ public function run(Request $request, Connection $conn): Response
                             }
                         }
                     }
-                    // Option: on pourrait tenter un petit échange dans la même entreprise/type ici
+                    // Option: could attempt a small swap within the same company/type here
                 }
             }
         }
         unset($student_slots);
 
-        // 3. Réinjecter les slots modifiés dans le planning
+        // 3. Reinject modified slots into the planning
         foreach ($planning as $cid => &$company_days) {
             foreach ($company_days as &$day) {
                 foreach ($day['slots'] as &$slot) {
@@ -588,16 +590,16 @@ public function run(Request $request, Connection $conn): Response
                             abs($stud_slot['slot']['start'] - $slot['start']) < 1e-6 &&
                             abs($stud_slot['slot']['end'] - $slot['end']) < 1e-6
                         ) {
-                            // Slot déjà à jour
+                            // Slot already up-to-date
                             break;
                         }
                         if (
                             $stud_slot['company_id'] == $cid &&
                             abs($stud_slot['slot']['start'] - $slot['start']) > 1e-6 &&
                             abs($stud_slot['slot']['end'] - $slot['end']) > 1e-6 &&
-                            abs($stud_slot['slot']['start'] - $slot['start']) < 0.5 // tolérance
+                            abs($stud_slot['slot']['start'] - $slot['start']) < 0.5 // tolerance
                         ) {
-                            // Mettre à jour le slot
+                            // Update the slot
                             $slot['start'] = $stud_slot['slot']['start'];
                             $slot['end'] = $stud_slot['slot']['end'];
                             break;
@@ -649,7 +651,7 @@ public function run(Request $request, Connection $conn): Response
                             // UPDATE existing appointment if present (by PK user_id, forum_id, company_name)
                             $affected = $conn->executeStatement(
                                 'UPDATE appointment SET appointment_time = ?, appointment_request = ? WHERE forum_id = ? AND company_name = ? AND user_id = ?',
-                                [$ts, false, $forum_id, $company_name, $student_id]
+                                [$ts, 0, $forum_id, $company_name, $student_id]
                             );
                             if ($affected === 0) {
                                 // INSERT new appointment row if none exists
@@ -657,7 +659,7 @@ public function run(Request $request, Connection $conn): Response
                                     'user_id' => $student_id,
                                     'forum_id' => $forum_id,
                                     'company_name' => $company_name,
-                                    'appointment_request' => false,
+                                    'appointment_request' => 0,
                                     'appointment_time' => $ts,
                                 ]);
                             }
@@ -669,14 +671,14 @@ public function run(Request $request, Connection $conn): Response
                 }
             }
 
-            // 2. Marquer les demandes non satisfaites en liste d'attente
+            // 2. Mark unsatisfied requests as waitlist
             // The DB schema does not have a 'status' column; update appointment_request to true as a marker
             foreach ($waitlist as $w) {
                 $companyKey = $w['company_id'] ?? ($w['company_name'] ?? null);
                 if ($companyKey === null) continue;
                 $conn->executeStatement(
                     'UPDATE appointment SET appointment_request = ? WHERE forum_id = ? AND company_name = ? AND user_id = ?',
-                    [true, $forum_id, $companyKey, $w['student_id']]
+                    [1, $forum_id, $companyKey, $w['student_id']]
                 );
             }
 
