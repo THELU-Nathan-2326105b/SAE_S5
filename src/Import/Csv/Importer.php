@@ -37,6 +37,7 @@ final class Importer implements ImporterContract
             if (!is_null($row)&&!$this->isEmptyRow($row)) {
                 $row   = $this->alignRowToHeaders($headers, $row);
                 $assoc = $this->combineRow($headers, $row);
+                //dd($assoc);
                 if (!is_null($assoc)) {
                     $assoc        = $this->trimAssoc($assoc);
                     $mappedEntity = $this->mapRow($assoc, $mapper);
