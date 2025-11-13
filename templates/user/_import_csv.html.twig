@@ -1,0 +1,17 @@
+<div class="mb-4 p-3 border rounded bg-light">
+  <h2 class="h5 mb-3">Import CSV</h2>
+
+  {# IMPORTANT: enctype multipart #}
+  {{ form_start(importForm, {
+    attr: { enctype: 'multipart/form-data' },
+    action: path('app_user_import'),   
+    method: 'POST'
+  }) }}
+    {{ form_row(importForm.csvFile) }}
+    <button class="btn btn-primary">Importer</button>
+  {{ form_end(importForm) }}
+
+  {# <small class="text-muted d-block mt-2">
+    Format attendu : CSV (ex. colonnes: email, nom, …).
+  </small> #}
+</div>

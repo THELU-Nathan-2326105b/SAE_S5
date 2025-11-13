@@ -46,5 +46,13 @@
     {% endif %}
 
     <a class="btn btn-success mt-3" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
+    {% include 'user/_import_csv.html.twig' %}
+    
+
   </div>
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }}">{{ message|raw }}</div>
+    {% endfor %}
+  {% endfor %}
 {% endblock %}
