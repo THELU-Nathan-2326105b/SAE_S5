@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\UsersType;
+use App\Form\UsersCsvImportType;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Import\Contract\ImporterFactory;
 
 
 
@@ -39,11 +41,18 @@ class UsersController extends AbstractController
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
 
+        $importForm = $this->createForm(UsersCsvImportType::class, null, [
+            'action' => $this->generateUrl('app_user_import'), 
+            'method' => 'POST',
+        ]);
+
         return $this->render('user/index.html.twig', [
-            'users' => $users,
-            'user' => $sessionUser,
+            'users'      => $users,
+            'user'       => $sessionUser,
+            'importForm' => $importForm->createView(),  
         ]);
     }
+
 
 
     /**
@@ -201,5 +210,46 @@ class UsersController extends AbstractController
 
         return $this->render('user/delete.html.twig', ['user' => $user, ]);
     }
+
+
+    #[Route('/import', name: 'import', methods: ['POST'])]
+    public function import(Request $request,EntityManagerInterface $em ,ImporterFactory $importerFactory): Response
+    {
+        $form = $this->createForm(UsersCsvImportType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('warning', 'Le fichier fourni n’est pas valide.');
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $uploaded */
+        $uploaded  = $form->get('csvFile')->getData();
+        $targetDir = $this->getParameter('kernel.project_dir') . '/var/tmp';
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0775, true);
+        }
+        $filename = 'users_import_' . uniqid() . '.csv';
+        $path     = $uploaded->move($targetDir, $filename)->getPathname();
+
+        try {
+            $importer = $importerFactory->create('users', 'csv');
+            $result = $importer->import($path,'users'); 
+            // dd($result);
+            foreach ($result as $key => $value) {
+                $em->persist($value);
+                $em->flush();
+            }
+            // $em->persist($result);
+            // $em->flush();
+         $this->addFlash('success', "Import terminé avec succès.");
+            
+        } catch (\Throwable $e) {
+            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_user_index');
+    }
+
 
 }
