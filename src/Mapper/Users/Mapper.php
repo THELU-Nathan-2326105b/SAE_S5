@@ -35,6 +35,7 @@ final class Mapper implements MapperContract{
     */
     public function fromRow(array $row):object{
         $user=new Users();
+        // dd($row);
         $user->setUserFirstname($row['user_firstname']);
         $user->setUserLastname($row['user_lastname']);
         $user->setUserEmail($row['user_email']);
