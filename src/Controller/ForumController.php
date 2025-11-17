@@ -23,10 +23,9 @@ class ForumController extends AbstractController
         $selected = $request->request->all('entreprises');
 
         // Récupération de l'utilisateur connecté
-        /** @var \App\Entity\Users $user */
         $user = $this->getUser();
 
-        $cvUrl = $user?->getUserUrlCv(); // URL actuelle du CV (s'il existe)
+        $cvUrl = $user?->getUserUrlCv();
 
         // Gestion de l'upload du CV
         if ($request->isMethod('POST') && $request->files->get('cv')) {
