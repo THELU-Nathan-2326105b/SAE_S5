@@ -27,19 +27,9 @@ final class Mapper implements MapperContract{
      * @return bool true si $entity est un Users, false sinon.
     */
 
-    private const MIN_LENGTH=12;
-    private const MAX_LENGTH=16;
     private function isValidEntity(object $entity):bool{
         return $entity instanceof Users; 
     }
-
-    private function generatePassword(int $length):string{
-        return bin2hex($length);
-    }
-    private function generateLengthPassword():int{
-        return rand(Mapper::MIN_LENGTH,Mapper::MAX_LENGTH);
-    }
-
 
     /**
      * Convertit une ligne associative en entité Users.
@@ -53,7 +43,6 @@ final class Mapper implements MapperContract{
         $user->setUserRole($row['user_role']);
         $user->setUserLastconnexion(new DateTimeImmutable('now'));
         $user->setUserLevel($row['user_level']);
-        $user->setUserPwd($this->generatePassword($this->generateLengthPassword()));
         
         return $user;
     }
