@@ -37,7 +37,7 @@ final class LoginController extends AbstractController
         // Sauvegarde des infos utiles en session
         $session = $request->getSession();
         $session->set('user', [
-            'id'        => $user->getUserId(),
+            'id'        => $user->getId(),
             'email'     => $user->getUserEmail(),
             'role'      => $user->getUserRole(),
             'firstname' => $user->getUserFirstname(),

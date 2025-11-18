@@ -7,7 +7,6 @@
     <title>AMOS FAMES - Forum</title>
     <link rel="stylesheet" href="/assets/styles/app.css">
     <link rel="stylesheet" href="/assets/styles/forum.css">
-
 </head>
 <body>
 
@@ -16,117 +15,102 @@
 <div class="main-content">
     <h1><span class="first-word">Choisissez</span> vos entreprises</h1>
 
-    {% if selected is empty %}
-        <form action="" method="post" enctype="multipart/form-data">
-            {% for company in companies %}
-                <div class="bubble">
-                    <div class="left">
-                        <input type="checkbox"
-                               id="entreprise{{ company.getCompanyName()|e }}"
-                               name="entreprises[]"
-                               value="{{ company.getCompanyName() }}">
-                        <label for="entreprise{{ company.getCompanyName()|e }}">
-                            {{ company.getCompanyName() }}
-                        </label>
-                    </div>
-                    <span class="info" title="{{ company.getCompanyDescription() }}">
-                        i
-                    </span>
-                </div>
-            {% endfor %}
-            <button type="submit">Valider les choix</button>
-        </form>
-
-    {% else %}
-        <div class="step2-container">
-            <h2><span class="first-word">Entreprises</span> sélectionnées</h2>
-
-            <div class="selected-companies">
-                {% for entreprise in selected %}
-                    <div class="company-bubble">
-                        {{ entreprise }}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <form action="" method="post" enctype="multipart/form-data" class="upload-form">
-                <div class="file-upload-container">
-                    <label for="cv" class="file-label">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <span>Déposez votre CV</span>
-                        {% if cvUrl %}
-                            <div class="cv-preview">
-                                <p>Votre CV actuel :</p>
-                                <a href="{{ cvUrl }}" target="_blank">Voir le CV</a>
-                                {% if cvUrl ends with '.pdf' %}
-                                    <embed src="{{ cvUrl }}" type="application/pdf" width="100%" height="500px">
-                                {% endif %}
-                            </div>
-                        {% endif %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for company in companies %}
+            <div class="bubble">
+                <div class="left">
+                    <input type="checkbox"
+                           id="entreprise{{ company.getCompanyName()|e }}"
+                           name="entreprises[]"
+                           value="{{ company.getCompanyName() }}"
+                           {% if company.getCompanyName() in selectedCompanies %}checked{% endif %}>
+                    <label for="entreprise{{ company.getCompanyName()|e }}">
+                        {{ company.getCompanyName() }}
                     </label>
-                    <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
-                    <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
                 </div>
+                <span class="info" title="{{ company.getCompanyDescription() }}">
+                    i
+                </span>
+            </div>
+        {% endfor %}
+        <button type="submit">Valider les choix</button>
+    </form>
 
-                <div class="buttons-container">
-                    <a href="" class="back-button">Revenir au formulaire</a>
-                    <button type="submit" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
+    <h2><span class="first-word">Votre</span> CV</h2>
+    <form action="" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="file-upload-container">
+            <label for="cv" class="file-label">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Déposez votre CV</span>
+            </label>
+            <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
+
+            {% if cvUrl %}
+                <div class="cv-preview">
+                    <p>Votre CV actuel :</p>
+                    <a href="{{ cvUrl }}" target="_blank">Voir le CV</a>
+                    {% if cvUrl ends with '.pdf' %}
+                        <embed src="{{ cvUrl }}" type="application/pdf" width="100%" height="500px">
+                    {% endif %}
                 </div>
-            </form>
+            {% endif %}
+
+            <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
+            <button type="submit" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
         </div>
-        <script>
-            const fileInput = document.getElementById('cv');
-            const submitBtn = document.getElementById('submitBtn');
-            const fileInfo = document.getElementById('fileInfo');
-
-            fileInput.addEventListener('change', function () {
-                const file = fileInput.files[0];
-                submitBtn.disabled = !file;
-
-                // Affichage du nom et de la taille
-                if (file) {
-                    fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
-                    fileInfo.style.color = '#008b57';
-                } else {
-                    fileInfo.textContent = 'Aucun fichier sélectionné';
-                    fileInfo.style.color = '#666';
-                }
-
-                // Supprimer ancien aperçu PDF s’il existe
-                const oldPreview = document.querySelector('.cv-preview');
-                if (oldPreview) oldPreview.remove();
-
-                // Aperçu PDF avant upload
-                if (file && file.type === 'application/pdf') {
-                    const previewContainer = document.createElement('div');
-                    previewContainer.classList.add('cv-preview');
-
-                    const embed = document.createElement('embed');
-                    embed.src = URL.createObjectURL(file);
-                    embed.type = 'application/pdf';
-                    embed.width = '100%';
-                    embed.height = '500px';
-
-                    previewContainer.appendChild(embed);
-                    fileInput.parentNode.appendChild(previewContainer);
-                }
-            });
-
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-        </script>
-    {% endif %}
+    </form>
 </div>
+
 {% include "footer.html.twig" %}
+
+<script>
+    const fileInput = document.getElementById('cv');
+    const submitBtn = document.getElementById('submitBtn');
+    const fileInfo = document.getElementById('fileInfo');
+
+    fileInput.addEventListener('change', function () {
+        const file = fileInput.files[0];
+        submitBtn.disabled = !file;
+
+        if (file) {
+            fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            fileInfo.style.color = '#008b57';
+        } else {
+            fileInfo.textContent = 'Aucun fichier sélectionné';
+            fileInfo.style.color = '#666';
+        }
+
+        const oldPreview = document.querySelector('.cv-preview');
+        if (oldPreview) oldPreview.remove();
+
+        if (file && file.type === 'application/pdf') {
+            const previewContainer = document.createElement('div');
+            previewContainer.classList.add('cv-preview');
+
+            const embed = document.createElement('embed');
+            embed.src = URL.createObjectURL(file);
+            embed.type = 'application/pdf';
+            embed.width = '100%';
+            embed.height = '500px';
+
+            previewContainer.appendChild(embed);
+            fileInput.parentNode.appendChild(previewContainer);
+        }
+    });
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+</script>
+
 </body>
 </html>

@@ -6,24 +6,23 @@ use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\Table(name: 'users')]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'user_id', type: 'integer')]
-    private int $user_id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'user_email', length: 320, unique: true, nullable: true)]
     private ?string $user_email = null;
 
     #[ORM\Column(name: 'user_pwd', length: 60)]
     private string $user_pwd;
-
-    #[ORM\Column(name: 'user_token_resetpwd', length: 100, nullable: true)]
-    private ?string $user_token_resetpwd = null;
 
     #[ORM\Column(name: 'user_role', length: 10)]
     private string $user_role;
@@ -40,11 +39,12 @@ class Users
     #[ORM\Column(name: 'user_level', length:2, nullable: true)]
     private ?string $user_level = null;
 
-    #[ORM\Column(name: 'user_lastconnexion', type: 'datetime')]
+    #[ORM\Column(name: 'user_lastconnexion', type: 'date')]
     private \DateTimeInterface $user_lastconnexion;
 
-    #[ORM\Column(name: 'user_url_cv', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'user_url_cv', length: 200, unique: true, nullable: true)]
     private ?string $user_url_cv = null;
+
 
     // Relations (décommenter si Appointment existe)
     /*
@@ -61,9 +61,14 @@ class Users
     // Getters & Setters
     // --------------------
 
-    public function getUserId(): int
+    public function getUser(): object
     {
-        return $this->user_id;
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getUserEmail(): ?string
@@ -85,17 +90,6 @@ class Users
     public function setUserPwd(string $user_pwd): self
     {
         $this->user_pwd = $user_pwd;
-        return $this;
-    }
-
-    public function getUserTokenResetpwd(): ?string
-    {
-        return $this->user_token_resetpwd;
-    }
-
-    public function setUserTokenResetpwd(?string $user_token_resetpwd): self
-    {
-        $this->user_token_resetpwd = $user_token_resetpwd;
         return $this;
     }
 
@@ -165,17 +159,6 @@ class Users
         return $this;
     }
 
-    public function getUserUrlCv(): ?string
-    {
-        return $this->user_url_cv;
-    }
-
-    public function setUserUrlCv(?string $user_url_cv): self
-    {
-        $this->user_url_cv = $user_url_cv;
-        return $this;
-    }
-
     // Relations Appointments (décommenter si nécessaire)
     /*
     public function getAppointments(): Collection
@@ -202,4 +185,64 @@ class Users
         return $this;
     }
     */
+
+    // --------------------
+    // Méthodes UserInterface
+    // --------------------
+
+    /**
+     * Retourne l'identifiant unique de l'utilisateur (email)
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->user_email;
+    }
+
+    /**
+     * Retourne les rôles de l'utilisateur
+     * Convertit user_role (string) en tableau de rôles Symfony
+     */
+    public function getRoles(): array
+    {
+        // Convertit votre champ user_role en format Symfony
+        $role = $this->user_role;
+
+        // Ajoute le préfixe ROLE_ si nécessaire
+        if (!str_starts_with($role, 'ROLE_')) {
+            $role = 'ROLE_' . strtoupper($role);
+        }
+
+        // Garantit que chaque utilisateur a au moins ROLE_USER
+        return array_unique([$role, 'ROLE_USER']);
+    }
+
+    /**
+     * Efface les données sensibles temporaires
+     */
+    public function eraseCredentials(): void
+    {
+        // Si vous stockez un plainPassword temporaire, nettoyez-le ici
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * Retourne le mot de passe hashé
+     * Requis par PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): ?string
+    {
+        return $this->user_pwd;
+    }
+
+    public function getUserUrlCv(): ?string
+    {
+        return $this->user_url_cv;
+    }
+
+    public function setUserUrlCv(?string $user_url_cv): self
+    {
+        $this->user_url_cv = $user_url_cv;
+        return $this;
+    }
+
 }
