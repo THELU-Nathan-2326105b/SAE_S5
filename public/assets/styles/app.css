@@ -4,9 +4,6 @@ body, html {
     padding: 0;
     font-family: "Helvetica Nue", sans-serif;
     height: 100%;
-}
-
-body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -14,12 +11,5 @@ body {
 
 main {
     flex: 1; /
-}
-
-footer {
-    background: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
 }
 

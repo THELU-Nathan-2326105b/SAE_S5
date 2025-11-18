@@ -1,95 +1,58 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1" />
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
     <title>AMOS FAMES - Connexion</title>
-
-    <link rel="stylesheet" href="/assets/styles/style.css">
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <link rel="stylesheet" href="/assets/styles/login.css">
     <script src="https://www.google.com/recaptcha/api.js?render=6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y" async defer></script>
 </head>
-
 <body>
 {% include "navbar.html.twig" %}
-
 <main class="loginpage">
     <div class="title">
         <span class="title-text_start">Connectez-vous</span>
         <span class="title-text_end">à votre compte</span>
     </div>
-
     <section class="login-section">
         {% if error %}
             <div style="color:red; margin-bottom:10px;">{{ error }}</div>
         {% endif %}
 
-        <form id="login-form" action="{{ path('login_handler') }}" method="POST" class="login-form">
+        <form action="{{ path('login_handler') }}" method="POST" class="login-form">
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" required placeholder="Votre email">
             </div>
-
             <div class="form-group">
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
             </div>
-
             <div class="show-password">
                 <input type="checkbox" id="showPassword">
                 <label for="showPassword">Afficher le mot de passe</label>
             </div>
-
-            {# Champ caché pour reCAPTCHA #}
-            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
-
             <button type="submit" class="validate-btn">Se connecter</button>
         </form>
-
-        {#<a href="{{ path('forgot_password') }}" class="forgot-link">Mot de passe oublié ?</a>#}
+        <a href="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
     </section>
 </main>
-
-{% include "footer.html.twig" %}
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Sécurité : vérifie que le DOM et le script sont bien chargés
-    const form = document.getElementById('login-form');
-    const passwordInput = document.getElementById('password');
-    const showPasswordCheckbox = document.getElementById('showPassword');
+    document.addEventListener('DOMContentLoaded', function() {
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const passwordInput = document.getElementById('password');
 
-    if (showPasswordCheckbox && passwordInput) {
         showPasswordCheckbox.addEventListener('change', function() {
-            passwordInput.type = this.checked ? 'text' : 'password';
-        });
-    }
-
-    // ReCAPTCHA : vérifie que grecaptcha est défini avant de l'utiliser
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (typeof grecaptcha === 'undefined') {
-                console.error('reCAPTCHA non chargé.');
-                form.submit(); // on soumet quand même pour éviter de bloquer
-                return;
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
             }
-
-            grecaptcha.ready(function() {
-                grecaptcha.execute('6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y', {action: 'login'})
-                    .then(function(token) {
-                        document.getElementById('g-recaptcha-response').value = token;
-                        form.submit();
-                    })
-                    .catch(function(error) {
-                        console.error('Erreur reCAPTCHA:', error);
-                        form.submit(); // on continue même si reCAPTCHA échoue
-                    });
-            });
         });
-    }
-});
+    });
 </script>
-
+{% include "footer.html.twig" %}
 </body>
 </html>

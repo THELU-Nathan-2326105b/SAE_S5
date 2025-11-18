@@ -70,7 +70,7 @@ final class LoginController extends AbstractController
         // Étape 3 : Sauvegarde des infos utilisateur en session
         $session = $request->getSession();
         $session->set('user', [
-            'id'        => $user->getUserId(),
+            'id'        => $user->getId(),
             'email'     => $user->getUserEmail(),
             'role'      => $user->getUserRole(),
             'firstname' => $user->getUserFirstname(),

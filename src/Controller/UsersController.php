@@ -34,16 +34,16 @@ class UsersController extends AbstractController
      * Route: GET /user (name: app_user_index)
      */
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(UsersRepository $UsersRepository): Response{
-        // Récupère tous les utilisateurs 
+    public function index(Request $request, UsersRepository $UsersRepository): Response
+    {
         $users = $UsersRepository->findAll();
+        $sessionUser = $request->getSession()->get('user');
 
         return $this->render('user/index.html.twig', [
             'users' => $users,
+            'user' => $sessionUser,
         ]);
     }
-
-
 
     /**
      * Affiche le détail d’un utilisateur.
@@ -153,7 +153,7 @@ class UsersController extends AbstractController
             // Redirige vers la fiche de l’utilisateur édité
             return $this->redirectToRoute(
                     'app_user_show',
-                    ['id' => $user->getUserId()],
+                    ['id' => $user->getId()],
                     Response::HTTP_SEE_OTHER
                 );
         }
@@ -181,7 +181,7 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $em): Response{
         if ($request->isMethod('POST')) {
-            $id = $user->getUserId();
+            $id = $user->getId();
 
             // Vérification CSRF: le token doit être généré côté vue avec le même id ('delete'.$id)
             if ($this->isCsrfTokenValid('delete'.$id, $request->request->get('_token'))) {
