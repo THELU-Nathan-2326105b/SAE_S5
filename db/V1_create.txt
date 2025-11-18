@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS appointment CASCADE;
 DROP TABLE IF EXISTS is_present CASCADE;
 DROP TABLE IF EXISTS company CASCADE;
 DROP TABLE IF EXISTS forum CASCADE;
+DROP TABLE IF EXISTS reset_password_request CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP FUNCTION IF EXISTS is_valid_search_level(TEXT);
 DROP FUNCTION IF EXISTS delete_inactive_users();
@@ -30,11 +31,12 @@ CREATE TABLE users (
 );
 
 CREATE TABLE reset_password_request(
-   user_id SERIAL PRIMARY KEY,
-   user_token_resetpwd VARCHAR(100) UNIQUE DEFAULT NULL,
-   user_token_hashed VARCHAR(100) UNIQUE DEFAULT NULL,
-   user_time_delete_token_start TIMESTAMP DEFAULT NULL,
-   user_time_delete_token_end TIMESTAMP DEFAULT NULL,
+   id SERIAL PRIMARY KEY,
+   user_id INTEGER NOT NULL,
+   selector VARCHAR(100) UNIQUE DEFAULT NULL,
+   hashed_token VARCHAR(100) UNIQUE DEFAULT NULL,
+   requested_at TIMESTAMP DEFAULT NULL,
+   expires_at TIMESTAMP DEFAULT NULL,
    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
