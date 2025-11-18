@@ -6,18 +6,72 @@
 <div class="container mt-4">
     <h1 class="mb-4">Générer le planning</h1>
 
-    <form method="get" action="{{ path('planning_algo_run') }}">
-        <div class="mb-3">
-            <label for="forum" class="form-label">Choisir un forum :</label>
-            <select id="forum" name="forum_id" class="form-select" required>
-                {% for forum in forums %}
-                    <option value="{{ forum.forum_id }}">Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
-                {% endfor %}
-            </select>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    {% endfor %}
 
-        <button type="submit" name="execute" value="1" class="btn btn-primary">Générer le planning</button>
-    </form>
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="mb-3">
+        <label for="forum" class="form-label">Choisir un forum :</label>
+        <select id="forum" name="forum_id" class="form-select" required>
+            {% for forum in forums %}
+                <option value="{{ forum.forum_id }}">Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="btn-group" role="group">
+        <form method="get" action="{{ path('planning_algo_run') }}" style="display: inline;" id="generateForm">
+            <input type="hidden" name="forum_id" id="generate_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+            <button type="submit" name="execute" value="1" class="btn btn-primary">Générer le planning</button>
+        </form>
+        
+        <form method="get" action="{{ path('planning_algo_reset') }}" style="display: inline;" id="resetForm">
+            <input type="hidden" name="forum_id" id="reset_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+            <button type="submit" class="btn btn-warning">Réinitialiser</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const forumSelect = document.getElementById('forum');
+            const generateForumInput = document.getElementById('generate_forum_id');
+            const resetForumInput = document.getElementById('reset_forum_id');
+            const resetForm = document.getElementById('resetForm');
+            
+            // Update hidden inputs when forum selection changes
+            if (forumSelect) {
+                forumSelect.addEventListener('change', function() {
+                    const forumId = this.value;
+                    if (generateForumInput) generateForumInput.value = forumId;
+                    if (resetForumInput) resetForumInput.value = forumId;
+                });
+            }
+            
+            // Confirmation dialog for reset
+            if (resetForm) {
+                resetForm.addEventListener('submit', function(e) {
+                    if (!confirm('Êtes-vous sûr de vouloir réinitialiser tous les rendez-vous de ce forum ?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
 
     
 

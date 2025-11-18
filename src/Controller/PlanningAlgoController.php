@@ -48,6 +48,38 @@ public function run(Request $request, Connection $conn): Response
     ]);
 }
 
+#[Route('/planning/reset', name: 'planning_algo_reset')]
+public function reset(Request $request, Connection $conn): Response
+{
+    $forum_id = $request->query->get('forum_id');
+
+    if ($forum_id && is_numeric($forum_id) && $forum_id > 0) {
+        $forum_id = (int)$forum_id;
+        
+        try {
+            // Reset appointments: wipe appointment_time and set appointment_request back to true
+            $conn->executeStatement(
+                'UPDATE appointment 
+                 SET appointment_time = NULL, appointment_request = true 
+                 WHERE forum_id = ?',
+                [$forum_id]
+            );
+
+            $this->addFlash('success', 'Les rendez-vous du forum ont été réinitialisés avec succès.');
+        } catch (\Throwable $e) {
+            $this->addFlash('error', 'Erreur lors de la réinitialisation : ' . $e->getMessage());
+        }
+    } else {
+        $this->addFlash('error', 'Veuillez sélectionner un forum valide.');
+    }
+
+    $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
+
+    return $this->render('planning/planningalgo.html.twig', [
+        'forums' => $forums,
+    ]);
+}
+
 
 
     public static function overlapsTime($start1, $end1, $start2, $end2) {
