@@ -13,97 +13,127 @@
 {% include "navbar.html.twig" %}
 
 <div class="main-content">
-    <h1><span class="first-word">Choisissez</span> vos entreprises</h1>
 
-    <form action="" method="post">
-        {% for company in companies %}
-            <div class="bubble">
-                <div class="left">
-                    <input type="checkbox"
-                           id="entreprise{{ company.getCompanyName()|e }}"
-                           name="entreprises[]"
-                           value="{{ company.getCompanyName() }}"
-                           {% if company.getCompanyName() in selectedCompanies %}checked{% endif %}>
-                    <label for="entreprise{{ company.getCompanyName()|e }}">
-                        {{ company.getCompanyName() }}
-                    </label>
-                </div>
-                <span class="info" title="{{ company.getCompanyDescription() }}">i</span>
-            </div>
-        {% endfor %}
-        <button type="submit">Valider les choix</button>
-    </form>
-
-    {# --- Section CV : visible seulement après validation des entreprises --- #}
-    {% if showCvSection %}
-        <h2><span class="first-word">Votre</span> CV</h2>
-        <form action="" method="post" enctype="multipart/form-data" class="upload-form">
-            <div class="file-upload-container">
-                <label for="cv" class="file-label">
-                    Déposez votre CV
-                </label>
-                <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
-
-                {% if cvUrl %}
-                    <div class="cv-preview">
-                        <p>Votre CV actuel :</p>
-                        <a href="{{ cvUrl }}" target="_blank">Voir le CV</a>
-                        {% if cvUrl ends with '.pdf' %}
-                            <embed src="{{ cvUrl }}" type="application/pdf" width="100%" height="500px">
-                        {% endif %}
+    {% if not showCv %}
+        <section class="forum-section entreprises-section">
+            <h1>Choisissez vos entreprises</h1>
+            {% if cvUrl %}
+                <p class="cv-status">Vous avez déjà déposé un CV. Vous pourrez le mettre à jour dans l'étape suivante.</p>
+            {% else %}
+                <p class="cv-status">Vous n'avez pas encore déposé de CV.</p>
+            {% endif %}
+            <form action="" method="post" id="entreprisesForm">
+                {% for company in companies %}
+                    <div class="bubble">
+                        <div class="left">
+                            <input type="checkbox"
+                                   id="entreprise{{ company.getCompanyName()|e }}"
+                                   name="entreprises[]"
+                                   value="{{ company.getCompanyName() }}"
+                                   {% if company.getCompanyName() in selected %}checked{% endif %}>
+                            <label for="entreprise{{ company.getCompanyName()|e }}">
+                                {{ company.getCompanyName() }}
+                            </label>
+                        </div>
+                        <span class="info" title="{{ company.getCompanyDescription() }}">i</span>
                     </div>
-                {% endif %}
+                {% endfor %}
+                <button type="submit" name="submit_entreprises" class="btn-primary" id="submitBtn" disabled>
+                    Valider et passer au CV
+                </button>
+            </form>
 
-                <button type="submit" id="submitBtn">Valider l'envoi</button>
-            </div>
-        </form>
+            <script>
+                const form = document.getElementById('entreprisesForm');
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                const submitBtn = document.getElementById('submitBtn');
+
+                function toggleButton() {
+                    const checked = Array.from(checkboxes).some(cb => cb.checked);
+                    submitBtn.disabled = !checked; // désactive si aucune case cochée
+                }
+
+                checkboxes.forEach(cb => cb.addEventListener('change', toggleButton));
+                toggleButton();
+            </script>
+        </section>
     {% endif %}
+
+    <hr class="separator">
+
+    {# --- Section CV (visible uniquement après validation) --- #}
+    {% if showCv %}
+        <section class="forum-section cv-section">
+            <h2>Votre CV</h2>
+
+            <div class="selected-companies">
+                <p>Entreprises sélectionnées :</p>
+                {% for entreprise in selected %}
+                    <span class="company-bubble">{{ entreprise }}</span>
+                {% endfor %}
+            </div>
+
+            <form action="" method="post" enctype="multipart/form-data" class="upload-form">
+                <div class="file-upload-container">
+                    <label for="cv" class="file-label">Déposez votre CV</label>
+                    <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
+
+                    {% if cvUrl %}
+                        <div class="cv-preview">
+                            <p>Votre CV actuel :</p>
+                            <a href="{{ cvUrl }}" target="_blank">Voir le CV</a>
+                            {% if cvUrl ends with '.pdf' %}
+                                <embed src="{{ cvUrl }}" type="application/pdf" width="100%" height="400px">
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
+                    <button type="submit" name="submit_cv" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
+                </div>
+            </form>
+        </section>
+    {% endif %}
+
 </div>
 
 {% include "footer.html.twig" %}
-
 
 <script>
     const fileInput = document.getElementById('cv');
     const submitBtn = document.getElementById('submitBtn');
     const fileInfo = document.getElementById('fileInfo');
 
-    fileInput.addEventListener('change', function () {
-        const file = fileInput.files[0];
-        submitBtn.disabled = !file;
+    if(fileInput) {
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            submitBtn.disabled = !file;
 
-        if (file) {
-            fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
-            fileInfo.style.color = '#008b57';
-        } else {
-            fileInfo.textContent = 'Aucun fichier sélectionné';
-            fileInfo.style.color = '#666';
-        }
+            if (file) {
+                fileInfo.textContent = `${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+                fileInfo.style.color = '#008b57';
+            } else {
+                fileInfo.textContent = 'Aucun fichier sélectionné';
+                fileInfo.style.color = '#666';
+            }
 
-        const oldPreview = document.querySelector('.cv-preview');
-        if (oldPreview) oldPreview.remove();
+            const oldPreview = document.querySelector('.cv-preview');
+            if (oldPreview) oldPreview.remove();
 
-        if (file && file.type === 'application/pdf') {
-            const previewContainer = document.createElement('div');
-            previewContainer.classList.add('cv-preview');
+            if (file && file.type === 'application/pdf') {
+                const previewContainer = document.createElement('div');
+                previewContainer.classList.add('cv-preview');
 
-            const embed = document.createElement('embed');
-            embed.src = URL.createObjectURL(file);
-            embed.type = 'application/pdf';
-            embed.width = '100%';
-            embed.height = '500px';
+                const embed = document.createElement('embed');
+                embed.src = URL.createObjectURL(file);
+                embed.type = 'application/pdf';
+                embed.width = '100%';
+                embed.height = '500px';
 
-            previewContainer.appendChild(embed);
-            fileInput.parentNode.appendChild(previewContainer);
-        }
-    });
-
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                previewContainer.appendChild(embed);
+                fileInput.parentNode.appendChild(previewContainer);
+            }
+        });
     }
 </script>
 
