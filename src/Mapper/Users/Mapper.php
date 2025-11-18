@@ -51,10 +51,8 @@ final class Mapper implements MapperContract{
         $user->setUserLastname($row['user_lastname']);
         $user->setUserEmail($row['user_email']);
         $user->setUserRole($row['user_role']);
-        //$user->setUserLastconnexion($this->parseDateTime($row['user_lastconnexion'] ?? null));
         $user->setUserLastconnexion(new DateTimeImmutable('now'));
         $user->setUserLevel($row['user_level']);
-        //Mot de passe par défaut nomprenom
         $user->setUserPwd($this->generatePassword($this->generateLengthPassword()));
         
         return $user;
@@ -81,28 +79,6 @@ final class Mapper implements MapperContract{
             return $row;
         }
         
-    }
-    /**
-     * Convertit une valeur CSV en DateTimeImmutable.
-     * Si la cellule est vide:
-     *  - soit on retourne "now" (comme ci-dessous),
-     *  - soit tu rends le setter nullable dans l'entité et tu retournes null.
-     */
-    private function parseDateTime(?string $raw): DateTimeImmutable
-    {
-        // $raw = trim((string) $raw);
-        // if ($raw === '') {
-        //     return new DateTimeImmutable('now'); 
-        // }
-        // else{
-        //     try {
-        //         return new \DateTimeImmutable($raw);
-        //     } 
-        //     catch (\Throwable $e) {
-        //         throw new \InvalidArgumentException('Date invalide pour user_lastconnexion: "' . $raw . '"');
-        //     }
-        // }   
-        return new DateTimeImmutable('now'); 
     }
 
 
