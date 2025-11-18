@@ -22,98 +22,76 @@ class ForumController extends AbstractController
         CompanyRepository $companyRepository,
         AppointmentRepository $appointmentRepository,
         EntityManagerInterface $em,
-        SluggerInterface $slugger,
-        UsersRepository $usersRepository
+        UsersRepository $usersRepository,
+        SluggerInterface $slugger
     ): Response {
-        // Récupération de l'utilisateur depuis la session
         $sessionUser = $request->getSession()->get('user');
+        if (!$sessionUser) return $this->redirectToRoute('login');
 
-        if (!$sessionUser) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder au forum.');
-            return $this->redirectToRoute('login');
-        }
-
-        /** @var Users $user */
         $user = $usersRepository->find($sessionUser['id']);
-        if (!$user) {
-            $this->addFlash('error', 'Utilisateur introuvable.');
-            return $this->redirectToRoute('login');
-        }
+        if (!$user) return $this->redirectToRoute('login');
 
-        // CV actuel
-        $cvUrl = $user->getUserUrlCv();
+        $forum = $em->getRepository(Forum::class)->find(1);
 
-        // Gestion de l'upload du CV
-        if ($request->isMethod('POST') && $request->files->get('cv')) {
-            $cvFile = $request->files->get('cv');
-            if ($cvFile) {
-                if (!in_array($cvFile->guessExtension(), ['pdf', 'doc', 'docx'])) {
-                    $this->addFlash('error', 'Format de fichier non autorisé.');
-                    return $this->redirectToRoute('forum');
-                }
-
-                $originalFilename = pathinfo($cvFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $cvFile->guessExtension();
-
-                try {
-                    $cvFile->move(
-                        $this->getParameter('uploads_directory'),
-                        $newFilename
-                    );
-                    $cvUrl = '/uploads/' . $newFilename;
-
-                    $user->setUserUrlCv($cvUrl);
-                    $em->persist($user);
-                    $em->flush();
-
-                    $this->addFlash('success', 'CV envoyé avec succès !');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l’envoi du CV.');
-                }
-            }
-        }
-
-        // Récupération des entreprises
+        // --- Gestion des entreprises ---
         $companies = $companyRepository->findAllOrderedByName();
-
-        // Récupération du forum actuel (ici on prend le premier comme exemple)
-        $forum = $em->getRepository(Forum::class)->find(1); // ou récupère selon ton besoin
-
-        // Récupération des appointments déjà cochés
         $selectedAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
         $selectedCompanies = array_map(fn($a) => $a->getCompanyName(), $selectedAppointments);
 
-        // Gestion des nouvelles sélections envoyées par POST
+        $showCvSection = false;
+
         if ($request->isMethod('POST') && $request->request->get('entreprises')) {
             $selectedFromForm = $request->request->get('entreprises', []);
-            if (!is_array($selectedFromForm)) {
-                $selectedFromForm = [$selectedFromForm];
-            }
+            if (!is_array($selectedFromForm)) $selectedFromForm = [$selectedFromForm];
 
-            // Supprime tous les anciens appointments pour ce forum et utilisateur
             $appointmentRepository->removeByUserAndForum($user, $forum);
 
-            // Ajoute les nouvelles sélections
             foreach ($selectedFromForm as $companyName) {
                 $appointment = new \App\Entity\Appointment();
                 $appointment->setUser($user);
                 $appointment->setForum($forum);
                 $appointment->setCompanyName($companyName);
                 $appointment->setAppointmentRequest(true);
-                $appointment->setAppointmentTime(new \DateTime()); // met l'heure actuelle
+                $appointment->setAppointmentTime(new \DateTime());
                 $em->persist($appointment);
             }
             $em->flush();
 
-            // Met à jour la liste des présélections
             $selectedCompanies = $selectedFromForm;
+            $showCvSection = true; // Affiche la section CV après validation
+        }
+
+        // --- Gestion du CV ---
+        $cvUrl = $user->getUserUrlCv();
+        if ($request->isMethod('POST') && $request->files->get('cv')) {
+            $cvFile = $request->files->get('cv');
+            if ($cvFile && in_array($cvFile->guessExtension(), ['pdf', 'doc', 'docx'])) {
+                $originalFilename = pathinfo($cvFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $cvFile->guessExtension();
+
+                try {
+                    $cvFile->move($this->getParameter('uploads_directory'), $newFilename);
+                    $cvUrl = '/uploads/' . $newFilename;
+                    $user->setUserUrlCv($cvUrl);
+                    $em->persist($user);
+                    $em->flush();
+                    $this->addFlash('success', 'CV envoyé avec succès !');
+                } catch (\Exception) {
+                    $this->addFlash('error', 'Erreur lors de l’envoi du CV.');
+                }
+            } else {
+                $this->addFlash('error', 'Format de fichier non autorisé.');
+            }
+            $showCvSection = true;
         }
 
         return $this->render('forum/forum.html.twig', [
             'companies' => $companies,
             'selectedCompanies' => $selectedCompanies,
             'cvUrl' => $cvUrl,
+            'showCvSection' => $showCvSection,
         ]);
     }
+
 }
