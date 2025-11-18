@@ -43,16 +43,6 @@ class Users
     #[ORM\Column(name: 'user_lastconnexion', type: 'datetime')]
     private \DateTimeInterface $user_lastconnexion;
 
-    // Relations (décommenter si Appointment existe)
-    /*
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class)]
-    private Collection $appointments;
-
-    public function __construct()
-    {
-        $this->appointments = new ArrayCollection();
-    }
-    */
 
     // --------------------
     // Getters & Setters
@@ -162,30 +152,5 @@ class Users
         return $this;
     }
 
-    // Relations Appointments (décommenter si nécessaire)
-    /*
-    public function getAppointments(): Collection
-    {
-        return $this->appointments;
-    }
 
-    public function addAppointment(Appointment $appointment): self
-    {
-        if (!$this->appointments->contains($appointment)) {
-            $this->appointments->add($appointment);
-            $appointment->setUser($this);
-        }
-        return $this;
-    }
-
-    public function removeAppointment(Appointment $appointment): self
-    {
-        if ($this->appointments->removeElement($appointment)) {
-            if ($appointment->getUser() === $this) {
-                $appointment->setUser(null);
-            }
-        }
-        return $this;
-    }
-    */
 }
