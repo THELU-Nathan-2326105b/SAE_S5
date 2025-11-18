@@ -23,7 +23,7 @@ final class UsersCsvImportType extends AbstractType
     /**
      * Taille maximale autorisée pour le fichier en mégaoctets.
     */
-    private int $MaxSizeMo=5;
+    private int $MaxSizeMo=10;
     
 
     /**

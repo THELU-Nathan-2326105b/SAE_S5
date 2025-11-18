@@ -242,25 +242,16 @@ class UsersController extends AbstractController
 
         $uploaded  = $form->get('csvFile')->getData();
         $targetDir = $this->getParameter('kernel.project_dir') . '/var/tmp';
-        // if (!is_dir($targetDir)) {
-        //     @mkdir($targetDir, 0775, true);
-        // }
         $filename= 'users_import_' . uniqid() . '.csv';
         $path= $uploaded->move($targetDir, $filename)->getPathname();
 
         try {
-            //echo "begin";
-            //dd("begin");
             $importer = $importerFactory->create('users', 'csv');
-            //dd("importerFactory->create('users', 'csv')");
             $result = $importer->import($path,'users'); 
-            //dd("result = importer->import(path,users)");
             foreach ($result as $key => $value) {
                 $em->persist($value);
                 $em->flush();
             }
-            // $em->persist($result);
-            // $em->flush();
          $this->addFlash('success', "Import terminé avec succès.");
             
         } catch (\Throwable $e) {
