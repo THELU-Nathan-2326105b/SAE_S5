@@ -21,19 +21,19 @@
         <tbody>
           {% for user in users %}
             <tr>
-              {# <td>{{ user.userId }}</td> #}
+              {# <td>{{ user.id }}</td> #}
               <td>{{ user.userEmail }}</td>
               <td>{{ user.userFirstname }}</td>
               <td>{{ user.userLastname }}</td>
               <td>{{ user.userLevel }}</td>
               <td>
-                <a href="{{ path('app_user_show', { id: user.userId }) }}">Voir</a>
-                <a  href="{{ path('app_user_edit', { id: user.userId }) }}">Modifier</a>
+                <a href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                <a  href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
                 <form method="post"
-                      action="{{ path('app_user_delete', { id: user.userId }) }}"
+                      action="{{ path('app_user_delete', { id: user.id }) }}"
                       {# style="display:inline" #}
                       onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                   <button>Supprimer</button>
                 </form>
               </td>
