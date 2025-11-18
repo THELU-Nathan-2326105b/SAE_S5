@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\UsersType;
+use App\Form\UsersCsvImportType;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Import\Contract\ImporterFactory;
 
 
 
@@ -34,12 +36,20 @@ class UsersController extends AbstractController
      * Route: GET /user (name: app_user_index)
      */
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(UsersRepository $UsersRepository): Response{
-        // Récupère tous les utilisateurs 
+    public function index(Request $request, UsersRepository $UsersRepository): Response
+    {
         $users = $UsersRepository->findAll();
+        $sessionUser = $request->getSession()->get('user');
+
+        $importForm = $this->createForm(UsersCsvImportType::class, null, [
+            'action' => $this->generateUrl('app_user_import'), 
+            'method' => 'POST',
+        ]);
 
         return $this->render('user/index.html.twig', [
-            'users' => $users,
+            'users'      => $users,
+            'user'       => $sessionUser,
+            'importForm' => $importForm->createView(),  
         ]);
     }
 
@@ -200,5 +210,56 @@ class UsersController extends AbstractController
 
         return $this->render('user/delete.html.twig', ['user' => $user, ]);
     }
+
+    /**
+     * Importe des utilisateurs depuis un fichier CSV uploadé.
+     *
+     * - Affiche un formulaire d’upload sur la page index .
+     * - Vérifie et traite le formulaire UsersCsvImportType.
+     * - Déplace le fichier dans var/tmp.
+     * - Utilise ImporterFactory pour récupérer l’importeur CSV des "users".
+     * - Convertit chaque ligne du CSV en entité Users, puis les persiste en base.
+     * - Ajoute un message flash de succès ou d’erreur selon le résultat.
+     *
+     * @param Request              $request         Requête HTTP contenant le fichier
+     * @param EntityManagerInterface $em            Gestionnaire Doctrine pour sauvegarder les entités.
+     * @param ImporterFactory      $importerFactory Factory fournissant l’importeur adapté (ici CSV/users).
+     *
+     * @return Response            Redirection vers la liste des utilisateurs (route app_user_index).
+     *
+     * Route: POST /users/import (name: app_user_import)
+     */
+    #[Route('/import', name: 'import', methods: ['POST'])]
+    public function import(Request $request,EntityManagerInterface $em ,ImporterFactory $importerFactory): Response
+    {
+        $form = $this->createForm(UsersCsvImportType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('warning', 'Le fichier fourni n’est pas valide.');
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        $uploaded  = $form->get('csvFile')->getData();
+        $targetDir = $this->getParameter('kernel.project_dir') . '/var/tmp';
+        $filename= 'users_import_' . uniqid() . '.csv';
+        $path= $uploaded->move($targetDir, $filename)->getPathname();
+
+        try {
+            $importer = $importerFactory->create('users', 'csv');
+            $result = $importer->import($path,'users'); 
+            foreach ($result as $key => $value) {
+                $em->persist($value);
+                $em->flush();
+            }
+         $this->addFlash('success', "Import terminé avec succès.");
+            
+        } catch (\Throwable $e) {
+            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_user_index');
+    }
+
 
 }
