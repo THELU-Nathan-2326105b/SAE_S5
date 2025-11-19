@@ -20,7 +20,7 @@ CREATE TABLE users (
      position('@' in user_email) > 1 AND
      position('@' in user_email) <= 65
    ),
-   user_pwd VARCHAR(60) NOT NULL,
+   user_pwd VARCHAR(60),
    user_role VARCHAR(10) NOT NULL CHECK (user_role IN ('alternance', 'internship', 'admin')),
    user_firstconnexion BOOLEAN NOT NULL DEFAULT TRUE,
    user_firstname VARCHAR(50),
