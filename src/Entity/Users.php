@@ -159,30 +159,44 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Relations Appointments (décommenter si nécessaire)
-    /*
-    public function getAppointments(): Collection
+
+    // --------------------
+    // Méthodes UserInterface
+    // --------------------
+
+    /**
+     * Retourne l'identifiant unique de l'utilisateur (email)
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->appointments;
+        return (string) $this->user_email;
     }
 
-    public function addAppointment(Appointment $appointment): self
+    /**
+     * Retourne les rôles de l'utilisateur
+     * Convertit user_role (string) en tableau de rôles Symfony
+     */
+    public function getRoles(): array
     {
-        if (!$this->appointments->contains($appointment)) {
-            $this->appointments->add($appointment);
-            $appointment->setUser($this);
+        // Convertit votre champ user_role en format Symfony
+        $role = $this->user_role;
+        
+        // Ajoute le préfixe ROLE_ si nécessaire
+        if (!str_starts_with($role, 'ROLE_')) {
+            $role = 'ROLE_' . strtoupper($role);
         }
-        return $this;
+        
+        // Garantit que chaque utilisateur a au moins ROLE_USER
+        return array_unique([$role, 'ROLE_USER']);
     }
 
-    public function removeAppointment(Appointment $appointment): self
+    /**
+     * Efface les données sensibles temporaires
+     */
+    public function eraseCredentials(): void
     {
-        if ($this->appointments->removeElement($appointment)) {
-            if ($appointment->getUser() === $this) {
-                $appointment->setUser(null);
-            }
-        }
-        return $this;
+        // Si vous stockez un plainPassword temporaire, nettoyez-le ici
+        // $this->plainPassword = null;
     }
     */
 
