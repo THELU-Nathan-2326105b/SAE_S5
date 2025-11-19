@@ -39,8 +39,23 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'user_level', length:2, nullable: true)]
     private ?string $user_level = null;
 
-    #[ORM\Column(name: 'user_lastconnexion', type: 'datetime')]
+    #[ORM\Column(name: 'user_lastconnexion', type: 'date')]
     private \DateTimeInterface $user_lastconnexion;
+
+    #[ORM\Column(name: 'user_url_cv', length: 200, unique: true, nullable: true)]
+    private ?string $user_url_cv = null;
+
+
+    // Relations (décommenter si Appointment existe)
+    /*
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class)]
+    private Collection $appointments;
+
+    public function __construct()
+    {
+        $this->appointments = new ArrayCollection();
+    }
+    */
 
     // --------------------
     // Getters & Setters
@@ -183,6 +198,46 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         // Si vous stockez un plainPassword temporaire, nettoyez-le ici
         // $this->plainPassword = null;
     }
+    */
+
+    // --------------------
+    // Méthodes UserInterface
+    // --------------------
+
+    /**
+     * Retourne l'identifiant unique de l'utilisateur (email)
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->user_email;
+    }
+
+    /**
+     * Retourne les rôles de l'utilisateur
+     * Convertit user_role (string) en tableau de rôles Symfony
+     */
+    public function getRoles(): array
+    {
+        // Convertit votre champ user_role en format Symfony
+        $role = $this->user_role;
+
+        // Ajoute le préfixe ROLE_ si nécessaire
+        if (!str_starts_with($role, 'ROLE_')) {
+            $role = 'ROLE_' . strtoupper($role);
+        }
+
+        // Garantit que chaque utilisateur a au moins ROLE_USER
+        return array_unique([$role, 'ROLE_USER']);
+    }
+
+    /**
+     * Efface les données sensibles temporaires
+     */
+    public function eraseCredentials(): void
+    {
+        // Si vous stockez un plainPassword temporaire, nettoyez-le ici
+        // $this->plainPassword = null;
+    }
 
     /**
      * Retourne le mot de passe hashé
@@ -191,6 +246,17 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): ?string
     {
         return $this->user_pwd;
+    }
+
+    public function getUserUrlCv(): ?string
+    {
+        return $this->user_url_cv;
+    }
+
+    public function setUserUrlCv(?string $user_url_cv): self
+    {
+        $this->user_url_cv = $user_url_cv;
+        return $this;
     }
 
 }
