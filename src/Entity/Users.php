@@ -47,7 +47,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     // Relations (décommenter si Appointment existe)
-    /*
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Appointment::class)]
     private Collection $appointments;
 
@@ -55,7 +54,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->appointments = new ArrayCollection();
     }
-    */
 
     // --------------------
     // Getters & Setters
@@ -180,12 +178,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // Convertit votre champ user_role en format Symfony
         $role = $this->user_role;
-        
+
         // Ajoute le préfixe ROLE_ si nécessaire
         if (!str_starts_with($role, 'ROLE_')) {
             $role = 'ROLE_' . strtoupper($role);
         }
-        
+
         // Garantit que chaque utilisateur a au moins ROLE_USER
         return array_unique([$role, 'ROLE_USER']);
     }
@@ -198,47 +196,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         // Si vous stockez un plainPassword temporaire, nettoyez-le ici
         // $this->plainPassword = null;
     }
-    */
 
     // --------------------
     // Méthodes UserInterface
     // --------------------
-
-    /**
-     * Retourne l'identifiant unique de l'utilisateur (email)
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->user_email;
-    }
-
-    /**
-     * Retourne les rôles de l'utilisateur
-     * Convertit user_role (string) en tableau de rôles Symfony
-     */
-    public function getRoles(): array
-    {
-        // Convertit votre champ user_role en format Symfony
-        $role = $this->user_role;
-
-        // Ajoute le préfixe ROLE_ si nécessaire
-        if (!str_starts_with($role, 'ROLE_')) {
-            $role = 'ROLE_' . strtoupper($role);
-        }
-
-        // Garantit que chaque utilisateur a au moins ROLE_USER
-        return array_unique([$role, 'ROLE_USER']);
-    }
-
-    /**
-     * Efface les données sensibles temporaires
-     */
-    public function eraseCredentials(): void
-    {
-        // Si vous stockez un plainPassword temporaire, nettoyez-le ici
-        // $this->plainPassword = null;
-    }
-
     /**
      * Retourne le mot de passe hashé
      * Requis par PasswordAuthenticatedUserInterface
