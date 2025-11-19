@@ -53,8 +53,6 @@ class UsersController extends AbstractController
         ]);
     }
 
-
-
     /**
      * Affiche le détail d’un utilisateur.
      *
@@ -163,7 +161,7 @@ class UsersController extends AbstractController
             // Redirige vers la fiche de l’utilisateur édité
             return $this->redirectToRoute(
                     'app_user_show',
-                    ['id' => $user->getUserId()],
+                    ['id' => $user->getId()],
                     Response::HTTP_SEE_OTHER
                 );
         }
@@ -191,7 +189,7 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $em): Response{
         if ($request->isMethod('POST')) {
-            $id = $user->getUserId();
+            $id = $user->getId();
 
             // Vérification CSRF: le token doit être généré côté vue avec le même id ('delete'.$id)
             if ($this->isCsrfTokenValid('delete'.$id, $request->request->get('_token'))) {
