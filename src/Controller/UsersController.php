@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Import\Contract\ImporterFactory;
+use App\Service\CsvImportService;
 
 
 
@@ -229,7 +230,7 @@ class UsersController extends AbstractController
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(
-        Request $request,EntityManagerInterface $em,ImporterFactory $importerFactory
+        Request $request, EntityManagerInterface $em, ImporterFactory $importerFactory, CsvImportService $csvImportService
     ): Response {
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
@@ -240,10 +241,11 @@ class UsersController extends AbstractController
         }
 
         try {
-            $path = $this->moveUploadedCsvAndGetPath($form);
-            $users = $this->runUsersImport($path, $importerFactory);
-            $this->persistImportedUsers($users, $em);
-            $this->addFlash('success', "Import terminé avec succès ({$this->countItems($users)} utilisateurs).");
+            $uploaded = $form->get('csvFile')->getData();
+            $path = $csvImportService->moveUploadedCsvAndGetPath($uploaded, 'users_import_');
+            $users = $csvImportService->runImport($path, $importerFactory, 'users');
+            $csvImportService->persistImportedEntities($users, $em);
+            $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($users)} utilisateurs).");
         } catch (\Throwable $e) {
             $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
         }
@@ -251,55 +253,7 @@ class UsersController extends AbstractController
         return $this->redirectToRoute('app_user_index');
     }
 
-    /**
-     * Déplace le CSV uploadé dans var/tmp et retourne son chemin complet.
-     */
-    private function moveUploadedCsvAndGetPath($form): string
-    {
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $uploaded */
-        $uploaded  = $form->get('csvFile')->getData();
-        $targetDir = $this->getParameter('kernel.project_dir') . '/var/tmp';
-        $filename  = 'users_import_' . uniqid('', true) . '.csv';
-        return $uploaded->move($targetDir, $filename)->getPathname();
-    }
-
-    /**
-     * Lance l'import des utilisateurs via ImporterFactory.
-     *
-     * @return iterable<Users>  Liste d'entités Users importées.
-     */
-    private function runUsersImport(string $path, ImporterFactory $importerFactory): iterable
-    {
-        $importer = $importerFactory->create('users');
-        return $importer->import($path, 'users');
-    }
-
-    /**
-     * Persiste les utilisateurs importés en base.
-     *
-     * @param iterable<Users> $users
-     */
-    private function persistImportedUsers(iterable $users, EntityManagerInterface $em): void
-    {
-        foreach ($users as $user) {
-            $em->persist($user);
-        }
-        $em->flush();
-    }
-
-    private function countItems(iterable $items): int
-    {
-        if (is_array($items) || $items instanceof \Countable) {
-            return \count($items);
-        }
-        else{
-            $count = 0;
-            foreach ($items as $_) {
-                $count++;
-            }
-            return $count;
-        }
-    }
+    
 
 
 }
