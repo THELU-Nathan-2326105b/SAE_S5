@@ -56,12 +56,12 @@ services:
             - !tagged_locator { tag: 'app.importer', index_by: 'key' }
 
     # 5 Service concret pour la MapperFactory 
-    App\Mapper\Users\MapperFactory:
+    App\Mapper\EntityMapper\MapperFactory:
         arguments:
             $locator: !service_locator
                 users: '@App\Mapper\Users\Mapper'
                 company: '@App\Mapper\Company\Mapper'
 
-    # Alias pour l'interface de la MapperFactory
+    # Alias pour l'interface de la MapperFactory 
     App\Mapper\Contract\MapperFactory:
-        alias: App\Mapper\Users\MapperFactory
+        alias: App\Mapper\EntityMapper\MapperFactory
