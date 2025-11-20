@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\UsersType;
-use App\Form\UsersCsvImportType;
+use App\Form\CsvImportType;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +41,7 @@ class UsersController extends AbstractController
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
 
-        $importForm = $this->createForm(UsersCsvImportType::class, null, [
+        $importForm = $this->createForm(CsvImportType::class, null, [
             'action' => $this->generateUrl('app_user_import'), 
             'method' => 'POST',
         ]);
@@ -231,7 +231,7 @@ class UsersController extends AbstractController
     public function import(
         Request $request,EntityManagerInterface $em,ImporterFactory $importerFactory
     ): Response {
-        $form = $this->createForm(UsersCsvImportType::class);
+        $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted() || !$form->isValid()) {
