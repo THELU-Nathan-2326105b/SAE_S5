@@ -6,85 +6,38 @@ use Doctrine\DBAL\Connection;
 
 class PlanningAlgo
 {
-
-    public static function run(Connection $conn, $forum_id): array
+    // Constantes pour les seuils de saturation
+    private const SATURATION_CRITICAL = 100;  // Au-delà de 100% même avec 5min
+    private const SATURATION_HIGH = 90;       // Au-delà de 90% avec 10min
+    private const SATURATION_MODERATE = 80;   // Au-delà de 80% avec 15min
+    
+    // Constantes pour les durées de rendez-vous (en minutes)
+    private const DURATION_MIN = 5;
+    private const DURATION_SHORT = 10;
+    private const DURATION_MEDIUM = 15;
+    private const DURATION_COMFORTABLE = 20;
+    private const DURATION_LONG = 25;
+    
+    // Seuils de ratio de saturation pour ajustement des durées
+    private const RATIO_CRITICAL = 1.0;      // Saturation critique
+    private const RATIO_HIGH = 0.8;          // Saturation élevée
+    private const RATIO_MODERATE = 0.6;      // Saturation modérée
+    private const RATIO_GOOD = 0.4;          // Bonne capacité
+    
+    /**
+     * Réinitialise les rendez-vous pour un forum donné
+     */
+    public static function resetAppointments(Connection $conn, int $forum_id): void
     {
-        // If forum_id is null-ish, try to pick the first forum available
-    $windows = [];
-    $students = [];
-
-    try {
-            if ($forum_id === null || $forum_id === '') {
-                $first = $conn->fetchAssociative('SELECT forum_id FROM forum ORDER BY forum_id LIMIT 1');
-                $forum_id = $first['forum_id'] ?? null;
-            } else {
-                $forum_id = is_numeric($forum_id) ? (int)$forum_id : $forum_id;
-            }
-
-            // Prefer students who requested appointments for this forum; fallback to all students
-            $students = [];
-            if ($forum_id !== null) {
-                $students = $conn->fetchAllAssociative(
-                    "SELECT DISTINCT u.user_id, u.user_firstname, u.user_lastname, u.user_level\n                     FROM users u\n                     INNER JOIN appointment a ON a.user_id = u.user_id\n                     WHERE a.forum_id = ? AND a.appointment_request = ?\n                     ORDER BY u.user_lastname, u.user_firstname",
-                    [$forum_id, 1]
-                );
-            }
-
-            if (empty($students)) {
-                $students = $conn->fetchAllAssociative(
-                    "SELECT user_id, user_firstname, user_lastname, user_level\n                     FROM users\n                     WHERE user_role IN ('internship','alternance')\n                     ORDER BY user_lastname, user_firstname"
-                );
-            }
-
-            // Companies present at this forum
-            $companies = [];
-            if ($forum_id !== null) {
-                $companies = $conn->fetchAllAssociative(
-                    "SELECT ip.company_name, ip.start_time, ip.end_time\n                     FROM is_present ip\n                     WHERE ip.forum_id = ?\n                     ORDER BY ip.start_time",
-                    [$forum_id]
-                );
-            }
-        } catch (\Throwable $e) {
-            // If any DB error, return empty planning — keep behavior safe
-            return [];
-        }
-
-        $planning = [];
-
-        // If no companies or no students, return empty (nothing to schedule)
-        if (empty($companies) || empty($students)) {
-            return $planning;
-        }
-
-        // Simple, safe mapping: assign students to companies round-robin and use company start_time
-        $company_count = count($companies);
-        foreach ($students as $i => $s) {
-            $c = $companies[$i % $company_count];
-
-            $appt_time = $c['start_time'] ?? null;
-            if ($appt_time) {
-                try {
-                    $dt = new \DateTime($appt_time);
-                    $appt_time = $dt->format('H:i');
-                } catch (\Throwable $e) {
-                    // leave raw if parsing fails
-                }
-            }
-
-            // Return keys matching the Twig template expectations (`user_firstname`, `user_lastname`)
-            $planning[] = [
-                'user_id' => $s['user_id'],
-                'user_firstname' => $s['user_firstname'],
-                'user_lastname' => $s['user_lastname'],
-                'company_name' => $c['company_name'],
-                'appointment_time' => $appt_time,
-            ];
-        }
-
-        return $planning;
+        $conn->executeStatement(
+            'UPDATE appointment 
+             SET appointment_time = NULL, appointment_request = true 
+             WHERE forum_id = ?',
+            [$forum_id]
+        );
     }
 
-public static function generatePlanning(Connection $conn, int $forum_id): array
+    public static function generatePlanning(Connection $conn, int $forum_id): array
 {
     try {
         $forum = $conn->fetchAssociative('SELECT * FROM forum WHERE forum_id = ?', [$forum_id]);
@@ -157,133 +110,72 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
     $capacity_analysis = [];
     $problem_companies = [];
     
-    foreach ($availability as $company => $windows) {
-        $total_capacity_minutes = 0;
-        foreach ($windows as $window) {
-            try {
-                $start = new \DateTime($window['start']);
-                $end = new \DateTime($window['end']);
-                $total_capacity_minutes += ($end->getTimestamp() - $start->getTimestamp()) / 60;
-            } catch (\Throwable $e) {
-                continue;
-            }
-        }
-        
-        $demand = $company_demand[$company] ?? 0;
-        
-        // Calculs de capacité génériques
-        $max_possible_5min = floor($total_capacity_minutes / 5);
-        $max_possible_10min = floor($total_capacity_minutes / 10);
-        $max_possible_15min = floor($total_capacity_minutes / 15);
-        
-        $capacity_analysis[$company] = [
-            'capacity_minutes' => round($total_capacity_minutes, 1),
-            'demand' => $demand,
-            'max_5min_slots' => $max_possible_5min,
-            'max_10min_slots' => $max_possible_10min,
-            'max_15min_slots' => $max_possible_15min,
-            'saturation_5min' => $demand > 0 ? round(($demand / $max_possible_5min) * 100, 1) : 0,
-            'saturation_10min' => $demand > 0 ? round(($demand / $max_possible_10min) * 100, 1) : 0,
-            'saturation_15min' => $demand > 0 ? round(($demand / $max_possible_15min) * 100, 1) : 0
-        ];
-        
-        // DÉTECTION GÉNÉRIQUE des problèmes de capacité
-        $has_capacity_issue = false;
-        $issue_reasons = [];
-        $severity = 'FAIBLE';
-        
-        if ($demand > $max_possible_5min) {
-            $has_capacity_issue = true;
-            $severity = 'CRITIQUE';
-            $issue_reasons[] = "Demande ({$demand}) > capacité maximale même avec 5min ({$max_possible_5min})";
-        } elseif ($capacity_analysis[$company]['saturation_5min'] > 100) {
-            $has_capacity_issue = true;
-            $severity = 'CRITIQUE';
-            $issue_reasons[] = "Saturation à " . $capacity_analysis[$company]['saturation_5min'] . "% avec 5min";
-        } elseif ($capacity_analysis[$company]['saturation_10min'] > 90) {
-            $has_capacity_issue = true;
-            $severity = 'ÉLEVÉE';
-            $issue_reasons[] = "Saturation élevée : " . $capacity_analysis[$company]['saturation_10min'] . "% avec 10min";
-        } elseif ($capacity_analysis[$company]['saturation_15min'] > 80) {
-            $has_capacity_issue = true;
-            $severity = 'MODÉRÉE';
-            $issue_reasons[] = "Saturation modérée : " . $capacity_analysis[$company]['saturation_15min'] . "% avec 15min";
-        }
-        
-        if ($has_capacity_issue) {
+    // D'abord, identifier les entreprises demandées SANS disponibilité
+    $companies_without_availability = [];
+    foreach ($company_demand as $company => $demand) {
+        if (!isset($availability[$company])) {
+            $companies_without_availability[] = $company;
             $problem_companies[$company] = [
                 'company' => $company,
                 'demand' => $demand,
-                'capacity_minutes' => round($total_capacity_minutes, 1),
-                'max_possible_5min' => $max_possible_5min,
-                'max_possible_10min' => $max_possible_10min,
-                'issue_reasons' => $issue_reasons,
-                'severity' => $severity
+                'capacity_minutes' => 0,
+                'optimal_duration_raw' => 0,
+                'max_possible_5min' => 0,
+                'max_possible_10min' => 0,
+                'issue_reasons' => ["⚠️ AUCUNE DISPONIBILITÉ : L'entreprise n'est pas présente au forum (pas d'entrée dans is_present)"],
+                'severity' => 'CRITIQUE',
+                'saturations' => [
+                    '5min' => 0,
+                    '10min' => 0,
+                    '15min' => 0
+                ]
             ];
+        }
+    }
+    
+    // Ensuite, analyser les entreprises qui ONT des disponibilités
+    foreach ($availability as $company => $windows) {
+        $total_capacity_minutes = self::calculateTotalCapacity($windows);
+        $demand = $company_demand[$company] ?? 0;
+        
+        // Calculs de capacité génériques
+        $capacity_analysis[$company] = self::analyzeCompanyCapacity(
+            $total_capacity_minutes,
+            $demand
+        );
+        
+        // DÉTECTION GÉNÉRIQUE des problèmes de capacité
+        $issue_detection = self::detectCapacityIssues($capacity_analysis[$company], $company, $total_capacity_minutes);
+        
+        if ($issue_detection['has_issue']) {
+            $problem_companies[$company] = $issue_detection['details'];
         }
     }
 
     // 6. CALCUL GÉNÉRIQUE des durées optimales
     $optimal_durations = [];
     foreach ($availability as $company => $windows) {
-        $total_capacity = 0;
-        foreach ($windows as $window) {
-            try {
-                $start = new \DateTime($window['start']);
-                $end = new \DateTime($window['end']);
-                $total_capacity += ($end->getTimestamp() - $start->getTimestamp()) / 60;
-            } catch (\Throwable $e) {
-                continue;
-            }
-        }
-        
+        $total_capacity = self::calculateTotalCapacity($windows);
         $demand = $company_demand[$company] ?? 0;
         
-        if ($demand > 0) {
-            // STRATÉGIE GÉNÉRIQUE : adapter la durée selon la saturation
-            $saturation_ratio = $demand / floor($total_capacity / 5); // Ratio avec durée minimale
-            
-            if ($saturation_ratio > 1.0) {
-                // Situation critique - durée minimale
-                $duration = 5;
-            } elseif ($saturation_ratio > 0.8) {
-                // Saturation élevée - durée courte
-                $duration = 10;
-            } elseif ($saturation_ratio > 0.6) {
-                // Saturation modérée - durée moyenne
-                $duration = 15;
-            } elseif ($saturation_ratio > 0.4) {
-                // Bonne capacité - durée confortable
-                $duration = 20;
-            } else {
-                // Excellente capacité - durée longue
-                $duration = 25;
-            }
-            
-            // Vérifier que la durée choisie permet de satisfaire la demande
-            $max_possible_with_duration = floor($total_capacity / $duration);
-            if ($max_possible_with_duration < $demand && $duration > 5) {
-                // Réduire progressivement la durée si nécessaire
-                if ($duration > 10) $duration = 10;
-                elseif ($duration > 5) $duration = 5;
-            }
-            
-            $optimal_durations[$company] = $duration;
-        } else {
-            $optimal_durations[$company] = 15; // Durée par défaut
-        }
+        $optimal_durations[$company] = self::calculateOptimalDuration($total_capacity, $demand);
     }
 
     // 7. GÉNÉRATION GÉNÉRIQUE des créneaux
     $generateSlots = function($forum_date, $availability, $optimal_durations, $existing_appointments = []) {
         $all_slots = [];
-        $used_times = [];
+        $used_times_by_company = [];
         
+        // Indexer les créneaux déjà utilisés PAR ENTREPRISE (car chaque entreprise a son propre planning)
         foreach ($existing_appointments as $appointment) {
             if ($appointment['appointment_time']) {
                 try {
                     $dt = new \DateTime($appointment['appointment_time']);
-                    $used_times[] = $dt->format('Y-m-d H:i:s');
+                    $company = $appointment['company_name'];
+                    if (!isset($used_times_by_company[$company])) {
+                        $used_times_by_company[$company] = [];
+                    }
+                    $used_times_by_company[$company][] = $dt->format('Y-m-d H:i:s');
                 } catch (\Throwable $e) {
                     continue;
                 }
@@ -292,6 +184,7 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
         
         foreach ($availability as $company => $windows) {
             $duration = $optimal_durations[$company] ?? 15;
+            $used_times = $used_times_by_company[$company] ?? [];
             
             foreach ($windows as $window) {
                 try {
@@ -329,6 +222,11 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
                                 'used' => false,
                                 'duration' => $duration
                             ];
+                            // Ajouter au tracking des créneaux utilisés pour CETTE entreprise
+                            if (!isset($used_times_by_company[$company])) {
+                                $used_times_by_company[$company] = [];
+                            }
+                            $used_times_by_company[$company][] = $adjusted_time;
                             $used_times[] = $adjusted_time;
                         }
                         
@@ -556,6 +454,154 @@ public static function generatePlanning(Connection $conn, int $forum_id): array
     ];
     return $result;
 
+    }
+
+    /**
+     * Calcule la capacité totale en minutes pour une liste de créneaux
+     */
+    private static function calculateTotalCapacity(array $windows): float
+    {
+        $total_minutes = 0;
+        foreach ($windows as $window) {
+            try {
+                $start = new \DateTime($window['start']);
+                $end = new \DateTime($window['end']);
+                $total_minutes += ($end->getTimestamp() - $start->getTimestamp()) / 60;
+            } catch (\Throwable $e) {
+                continue;
+            }
+        }
+        return $total_minutes;
+    }
+
+    /**
+     * Analyse la capacité d'une entreprise et calcule les saturations
+     */
+    private static function analyzeCompanyCapacity(float $capacity_minutes, int $demand): array
+    {
+        $max_5min = max(1, floor($capacity_minutes / self::DURATION_MIN));
+        $max_10min = max(1, floor($capacity_minutes / self::DURATION_SHORT));
+        $max_15min = max(1, floor($capacity_minutes / self::DURATION_MEDIUM));
+        
+        return [
+            'capacity_minutes' => round($capacity_minutes, 1),
+            'demand' => $demand,
+            'max_5min_slots' => $max_5min,
+            'max_10min_slots' => $max_10min,
+            'max_15min_slots' => $max_15min,
+            'saturation_5min' => $demand > 0 ? round(($demand / $max_5min) * 100, 1) : 0,
+            'saturation_10min' => $demand > 0 ? round(($demand / $max_10min) * 100, 1) : 0,
+            'saturation_15min' => $demand > 0 ? round(($demand / $max_15min) * 100, 1) : 0
+        ];
+    }
+
+    /**
+     * Détecte les problèmes de capacité et détermine leur sévérité
+     */
+    private static function detectCapacityIssues(array $capacity_data, string $company, float $total_capacity): array
+    {
+        $has_issue = false;
+        $issue_reasons = [];
+        $severity = 'FAIBLE';
+        
+        $demand = $capacity_data['demand'];
+        $sat_5min = $capacity_data['saturation_5min'];
+        $sat_10min = $capacity_data['saturation_10min'];
+        $sat_15min = $capacity_data['saturation_15min'];
+        
+        // Calculer la durée optimale théorique
+        $optimal_duration_raw = $demand > 0 ? $total_capacity / $demand : 0;
+        
+        // ALERTE CRITIQUE : Si la durée optimale est < 5 min
+        if ($optimal_duration_raw < self::DURATION_MIN && $demand > 0) {
+            $has_issue = true;
+            $severity = 'CRITIQUE';
+            $issue_reasons[] = "⚠️ ALERTE : Durée optimale calculée = " . round($optimal_duration_raw, 1) . " min (< 5 min minimum)";
+            $issue_reasons[] = "Capacité insuffisante : {$total_capacity} min pour {$demand} demandes";
+        }
+        // Vérification par ordre de sévérité décroissante
+        elseif ($sat_5min >= self::SATURATION_CRITICAL) {
+            $has_issue = true;
+            $severity = 'CRITIQUE';
+            if ($demand > $capacity_data['max_5min_slots']) {
+                $issue_reasons[] = "Demande ({$demand}) > capacité max avec 5min ({$capacity_data['max_5min_slots']})";
+            } else {
+                $issue_reasons[] = "Saturation critique : {$sat_5min}% avec 5min";
+            }
+        } elseif ($sat_10min > self::SATURATION_HIGH) {
+            $has_issue = true;
+            $severity = 'ÉLEVÉE';
+            $issue_reasons[] = "Saturation élevée : {$sat_10min}% avec 10min";
+        } elseif ($sat_15min > self::SATURATION_MODERATE) {
+            $has_issue = true;
+            $severity = 'MODÉRÉE';
+            $issue_reasons[] = "Saturation modérée : {$sat_15min}% avec 15min";
+        }
+        
+        return [
+            'has_issue' => $has_issue,
+            'details' => $has_issue ? [
+                'company' => $company,
+                'demand' => $demand,
+                'capacity_minutes' => round($total_capacity, 1),
+                'optimal_duration_raw' => round($optimal_duration_raw, 1),
+                'max_possible_5min' => $capacity_data['max_5min_slots'],
+                'max_possible_10min' => $capacity_data['max_10min_slots'],
+                'issue_reasons' => $issue_reasons,
+                'severity' => $severity,
+                'saturations' => [
+                    '5min' => $sat_5min,
+                    '10min' => $sat_10min,
+                    '15min' => $sat_15min
+                ]
+            ] : []
+        ];
+    }
+
+    /**
+     * Calcule la durée optimale de rendez-vous selon la capacité et la demande
+     * Méthode : Division directe du temps disponible par le nombre de demandes
+     */
+    private static function calculateOptimalDuration(float $capacity_minutes, int $demand): int
+    {
+        if ($demand === 0) {
+            return self::DURATION_MEDIUM; // Durée par défaut
+        }
+        
+        // Calcul direct : temps disponible / nombre de demandes
+        $optimal_duration_raw = $capacity_minutes / $demand;
+        
+        // Arrondir à la durée standard la plus proche (5, 10, 15, 20, 25)
+        if ($optimal_duration_raw >= 22.5) {
+            $duration = self::DURATION_LONG;          // 25 min
+        } elseif ($optimal_duration_raw >= 17.5) {
+            $duration = self::DURATION_COMFORTABLE;   // 20 min
+        } elseif ($optimal_duration_raw >= 12.5) {
+            $duration = self::DURATION_MEDIUM;        // 15 min
+        } elseif ($optimal_duration_raw >= 7.5) {
+            $duration = self::DURATION_SHORT;         // 10 min
+        } else {
+            $duration = self::DURATION_MIN;           // 5 min
+        }
+        
+        // Validation : vérifier qu'on peut satisfaire toutes les demandes
+        $max_appointments_possible = floor($capacity_minutes / $duration);
+        
+        // Si la durée choisie ne suffit pas, réduire progressivement
+        while ($max_appointments_possible < $demand && $duration > self::DURATION_MIN) {
+            if ($duration === self::DURATION_LONG) {
+                $duration = self::DURATION_COMFORTABLE;
+            } elseif ($duration === self::DURATION_COMFORTABLE) {
+                $duration = self::DURATION_MEDIUM;
+            } elseif ($duration === self::DURATION_MEDIUM) {
+                $duration = self::DURATION_SHORT;
+            } elseif ($duration === self::DURATION_SHORT) {
+                $duration = self::DURATION_MIN;
+            }
+            $max_appointments_possible = floor($capacity_minutes / $duration);
+        }
+        
+        return $duration;
     }
 
 }
