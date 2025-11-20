@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use App\Form\CsvImportType;
+use App\Import\Contract\ImporterFactory;
+use App\Service\CsvImportService;
 
 /**
  * Contrôleur de gestion des entreprises (Company).
@@ -32,9 +35,14 @@ class CompanyController extends AbstractController
     public function index(CompanyRepository $companyRepository): Response{
         // Récupère toutes les entreprises triées par nom via le repository custom
         $companies = $companyRepository->findAllOrderedByName();
-
+        $importForm = $this->createForm(CsvImportType::class, null, [
+            'action' => $this->generateUrl('app_company_import'), 
+            'method' => 'POST',
+        ]);
+        
         return $this->render('company/index.html.twig', [
             'companies' => $companies,
+            'importForm' => $importForm->createView(),
         ]);
     }
 
@@ -149,5 +157,34 @@ class CompanyController extends AbstractController
         return $this->render('company/delete.html.twig', [
             'company' => $company,
         ]);
+    }
+
+    /**
+     * Importe des entreprises depuis un fichier CSV uploadé.
+     *
+     * Route: POST /company/import (name: app_company_import)
+     */
+    #[Route('/import', name: 'import', methods: ['POST'])]
+    public function import(Request $request, EntityManagerInterface $em, ImporterFactory $importerFactory, CsvImportService $csvImportService): Response
+    {
+        $form = $this->createForm(CsvImportType::class);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('warning', 'Le fichier fourni n’est pas valide.');
+            return $this->redirectToRoute('app_company_index');
+        }
+
+        try {
+            $uploaded = $form->get('csvFile')->getData();
+            $path = $csvImportService->moveUploadedCsvAndGetPath($uploaded, 'company_import_');
+            $companies = $csvImportService->runImport($path, $importerFactory, 'company');
+            $csvImportService->persistImportedEntities($companies, $em);
+            $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($companies)} entreprises).");
+        } catch (\Throwable $e) {
+            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_company_index');
     }
 }
