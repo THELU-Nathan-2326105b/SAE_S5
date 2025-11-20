@@ -7,7 +7,7 @@
   <h1 id="user-title" class="user-title">Utilisateur</h1>
 
   <div id="user-data" class="user-data">
-    {# <p>ID : {{ user.userId }}</p> #}
+    {# <p>ID : {{ user.id }}</p> #}
     <p id="user-email" class="user-email">Email : {{ user.userEmail|default('') }}</p>
     {# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
     {# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
@@ -20,14 +20,14 @@
   </div>
 
   <div id="user-actions" class="user-actions">
-    <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.userId}) }}">Éditer</a>
-    <a class="btn back-user" href="{{ path('app_user_index', { id: user.userId }) }}">Retour</a>
-    <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.userId }) }}">Supprimer</a>
+    <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.id}) }}">Éditer</a>
+    <a class="btn back-user" href="{{ path('app_user_index', { id: user.id }) }}">Retour</a>
+    <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
   </div>
 </div>
 
-{# <form method="post" action="{{ path('app_user_delete', {id: user.userId}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+{# <form method="post" action="{{ path('app_user_delete', {id: user.id}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
   <button>Supprimer</button>
 </form> #}
 {% endblock %}
