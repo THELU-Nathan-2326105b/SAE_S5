@@ -7,6 +7,11 @@
 
     <a href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
 
+    {# Import CSV partial - passes action route explicitly for company import #}
+    {% if importForm is defined %}
+        {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
+    {% endif %}
+
     <table>
         <thead>
             <tr>
