@@ -1,16 +1,35 @@
 {# templates/user/_form.html.twig #}
-{{ form_start(form) }}
-  {{ form_errors(form) }}
-  {{ form_row(form.user_email) }}
-  {{ form_row(form.plainPassword) }}
-  {{ form_row(form.user_role) }}
-  {{ form_row(form.user_firstname) }}
-  {{ form_row(form.user_lastname) }}
-  {{ form_row(form.user_level) }}
+{{ form_start(form, {'attr': {'id': 'user-form', 'class': 'user-form'}}) }}
+  <div id="form-errors" class="form-errors">{{ form_errors(form) }}</div>
 
-  <div>
-    <button type="submit">
+  <div class="form-group">
+    {{ form_row(form.user_email, {'attr': {'class': 'form-control user-email'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.plainPassword, {'attr': {'class': 'form-control user-password'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.user_role, {'attr': {'class': 'form-control user-role'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.user_firstname, {'attr': {'class': 'form-control user-firstname'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.user_lastname, {'attr': {'class': 'form-control user-lastname'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.user_level, {'attr': {'class': 'form-control user-level'}}) }}
+  </div>
+
+  <div id="form-actions" class="form-actions">
+    <button id="submit-user" class="btn btn-primary submit-user" type="submit">
       {{ button_label|default('Enregistrer') }}
     </button>
   </div>
-{{ form_end(form) }} 
+
+{{ form_end(form) }}

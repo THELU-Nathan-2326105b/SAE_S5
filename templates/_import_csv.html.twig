@@ -1,12 +1,20 @@
-<div>
-  <h2 >Import CSV</h2>
+<div id="import-csv" class="import-csv">
+  <h2 id="import-csv-title" class="import-csv-title">Import CSV</h2>
+
   {{ form_start(importForm, {
-    attr: { enctype: 'multipart/form-data' },
+    attr: { enctype: 'multipart/form-data', id: 'import-csv-form', class: 'import-csv-form' },
     action: path(action_route|default('app_user_import')),
     method: 'POST'
   }) }}
-    {{ form_row(importForm.csvFile) }}
-    <button>Importer</button>
+
+    <div id="import-field" class="import-field">
+      {{ form_row(importForm.csvFile, {'attr': {'id': 'import-csv-file', 'class': 'import-csv-file'}}) }}
+    </div>
+
+    <div id="import-actions" class="import-actions">
+      <button id="import-csv-submit" class="btn import-csv-submit">Importer</button>
+    </div>
+
   {{ form_end(importForm) }}
 
 </div>
