@@ -2,7 +2,7 @@
   <h2 >Import CSV</h2>
   {{ form_start(importForm, {
     attr: { enctype: 'multipart/form-data' },
-    action: path('app_user_import'),   
+    action: path(action_route|default('app_user_import')),
     method: 'POST'
   }) }}
     {{ form_row(importForm.csvFile) }}
