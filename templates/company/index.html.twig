@@ -42,7 +42,7 @@
                     <a class="action-link view-company" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>
                     {# {% if is_granted('ROLE_ADMIN') %} #}
                         | <a class="action-link edit-company" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
-                        |
+
                         <form class="delete-company-form" method="post"
                               action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
                               style="display:inline"
