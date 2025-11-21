@@ -45,18 +45,18 @@ class PlanningAlgo
             return ['success' => false, 'message' => 'Forum not found', 'appointments' => []];
         }
 
-        // 1. Charger les entreprises présentes avec leurs disponibilités
+        // 1. Charger les entreprises présentes avec leurs disponibilités ET leurs critères de recherche
         $windows = $conn->fetchAllAssociative(
-            'SELECT ip.company_name, ip.start_time, ip.end_time
+            'SELECT ip.company_name, ip.start_time, ip.end_time, ip.search_type, ip.search_level
              FROM is_present ip
              WHERE ip.forum_id = ?
              ORDER BY ip.company_name, ip.start_time',
             [$forum_id]
         );
 
-        // 2. Charger TOUTES les demandes de rendez-vous
+        // 2. Charger TOUTES les demandes de rendez-vous avec le rôle et le niveau de l'étudiant
         $requests = $conn->fetchAllAssociative(
-            'SELECT a.user_id, a.company_name, u.user_firstname, u.user_lastname
+            'SELECT a.user_id, a.company_name, u.user_firstname, u.user_lastname, u.user_role, u.user_level
              FROM appointment a
              INNER JOIN users u ON u.user_id = a.user_id
              WHERE a.forum_id = ? AND a.appointment_request = ?
@@ -76,19 +76,65 @@ class PlanningAlgo
         return ['success' => false, 'message' => 'DB error: '.$e->getMessage(), 'appointments' => []];
     }
 
-    // 3. Structurer les données
+    // 3. Structurer les données avec filtrage par rôle ET niveau
     $all_student_requests = [];
     $company_demand = [];
-    
+    $company_search_types = [];
+    $company_search_levels = [];
+
+    // Extraire les search_type et search_level des entreprises
+    foreach ($windows as $w) {
+        $company_search_types[$w['company_name']] = $w['search_type'];
+        $company_search_levels[$w['company_name']] = $w['search_level'];
+    }
+
+    // Filtrer les demandes selon le match rôle étudiant / search_type entreprise ET niveau étudiant / search_level entreprise
+    $filtered_requests = [];
+    $rejected_requests = [];
+
     foreach ($requests as $request) {
+        $user_role = $request['user_role'];
+        $user_level = $request['user_level'];
+        $company = $request['company_name'];
+        $search_type = $company_search_types[$company] ?? null;
+        $search_level = $company_search_levels[$company] ?? null;
+
+        $is_role_match = self::matchesSearchType($user_role, $search_type);
+        $is_level_match = self::matchesSearchLevel($user_level, $search_level);
+
+        if ($is_role_match && $is_level_match) {
+            $filtered_requests[] = $request;
+        } else {
+            $reason = [];
+            if (!$is_role_match) {
+                $reason[] = "Rôle étudiant ($user_role) ne correspond pas au critère de l'entreprise ($search_type)";
+            }
+            if (!$is_level_match) {
+                $reason[] = "Niveau étudiant ($user_level) ne correspond pas au niveau recherché par l'entreprise ($search_level)";
+            }
+            $rejected_requests[] = [
+                'user_id' => $request['user_id'],
+                'company_name' => $company,
+                'user_role' => $user_role,
+                'user_level' => $user_level,
+                'company_search_type' => $search_type,
+                'company_search_level' => $search_level,
+                'reason' => implode(' | ', $reason)
+            ];
+        }
+    }
+
+    foreach ($filtered_requests as $request) {
         $user_id = $request['user_id'];
         $company = $request['company_name'];
-        
+
         if (!isset($all_student_requests[$user_id])) {
             $all_student_requests[$user_id] = [
                 'user_id' => $user_id,
                 'firstname' => $request['user_firstname'],
                 'lastname' => $request['user_lastname'],
+                'role' => $request['user_role'],
+                'level' => $request['user_level'],
                 'requests' => []
             ];
         }
@@ -122,6 +168,7 @@ class PlanningAlgo
                 'optimal_duration_raw' => 0,
                 'max_possible_5min' => 0,
                 'max_possible_10min' => 0,
+                'max_possible_15min' => 0,
                 'issue_reasons' => ["⚠️ AUCUNE DISPONIBILITÉ : L'entreprise n'est pas présente au forum (pas d'entrée dans is_present)"],
                 'severity' => 'CRITIQUE',
                 'saturations' => [
@@ -439,11 +486,13 @@ class PlanningAlgo
         ],
         
         'unassigned_requests' => $unassigned_requests,
+        'rejected_requests' => $rejected_requests, // Ajout des demandes rejetées pour filtrage
         
         'stats' => [
             'total_requests' => $total_requests,
             'assigned_requests' => $assigned_count,
             'unassigned_requests' => $unassigned_count,
+            'rejected_requests' => count($rejected_requests),
             'success_rate' => $success_rate . '%',
             'duration_strategy' => [
                 'min' => min($optimal_durations),
@@ -454,6 +503,36 @@ class PlanningAlgo
     ];
     return $result;
 
+    }
+
+    /**
+     * Vérifie si le rôle de l'étudiant correspond au search_type de l'entreprise
+     */
+    private static function matchesSearchType(string $user_role, ?string $search_type): bool
+    {
+        if ($search_type === null) {
+            return false; // Entreprise sans critère = pas de match
+        }
+        
+        // Si l'entreprise cherche les deux types
+        if ($search_type === 'internship;alternance') {
+            return in_array($user_role, ['internship', 'alternance']);
+        }
+        
+        // Sinon, match exact
+        return $user_role === $search_type;
+    }
+
+    /**
+     * Vérifie si le niveau de l'étudiant correspond au search_level de l'entreprise
+     */
+    private static function matchesSearchLevel(?string $user_level, ?string $search_level): bool
+    {
+        if ($search_level === null || $user_level === null) {
+            return false;
+        }
+        $levels = explode(';', $search_level);
+        return in_array($user_level, $levels);
     }
 
     /**
