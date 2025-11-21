@@ -323,22 +323,47 @@ class PlanningAlgo
     $assignments = [];
     $unassigned_requests = [];
     
-    // Parcourir tous les étudiants et leurs demandes
+    // Trier les demandes par entreprise et par rôle (internship d'abord, puis alternance)
+    $requests_by_company_and_role = [];
     foreach ($all_student_requests as $student_id => $student) {
         foreach ($student['requests'] as $requested_company) {
+            if (!isset($requests_by_company_and_role[$requested_company])) {
+                $requests_by_company_and_role[$requested_company] = [
+                    'internship' => [],
+                    'alternance' => []
+                ];
+            }
+            
+            $role = $student['role'];
+            if ($role === 'internship' || $role === 'alternance') {
+                $requests_by_company_and_role[$requested_company][$role][] = [
+                    'student_id' => $student_id,
+                    'student' => $student
+                ];
+            }
+        }
+    }
+    
+    // Assigner les rendez-vous : d'abord tous les internship, puis tous les alternance
+    foreach ($requests_by_company_and_role as $company => $roles_data) {
+        // D'abord traiter tous les étudiants en recherche de stage
+        foreach ($roles_data['internship'] as $request_data) {
+            $student_id = $request_data['student_id'];
+            $student = $request_data['student'];
             $assigned = false;
             
-            if (isset($slots_by_company[$requested_company])) {
-                foreach ($slots_by_company[$requested_company] as &$slot) {
+            if (isset($slots_by_company[$company])) {
+                foreach ($slots_by_company[$company] as &$slot) {
                     if (!$slot['used']) {
                         $assignments[] = [
                             'user_id' => $student_id,
-                            'company_name' => $requested_company,
+                            'company_name' => $company,
                             'forum_id' => $forum_id,
                             'appointment_time' => $slot['start'],
                             'firstname' => $student['firstname'],
                             'lastname' => $student['lastname'],
-                            'duration' => $slot['duration']
+                            'duration' => $slot['duration'],
+                            'role' => $student['role']
                         ];
                         $slot['used'] = true;
                         $assigned = true;
@@ -350,9 +375,47 @@ class PlanningAlgo
             if (!$assigned) {
                 $unassigned_requests[] = [
                     'user_id' => $student_id,
-                    'company_name' => $requested_company,
+                    'company_name' => $company,
                     'firstname' => $student['firstname'],
-                    'lastname' => $student['lastname']
+                    'lastname' => $student['lastname'],
+                    'role' => $student['role']
+                ];
+            }
+        }
+        
+        // Ensuite traiter tous les étudiants en recherche d'alternance
+        foreach ($roles_data['alternance'] as $request_data) {
+            $student_id = $request_data['student_id'];
+            $student = $request_data['student'];
+            $assigned = false;
+            
+            if (isset($slots_by_company[$company])) {
+                foreach ($slots_by_company[$company] as &$slot) {
+                    if (!$slot['used']) {
+                        $assignments[] = [
+                            'user_id' => $student_id,
+                            'company_name' => $company,
+                            'forum_id' => $forum_id,
+                            'appointment_time' => $slot['start'],
+                            'firstname' => $student['firstname'],
+                            'lastname' => $student['lastname'],
+                            'duration' => $slot['duration'],
+                            'role' => $student['role']
+                        ];
+                        $slot['used'] = true;
+                        $assigned = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!$assigned) {
+                $unassigned_requests[] = [
+                    'user_id' => $student_id,
+                    'company_name' => $company,
+                    'firstname' => $student['firstname'],
+                    'lastname' => $student['lastname'],
+                    'role' => $student['role']
                 ];
             }
         }
