@@ -65,6 +65,67 @@
 
 /*========== Page Gestion des entreprises ==========*/
 
+/* Section Import CSV */
+#import-csv {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #008b57;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+#import-csv-title {
+    color: #008b57;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+#import-csv-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.import-field {
+    display: flex;
+    justify-content: center;
+}
+
+#import-csv-file {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 1rem;
+}
+
+.import-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.import-csv-submit {
+    background-color: #008b57;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.import-csv-submit:hover {
+    background-color: #006a43;
+}
+
+
 .title-entreprises {
     color: #008b57;
     text-align: center;
