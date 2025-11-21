@@ -1,5 +1,6 @@
 /*==================== PAGE ADMIN ==================== */
-.admin-buttons{
+
+.admin-buttons {
     display: flex;
     flex-direction: row;
     width: 80%;
@@ -10,7 +11,7 @@
 
 .etudiant-box,
 .forum-box,
-.entreprise-box{
+.entreprise-box {
     background: #008b57;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -27,23 +28,22 @@
 
 .etudiant-box img,
 .forum-box img,
-.entreprise-box img{
+.entreprise-box img {
     width: 100px;
     height: 100px;
     object-fit: contain;
     margin-bottom: 1rem;
 }
 
-/* Texte */
 .etudiant-box p,
 .forum-box p,
-.entreprise-box p{
+.entreprise-box p {
     font-size: 1.2rem;
     font-weight: 600;
     color: white;
 }
 
-/* Effet hover */
+/* Hover */
 .etudiant-box:hover,
 .forum-box:hover,
 .entreprise-box:hover {
@@ -51,20 +51,21 @@
     box-shadow: 0 0 20px #00a34a;
 }
 
-a{
+.adminpage a {
     text-decoration: none;
 }
 
-.title-admin{
+.title-admin {
     color: #008b57;
     text-align: center;
     margin-top: 5%;
     font-size: 2.5rem;
 }
 
-/*========== Page gestion des entreprises ==========*/
 
-.title-entreprises{
+/*========== Page Gestion des entreprises ==========*/
+
+.title-entreprises {
     color: #008b57;
     text-align: center;
     font-size: 2.5rem;
@@ -75,7 +76,7 @@ a{
     padding: 2rem;
 }
 
-/* ======== Tableau des entreprises ======== */
+/* ======== Tableau ======== */
 
 .companies-table {
     width: 90%;
@@ -120,7 +121,7 @@ a{
     gap: 0.6rem;
 }
 
-.btn{
+.btn {
     border-radius: 5px;
     color: white;
     border: none;
@@ -130,19 +131,19 @@ a{
     cursor: pointer;
 }
 
-.btn-edit{
+.btn-edit {
     background-color: #008b57;
 }
 
-.btn-edit:hover{
+.btn-edit:hover {
     background-color: #006b47;
 }
 
-.btn-delete{
+.btn-delete {
     background-color: #B0413E;
 }
 
-.btn-delete:hover{
+.btn-delete:hover {
     background-color: #8e3532;
 }
 
@@ -152,10 +153,10 @@ a{
     margin-top: 2rem;
 }
 
-/* ===================== MODAL POPUP ===================== */
+/* ===================== MODAL ===================== */
 
 .modal-overlay {
-    display: none; /* masqué par défaut */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -223,24 +224,6 @@ a{
     transition: background 0.3s ease;
 }
 
-.btn-edit {
-    background: #008b57;
-    color: #fff;
-}
-
-.btn-edit:hover {
-    background: #007149;
-}
-
-.btn-delete {
-    background: #c0392b;
-    color: #fff;
-}
-
-.btn-delete:hover {
-    background: #9f3836;
-}
-
 .modal-close {
     background: #B0413E;
     color: #fff;
@@ -250,22 +233,121 @@ a{
     background: #9f3836;
 }
 
-/* Animation d’apparition */
+/* Animation */
 @keyframes fadeIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 /* ======== Gestion du forum ======== */
 
-.title-forum{
+.title-forum {
     color: #008b57;
     text-align: center;
     font-size: 2.5rem;
+}
+
+
+/* ===================== RESPONSIVE ===================== */
+
+/* --- Tablettes --- */
+@media (max-width: 1100px) {
+    .admin-buttons {
+        width: 90%;
+        gap: 2.5rem;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+/* --- Tablettes / smartphones horizontaux --- */
+@media (max-width: 900px) {
+    .admin-buttons {
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 220px;
+        height: 220px;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 2.2rem;
+    }
+}
+
+/* --- Smartphones --- */
+@media (max-width: 600px) {
+    .admin-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 180px;
+        height: 180px;
+    }
+
+    .etudiant-box p,
+    .forum-box p,
+    .entreprise-box p {
+        font-size: 1rem;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 1.8rem;
+    }
+
+    /* Tableau mobile */
+    .companies-table {
+        font-size: 0.85rem;
+    }
+
+    .companies-table th,
+    .companies-table td {
+        padding: 0.7rem 1rem;
+    }
+
+    .company-actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* --- Très petits mobiles --- */
+@media (max-width: 400px) {
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 160px;
+        height: 160px;
+    }
+
+    .etudiant-box img,
+    .forum-box img,
+    .entreprise-box img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 1.6rem;
+    }
 }

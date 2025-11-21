@@ -1,4 +1,5 @@
 /*==================== PAGE LOGIN ==================== */
+
 /* ----- PAGE LOGIN ----- */
 .loginpage {
     text-align: center;
@@ -23,7 +24,8 @@
 /* Carte blanche centrée */
 .login-section {
     max-width: 380px;
-    margin: 0 auto; /* centre sous le titre */
+    width: 90%;
+    margin: 0 auto;
     background: #fff;
     padding: 30px 25px;
     border-radius: 15px;
@@ -112,11 +114,70 @@
     font-size: 0.9rem;
     color: #555;
 }
+
 .signup-text a {
     color: #008060;
     text-decoration: none;
     font-weight: 600;
 }
+
 .signup-text a:hover {
     color: #006b50;
+}
+
+
+/* ====================== RESPONSIVE ====================== */
+
+/* Tablettes */
+@media (max-width: 900px) {
+    .title {
+        font-size: 2.5rem;
+        margin-bottom: 35px;
+    }
+
+    .login-section {
+        padding: 25px 20px;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 600px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .loginpage {
+        padding: 25px 15px;
+    }
+
+    .login-section {
+        padding: 20px 18px;
+    }
+
+    .form-group input {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .validate-btn {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 400px) {
+    .title {
+        font-size: 1.7rem;
+    }
+
+    .login-section {
+        padding: 18px 15px;
+    }
+
+    .signup-text,
+    .forgot-link,
+    .show-password {
+        font-size: 0.8rem;
+    }
 }

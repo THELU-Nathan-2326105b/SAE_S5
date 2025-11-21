@@ -1,5 +1,4 @@
 /*==================== PAGE Accueil ==================== */
-/* ----- PAGE ACCUEIL ----- */
 
 /* Section avec l'image de fond */
 .image-section {
@@ -25,7 +24,7 @@
     z-index: 2;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* aligne le texte à gauche */
+    align-items: flex-start;
     justify-content: center;
     height: 100%;
     padding-left: 5%;
@@ -40,12 +39,12 @@
 
 .headline-text_start {
     display: block;
-    color: #008b57; /* vert */
+    color: #008b57;
 }
 
 .headline-text_end {
     display: block;
-    color: white; /* blanc */
+    color: white;
 }
 
 /* Bouton */
@@ -104,14 +103,39 @@
 .forum-section img {
     width: 50%;
     height: 100%;
-    object-fit: cover
+    object-fit: cover;
 }
 
+
+/* ====================== RESPONSIVE ====================== */
+
+/* --- Tablettes --- */
+@media (max-width: 1200px) {
+    .headline-text {
+        font-size: 4rem;
+    }
+    .forum-section {
+        width: 80%;
+    }
+    .forum-text {
+        padding: 3rem;
+    }
+}
+
+/* --- Téléphones grands écrans --- */
 @media (max-width: 900px) {
+    .headline-text {
+        font-size: 3.2rem;
+    }
+    .head-content {
+        padding-left: 3%;
+    }
     .forum-section {
         flex-direction: column;
+        width: 90%;
     }
-    .forum-text, .forum-section img {
+    .forum-text,
+    .forum-section img {
         width: 100%;
     }
     .forum-text {
@@ -120,3 +144,32 @@
     }
 }
 
+/* --- Téléphones moyens et petits --- */
+@media (max-width: 600px) {
+    .image-section {
+        height: 80vh;
+    }
+    .headline-text {
+        font-size: 2.4rem;
+    }
+    .button1 {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    .forum-text .text-title {
+        font-size: 2rem;
+    }
+    .forum-text .text-main {
+        font-size: 1rem;
+    }
+}
+
+/* --- Très petits écrans --- */
+@media (max-width: 400px) {
+    .headline-text {
+        font-size: 1.9rem;
+    }
+    .forum-text {
+        padding: 1.5rem;
+    }
+}

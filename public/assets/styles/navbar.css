@@ -1,11 +1,11 @@
+/* ================= NAVBAR ================= */
 .navbar {
     width: 96%;
     background-color: #008b57;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2%;
-    height: 100px;
+    padding: 1% 2%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     position: sticky;
     top: 0;
@@ -36,7 +36,7 @@
     display: inline-block;
 }
 
-/* Soulignement au hover avec effet de scale */
+/* Hover underline */
 .navbar-links li a::after {
     content: "";
     position: absolute;
@@ -50,16 +50,12 @@
     transition: transform 0.3s ease;
 }
 
-.navbar-links li a:hover::after {
-    transform: scaleX(1);
-}
-
-/* Soulignement pour le lien actif */
+.navbar-links li a:hover::after,
 .navbar-links li a.active::after {
     transform: scaleX(1);
 }
 
-/* Bouton connexion */
+/* Bouton de connexion */
 .navbar-button {
     background: white;
     padding: 10px 20px;
@@ -72,4 +68,72 @@
 .navbar-button:hover {
     background: #22aa69;
     color: white;
+}
+
+/* =============== HAMBURGER =============== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+/* =============== RESPONSIVE =============== */
+@media (max-width: 900px) {
+
+    .navbar-links {
+        position: fixed;
+        top: 0;
+        right: -100%; /* caché */
+        height: 100vh;
+        width: 250px;
+        background: #008b57;
+        flex-direction: column;
+        gap: 40px;
+        padding-top: 120px;
+        padding-left: 30px;
+        transition: 0.4s ease;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.4);
+    }
+
+    .navbar-links.active {
+        right: 0; /* affiche */
+    }
+
+    .navbar-button {
+        background: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        color: #222223;
+        text-decoration: none;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .navbar-button:hover {
+        background: #22aa69;
+        color: white;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    /* Animation croix */
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translateY(8px);
+    }
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translateY(-8px);
+    }
 }

@@ -1,32 +1,208 @@
+<style>
+    /* ================= NAVBAR ================= */
+    .navbar {
+        width: 96%;
+        background-color: #008b57;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1% 2%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    /* Logo */
+    .navbar-logo img {
+        height: 50px;
+    }
+
+    /* Liens */
+    .navbar-links {
+        list-style: none;
+        display: flex;
+        gap: 80px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar-links li a {
+        text-decoration: none;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s;
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Hover underline */
+    .navbar-links li a::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: white;
+        left: 0;
+        bottom: -5px;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease;
+    }
+
+    .navbar-links li a:hover::after,
+    .navbar-links li a.active::after {
+        transform: scaleX(1);
+    }
+
+    /* Bouton de connexion */
+    .navbar-button {
+        background: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        color: #222223;
+        text-decoration: none;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .navbar-button:hover {
+        background: #22aa69;
+        color: white;
+    }
+
+    /* =============== HAMBURGER =============== */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+    .hamburger span {
+        width: 28px;
+        height: 3px;
+        background: white;
+        border-radius: 3px;
+        transition: 0.3s;
+    }
+
+    /* =============== RESPONSIVE =============== */
+    @media (max-width: 900px) {
+
+        .navbar-links {
+            position: fixed;
+            top: 0;
+            right: -100%; /* caché */
+            height: 100vh;
+            width: 250px;
+            background: #008b57;
+            flex-direction: column;
+            gap: 40px;
+            padding-top: 120px;
+            padding-left: 30px;
+            transition: 0.4s ease;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.4);
+        }
+
+        .navbar-links.active {
+            right: 0; /* affiche */
+        }
+
+        .navbar-button {
+            margin-top: 20px;
+        }
+
+        .hamburger {
+            display: flex;
+        }
+
+        /* Animation croix */
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translateY(8px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translateY(-8px);
+        }
+    }
+
+    .desktop-only { display: block; }
+    .mobile-only { display: none; }
+
+    @media (max-width: 900px) {
+        .desktop-only { display: none; }
+        .mobile-only { display: block; }
+    }
+
+
+</style>
 <nav class="navbar">
+
     <div class="navbar-logo">
         <a href="/">
             <img src="/assets/images/LOGO_AMOS_WHITE.png" alt="Logo AMOS">
-            <link rel="stylesheet" href="/assets/styles/navbar.css">
         </a>
     </div>
-    <link rel="stylesheet" href="/assets/styles/navbar.css">
+
+    <!-- Menu liens -->
     <ul class="navbar-links">
         <li><a href="{{ path('home') }}">ACCUEIL</a></li>
+
         {% if app.session is defined and app.session is not null %}
             {% set user = app.session.get('user') %}
             {% if user is not null %}
+
                 {% if user.role is defined and (user.role|lower != 'admin') %}
                     <li><a href="{{ path('forum') }}">FORUM</a></li>
                     <li><a href="{{ path('planning') }}">PLANNING</a></li>
                 {% endif %}
+
                 {% if user.role is defined and (user.role|lower == 'admin') %}
                     <li><a href="{{ path('admin') }}">INTERFACE ADMIN</a></li>
                 {% endif %}
+
                 <li><a href="{{ path('profil') }}">PROFIL</a></li>
+
             {% endif %}
         {% endif %}
+
+        <!-- Bouton dans le menu mobile -->
+        <li class="mobile-only">
+            {% if app.session is defined and app.session is not null and app.session.get('user') %}
+                <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
+            {% else %}
+                <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
+            {% endif %}
+        </li>
     </ul>
-    <div class="navbar-action">
+
+    <!-- Bouton connexion affiché en desktop -->
+    <div class="navbar-action desktop-only">
         {% if app.session is defined and app.session is not null and app.session.get('user') %}
             <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
         {% else %}
             <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
         {% endif %}
     </div>
+
+    <!-- Hamburger -->
+    <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
 </nav>
+<script>
+    const hamburger = document.querySelector(".hamburger");
+    const links = document.querySelector(".navbar-links");
+
+    hamburger.addEventListener("click", () => {
+        links.classList.toggle("active");
+        hamburger.classList.toggle("active");
+    });
+</script>
+
