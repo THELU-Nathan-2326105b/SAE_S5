@@ -1,19 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'company/base.html.twig' %}
 
 {% block title %}{{ company.companyName }}{% endblock %}
 
 {% block body %}
-    <h1>{{ company.companyName }}</h1>
+    <div id="company-show" class="company-show container">
+        <h1 id="company-title">{{ company.companyName }}</h1>
 
-    {% if company.companyLogo %}
-        <img src="{{ asset('uploads/logos/' ~ company.companyLogo) }}" alt="Logo de {{ company.companyName }}" style="max-height: 150px;">
-    {% endif %}
+        {% if company.companyLogo %}
+            <img id="company-logo" class="company-logo" src="{{ asset('uploads/logos/' ~ company.companyLogo) }}" alt="Logo de {{ company.companyName }}" style="max-height: 150px;">
+        {% endif %}
 
-    <p>
-        {{ company.companyDescription is not empty ? company.companyDescription : 'Aucune description disponible.' }}
-    </p>
+        <div id="company-description" class="company-description">
+            {{ company.companyDescription is not empty ? company.companyDescription : 'Aucune description disponible.' }}
+        </div>
 
-    <a href="{{ path('app_company_index') }}">Retour</a> |
-    <a href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a> |
-    <a href="{{ path('app_company_delete', { company_name: company.companyName}) }}">Supprimer</a>
+        <div id="company-actions" class="company-actions">
+            <a id="company-back" class="btn company-back" href="{{ path('app_company_index') }}">Retour</a>
+            {# {% if is_granted('ROLE_ADMIN') %} #}
+                | <a id="company-edit" class="btn company-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
+                | <a id="company-delete" class="btn btn-danger company-delete" href="{{ path('app_company_delete', { company_name: company.companyName}) }}">Supprimer</a>
+            {# {% endif %} #}
+        </div>
+    </div>
 {% endblock %}

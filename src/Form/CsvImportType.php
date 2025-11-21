@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *      - restreint à des fichiers CSV.
  * Téléverser un fichier CSV contenant une liste d'utilisateurs 
  */
-final class UsersCsvImportType extends AbstractType
+final class CsvImportType extends AbstractType
 {
     
     /**

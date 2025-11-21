@@ -1,13 +1,15 @@
 {# templates/user/delete.html.twig #}
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
 
 {% block body %}
-<h1>Supprimer l’utilisateur</h1>
-<p>Es-tu sûr(e) ?</p>
+<div id="user-delete" class="user-delete container">
+    <h1 id="user-delete-title" class="user-delete-title">Supprimer l’utilisateur</h1>
+    <p id="user-delete-confirm" class="user-delete-confirm">Es-tu sûr(e) ?</p>
 
-<form method="post" action="{{ path('app_user_delete', { id: user.userId }) }}">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
-    <button>Oui</button>
-    <a href="{{ path('app_user_show', { id: user.userId }) }}">Non</a>
-</form>
+    <form id="user-delete-form" class="user-delete-form" method="post" action="{{ path('app_user_delete', { id: user.userId }) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+            <button id="user-delete-yes" class="btn btn-danger">Oui</button>
+            <a id="user-delete-no" class="btn btn-secondary" href="{{ path('app_user_show', { id: user.userId }) }}">Non</a>
+    </form>
+</div>
 {% endblock %}

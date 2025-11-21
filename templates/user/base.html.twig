@@ -1,0 +1,7 @@
+{# templates/user/base.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('assets/styles/users.css') }}">
+{% endblock %}

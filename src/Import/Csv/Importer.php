@@ -4,10 +4,12 @@
 namespace App\Import\Csv;
 
 use App\Import\Contract\Importer as ImporterContract;
-use App\Mapper\Contract\Mapper as MapperContract;
+use App\Mapper\Contract\MapperFactory;
+use App\Mapper\Contract\Mapper;;
 use Psr\Container\ContainerInterface;
 use InvalidArgumentException;
 use SplFileObject;
+use RuntimeException;
 
 
 class Importer implements ImporterContract
@@ -15,44 +17,33 @@ class Importer implements ImporterContract
     // private string $delimiter = ',';
     // private string $enclosure = '"';
     // private string $escape    = '\\';
-    private ContainerInterface $mapperLocator;
+    private MapperFactory $mapperFactory;
     
-    public function __construct(ContainerInterface $mapperLocator ) {
-        $this->mapperLocator=$mapperLocator;
+    public function __construct(MapperFactory $mapperFactory ) {
+        $this->mapperFactory=$mapperFactory;
     }
 
 
     public function import(string $filePath, string $entity): array
     {
-        //dd("begin import");
         $mapper = $this->resolveMapper($entity);
-        // dd("resolveMapper");
         $file    = $this->openFile($filePath);
-        //dd("filePath");
         $headers = $this->readHeaders($file);
-        // dd($headers);
-        //dump($headers);
         $out = [];
 
         while (!$file->eof()) {
             $row = $this->readRow($file);
-            // dd("readRow");
             if (!is_null($row)&&!$this->isEmptyRow($row)) {
                 $row= $this->alignRowToHeaders($headers, $row);
-                // dd("alignRowToHeaders");
                 $assoc= $this->combineRow($headers, $row);
-                // dd("combineRow");
                 if (!is_null($assoc)) {
-                    // dd("is_not_null"); 
                     $assoc=$this->trimAssoc($assoc);
-                    //dd("trimAssoc");
                     $mappedEntity=$this->mapRow($assoc, $mapper);
-                    // dd("mapRow");
                     if ($mappedEntity !== null) {
                         $out[]= $mappedEntity;
                     }
                 }else{
-                //    dd("is_null"); 
+                    throw new RuntimeException('Erreur lors de la combinaison des entêtes et de la ligne du CSV.');
                 } 
             }
         }
@@ -64,20 +55,15 @@ class Importer implements ImporterContract
     private function openFile(string $path,string $mode="r"): SplFileObject
     {
         $f =new SplFileObject($path,$mode);
-        //$f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         $f->setCsvControl(',', '"', '\\');
-        // $f->setFlags(SplFileObject::READ_CSV| SplFileObject::SKIP_EMPTY
-        //             | SplFileObject::DROP_NEW_LINE| SplFileObject::READ_AHEAD);
         $f->rewind();
         return $f;
     }
 
     private function readHeaders(SplFileObject $f): array
     {
-        // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
         
         $raw = $f->fgetcsv(',', '"', '\\')?:[]; 
-        //dd($raw);
         if ($raw&&isset($raw[0])) {
             $raw[0]=preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw[0]) ?? $raw[0];
         }
@@ -96,7 +82,6 @@ class Importer implements ImporterContract
 
     private function readRow(SplFileObject $f): ?array
     {
-        // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
         $row = $f->fgetcsv();
         if ($row==false || $row==[null]) {
             return null;
@@ -145,19 +130,13 @@ class Importer implements ImporterContract
         return array_map(static fn($v) => is_string($v) ? trim($v) : $v, $assoc);
     }
 
-    private function mapRow(array $assoc, MapperContract $mapper): ?object
+    private function mapRow(array $assoc, Mapper $mapper): ?object
     {
         return $mapper->fromRow($assoc);
     }
 
-    private function resolveMapper(string $entity): MapperContract
+    private function resolveMapper(string $entity): Mapper
     {
-        $key = strtolower(trim($entity)); 
-        if (!$this->mapperLocator->has($key)) {
-            throw new InvalidArgumentException("Mapper introuvable pour l’entité « {$entity} »");
-        }
-        $mapper = $this->mapperLocator->get($key);
-        assert($mapper instanceof MapperContract);
-        return $mapper;
+        return $this->mapperFactory->create($entity);
     }
 }

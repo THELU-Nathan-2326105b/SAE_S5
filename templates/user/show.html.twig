@@ -1,29 +1,37 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
 
 {% block title %}Utilisateur{% endblock %}
 
 {% block body %}
-<h1>Utilisateur</h1>
+<div id="user-show" class="user-show container">
+  <h1 id="user-title" class="user-title">Utilisateur</h1>
 
-{# <p>ID : {{ user.userId }}</p> #}
-<p>Email : {{ user.userEmail|default('') }}</p>
-{# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
-{# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
-<p>Rôle : {{ user.userRole }}</p>
-<p>Première connexion : {{ user.userFirstconnexion ? 'oui' : 'non' }}</p>
-<p>Prénom : {{ user.userFirstname|default('') }}</p>
-<p>Nom : {{ user.userLastname|default('') }}</p>
-<p>Niveau : {{ user.userLevel|default('') }}</p>
-{# <p>Dernière connexion : {{ user.userLastconnexion ? user.userLastconnexion|date('Y-m-d H:i:s') : '' }}</p> #}
+  <div id="user-data" class="user-data">
+    {# <p>ID : {{ user.id }}</p> #}
+    <p id="user-email" class="user-email">Email : {{ user.userEmail|default('') }}</p>
+    {# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
+    {# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
+    <p id="user-role" class="user-role">Rôle : {{ user.userRole }}</p>
+    <p id="user-firstconnexion" class="user-firstconnexion">Première connexion : {{ user.userFirstconnexion ? 'oui' : 'non' }}</p>
+    <p id="user-firstname" class="user-firstname">Prénom : {{ user.userFirstname|default('') }}</p>
+    <p id="user-lastname" class="user-lastname">Nom : {{ user.userLastname|default('') }}</p>
+    <p id="user-level" class="user-level">Niveau : {{ user.userLevel|default('') }}</p>
+    {# <p>Dernière connexion : {{ user.userLastconnexion ? user.userLastconnexion|date('Y-m-d H:i:s') : '' }}</p> #}
+  </div>
 
-<p>
-  <a href="{{ path('app_user_edit', {id: user.userId}) }}">Éditer</a>
-  <a href="{{ path('app_user_index', { id: user.userId }) }}">Retour</a>
-  <a href="{{ path('app_user_delete', { id: user.userId }) }}">Supprimer</a>
-</p>
+  <div id="user-actions" class="user-actions">
+      {# {% if is_granted('ROLE_ADMIN') %} #}
+        <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.id}) }}">Éditer</a>
+      {# {% endif %} #}
+      <a class="btn back-user" href="{{ path('app_user_index', { id: user.id }) }}">Retour</a>
+      {# {% if is_granted('ROLE_ADMIN') %} #}
+        <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
+      {# {% endif %} #}
+  </div>
+</div>
 
-{# <form method="post" action="{{ path('app_user_delete', {id: user.userId}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+{# <form method="post" action="{{ path('app_user_delete', {id: user.id}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
   <button>Supprimer</button>
 </form> #}
 {% endblock %}
