@@ -6,129 +6,8 @@
     <meta charset="UTF-8" />
     <title>AMOS FAMES - Connexion</title>
     <link rel="stylesheet" href="/assets/styles/app.css">
-    <style>
-        .loginpage {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .title {
-            font-size: 3rem;
-            margin-bottom: 50px;
-        }
-
-        .title-text_start {
-            color: #008060;
-            font-weight: 700;
-        }
-
-        .title-text_end {
-            font-weight: 700;
-            color: #333;
-        }
-
-        /* Carte blanche centrée */
-        .login-section {
-            max-width: 380px;
-            margin: 0 auto; /* centre sous le titre */
-            background: #fff;
-            padding: 30px 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        /* Champs de formulaire */
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .form-group label {
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: #444;
-        }
-
-        .form-group input {
-            padding: 12px;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .form-group input:focus {
-            border-color: #008060;
-            box-shadow: 0 0 0 3px rgba(0,128,96,0.1);
-        }
-
-        /* Bouton connexion */
-        .validate-btn {
-            background: #008060;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.25s;
-            width: 100%;
-        }
-
-        .validate-btn:hover {
-            background: #006b50;
-        }
-
-        /* Checkbox (afficher mot de passe) */
-        .show-password {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: #444;
-        }
-
-        /* Lien mot de passe oublié */
-        .forgot-link {
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #008060;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .forgot-link:hover {
-            color: #006b50;
-        }
-
-        /* Lien inscription */
-        .signup-text {
-            margin-top: 8px;
-            font-size: 0.9rem;
-            color: #555;
-        }
-        .signup-text a {
-            color: #008060;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .signup-text a:hover {
-            color: #006b50;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/assets/styles/login.css">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y"></script>
 </head>
 <body>
 {% include "navbar.html.twig" %}
@@ -142,7 +21,7 @@
             <div style="color:red; margin-bottom:10px;">{{ error }}</div>
         {% endif %}
 
-        <form action="{{ path('login_handler') }}" method="POST" class="login-form">
+        <form id="loginForm" action="{{ path('login_handler') }}" method="POST" class="login-form">
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" required placeholder="Votre email">
@@ -155,13 +34,19 @@
                 <input type="checkbox" id="showPassword">
                 <label for="showPassword">Afficher le mot de passe</label>
             </div>
+            
+            <!-- Champ caché pour le token reCAPTCHA -->
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            
             <button type="submit" class="validate-btn">Se connecter</button>
         </form>
-        <a href="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+        <a href="/reset-password" class="forgot-link">Mot de passe oublié ?</a>
     </section>
 </main>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Gestion affichage mot de passe
         const showPasswordCheckbox = document.getElementById('showPassword');
         const passwordInput = document.getElementById('password');
 
@@ -172,8 +57,31 @@
                 passwordInput.type = 'password';
             }
         });
+
+        // Gestion reCAPTCHA v3
+        const loginForm = document.getElementById('loginForm');
+        
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêche la soumission immédiate
+            
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y', {action: 'login'})
+                    .then(function(token) {
+                        // Injecte le token dans le champ caché
+                        document.getElementById('g-recaptcha-response').value = token;
+                        
+                        // Soumet le formulaire
+                        loginForm.submit();
+                    })
+                    .catch(function(error) {
+                        console.error('Erreur reCAPTCHA:', error);
+                        alert('Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.');
+                    });
+            });
+        });
     });
 </script>
+
 {% include "footer.html.twig" %}
 </body>
 </html>

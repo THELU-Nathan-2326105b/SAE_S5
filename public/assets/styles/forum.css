@@ -3,13 +3,13 @@ html, body {
     padding: 0;
     width: 100%;
     text-align: center;
+    font-family: "Helvetica Nue", sans-serif;
 }
 
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 .main-content {

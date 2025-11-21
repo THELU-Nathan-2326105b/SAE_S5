@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Gestion des entreprises</title>
+    <link rel="stylesheet" href="/assets/styles/admin.css">
+    <link rel="stylesheet" href="/assets/styles/app.css">
+</head>
+<body>
+{% include "navbar.html.twig" %}
+
+<main class="admincompaniespage">
+    <h1 class="title-entreprises">GESTION DES ENTREPRISES</h1>
+
+    <section class="companies-list">
+        {% if companies is not empty %}
+            <table class="companies-table">
+                <thead>
+                <tr>
+                    <th>Nom de l'entreprise</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for company in companies %}
+                    <tr class="company-row" data-name="{{ company.companyName }}">
+                        <td class="company-name">{{ company.companyName }}</td>
+                        <td class="company-description">{{ company.companyDescription }}</td>
+                        <td class="company-actions">
+                            <button class="btn btn-edit" data-name="{{ company.companyName }}">Modifier</button>
+                            <button class="btn btn-delete" data-name="{{ company.companyName }}">Supprimer</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-company">Aucune entreprise enregistrée pour le moment.</p>
+        {% endif %}
+    </section>
+
+</main>
+
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h2>Modifier une entreprise</h2>
+        <form id="editForm">
+            <input type="hidden" name="oldCompanyName" id="oldCompanyName">
+            <label>Nom :</label>
+            <textarea name="companyName" id="editCompanyName"></textarea>
+            <label>Description :</label>
+            <textarea name="companyDescription" id="editCompanyDescription"></textarea>
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn btn-edit">Enregistrer</button>
+                <button type="button" class="btn modal-close" id="closeModal">Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% include "footer.html.twig" %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("editModal");
+        const form = document.getElementById("editForm");
+        const closeModal = document.getElementById("closeModal");
+
+        // Modification d'une entreprise
+        document.querySelectorAll(".btn-edit").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const row = btn.closest(".company-row");
+                const name = row.dataset.name;
+                const desc = row.querySelector(".company-description").textContent.trim();
+
+                // Remplir le formulaire avec les données existantes
+                form.oldCompanyName.value = name;
+                form.editCompanyName.value = name;
+                form.editCompanyDescription.value = desc;
+
+                // Afficher la modale
+                modal.style.display = "flex";
+                document.body.style.overflow = "hidden";
+            });
+        });
+
+        // Fermer la modale
+        closeModal.addEventListener("click", () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+            form.reset(); // Réinitialiser le formulaire
+        });
+
+        // Fermer la modale si on clique en dehors
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+                form.reset(); // Réinitialiser le formulaire
+            }
+        });
+
+        // Enregistrer les modifications
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Récupérer les données du formulaire
+            const data = {
+                oldCompanyName: form.oldCompanyName.value,
+                companyName: form.editCompanyName.value,
+                companyDescription: form.editCompanyDescription.value
+            };
+
+            try {
+                // Envoi de la requête
+                const response = await fetch("/admin/company/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.message || responseData.error || 'Erreur serveur');
+                }
+
+                if (responseData.success) {
+                    // Mettre à jour l'affichage dans le tableau
+                    const row = document.querySelector(`.company-row[data-name='${data.oldCompanyName}']`);
+                    if (row) {
+                        // Mise à jour des données dans la ligne
+                        row.dataset.name = data.companyName;
+                        row.querySelector(".company-name").textContent = data.companyName;
+                        row.querySelector(".company-description").textContent = data.companyDescription;
+
+                        // Mise à jour des boutons
+                        const editBtn = row.querySelector(".btn-edit");
+                        const deleteBtn = row.querySelector(".btn-delete");
+                        if (editBtn) editBtn.dataset.name = data.companyName;
+                        if (deleteBtn) deleteBtn.dataset.name = data.companyName;
+                    }
+
+                    // Fermer la modale et réinitialiser le formulaire
+                    modal.style.display = "none";
+                    document.body.style.overflow = "auto";
+                    form.reset();
+
+                    // Message de succès optionnel
+                    alert("Entreprise modifiée avec succès!");
+                }
+            } catch (error) {
+                console.error('Erreur détaillée:', error);
+                alert("Erreur lors de la mise à jour : " + error.message);
+            }
+        });
+
+        // Supprimer une entreprise
+        document.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const name = btn.dataset.name;
+                if (!confirm(`Voulez-vous vraiment supprimer l'entreprise "${name}" ?`)) return;
+
+                try {
+                    console.log('Tentative de suppression de:', name);
+                    const response = await fetch(`/admin/company/delete/${encodeURIComponent(name)}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(responseData.message || responseData.error || 'Erreur serveur');
+                    }
+
+                    if (responseData.success) {
+                        // Supprimer la ligne du tableau
+                        const row = btn.closest(".company-row");
+                        if (row) {
+                            row.remove();
+                            // Message de succès optionnel
+                            alert("Entreprise supprimée avec succès!");
+
+                            // Vérifier s'il reste des entreprises
+                            const remainingRows = document.querySelectorAll(".company-row");
+                            if (remainingRows.length === 0) {
+                                // S'il n'y a plus d'entreprises, afficher le message "Aucune entreprise"
+                                const tableSection = document.querySelector(".companies-list");
+                                if (tableSection) {
+                                    tableSection.innerHTML = '<p class="no-company">Aucune entreprise enregistrée pour le moment.</p>';
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur détaillée:', error);
+                    alert("Erreur lors de la suppression : " + error.message);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

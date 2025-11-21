@@ -3,13 +3,13 @@ DROP TABLE IF EXISTS appointment CASCADE;
 DROP TABLE IF EXISTS is_present CASCADE;
 DROP TABLE IF EXISTS company CASCADE;
 DROP TABLE IF EXISTS forum CASCADE;
+DROP TABLE IF EXISTS reset_password_request CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP FUNCTION IF EXISTS is_valid_search_level(TEXT);
 DROP FUNCTION IF EXISTS delete_inactive_users();
 DROP TYPE IF EXISTS user_role_type;
 DROP TYPE IF EXISTS level_type;
 DROP TYPE IF EXISTS level_enum;
-
 
 -- create
 -- Table des utilisateurs
@@ -20,9 +20,7 @@ CREATE TABLE users (
      position('@' in user_email) > 1 AND
      position('@' in user_email) <= 65
    ),
-   user_pwd VARCHAR(60) NOT NULL,
-   User_token_resetpwd VARCHAR(100) UNIQUE,
-   User_time_delete_token TIMESTAMP,
+   user_pwd VARCHAR(60),
    user_role VARCHAR(10) NOT NULL CHECK (user_role IN ('alternance', 'internship', 'admin')),
    user_firstconnexion BOOLEAN NOT NULL DEFAULT TRUE,
    user_firstname VARCHAR(50),
@@ -30,6 +28,16 @@ CREATE TABLE users (
    user_level VARCHAR(2) CHECK (user_level IN ('B1', 'B2', 'B3', 'M1', 'M2')),
    user_lastconnexion DATE NOT NULL,
    user_url_cv VARCHAR(200) UNIQUE
+);
+
+CREATE TABLE reset_password_request(
+   id SERIAL PRIMARY KEY,
+   user_id INTEGER NOT NULL,
+   selector VARCHAR(100) UNIQUE DEFAULT NULL,
+   hashed_token VARCHAR(100) UNIQUE DEFAULT NULL,
+   requested_at TIMESTAMP DEFAULT NULL,
+   expires_at TIMESTAMP DEFAULT NULL,
+   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Table des forums
@@ -53,11 +61,12 @@ CREATE TABLE is_present (
    company_name VARCHAR(100),
    start_time TIMESTAMP NOT NULL,
    end_time TIMESTAMP NOT NULL,
-   search_type VARCHAR(50) NOT NULL DEFAULT 'internship;alternance' CHECK (search_type IN ('internship', 'alternance', 'internship;alternance')),
+   search_type VARCHAR(50) NOT NULL DEFAULT 'internship;alternance'
+     CHECK (search_type IN ('internship', 'alternance', 'internship;alternance')),
    search_level VARCHAR(14) NOT NULL,
    PRIMARY KEY (forum_id, company_name),
-   FOREIGN KEY (forum_id) REFERENCES forum(forum_id),
-   FOREIGN KEY (company_name) REFERENCES company(company_name)
+   FOREIGN KEY (forum_id) REFERENCES forum(forum_id) ON DELETE CASCADE,
+   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE
 );
 
 -- Table des rendez-vous
@@ -65,12 +74,12 @@ CREATE TABLE appointment (
    user_id INTEGER,
    forum_id SMALLINT,
    company_name VARCHAR(100),
-   appointment_request BOOLEAN NOT NULL,
-   appointment_time TIMESTAMP NOT NULL UNIQUE,
+   appointment_request BOOLEAN,
+   appointment_time TIMESTAMP,
    PRIMARY KEY (user_id, forum_id, company_name),
-   FOREIGN KEY (user_id) REFERENCES users(user_id),
-   FOREIGN KEY (forum_id) REFERENCES forum(forum_id),
-   FOREIGN KEY (company_name) REFERENCES company(company_name)
+   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+   FOREIGN KEY (forum_id) REFERENCES forum(forum_id) ON DELETE CASCADE,
+   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE
 );
 
 -- validation function for search_level of table is_present
@@ -102,23 +111,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
--- Function to delete an inactive user (used in a cron request)
+-- Function to delete inactive users (used in a cron request)
 CREATE OR REPLACE FUNCTION delete_inactive_users()
 RETURNS void AS $$
 BEGIN
   DELETE FROM users WHERE user_lastconnexion < CURRENT_DATE - INTERVAL '12 months';
-END;
-$$ LANGUAGE plpgsql;
-
--- delete tokens if the deadline is exceeded (used in a cron request)
-CREATE OR REPLACE FUNCTION clear_expired_reset_tokens()
-RETURNS void AS $$
-BEGIN
-  UPDATE users
-  SET user_token_resetpwd = NULL,
-      user_time_delete_token = NULL
-  WHERE user_time_delete_token IS NOT NULL
-    AND user_time_delete_token < NOW();
 END;
 $$ LANGUAGE plpgsql;
 

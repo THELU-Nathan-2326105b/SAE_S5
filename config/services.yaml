@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    uploads_directory: '%kernel.project_dir%/public/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -18,3 +19,38 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+    # 1) Mappers taggés (clé "users"/"company")
+    App\Mapper\Users\Mapper:
+        tags:
+            - { name: 'app.csv_mapper', key: 'users' }
+
+    App\Mapper\Company\Mapper:
+        tags:
+            - { name: 'app.csv_mapper', key: 'company' }
+
+    # 2) Importer CSV reçoit le locator des mappers (ARGUMENT POSITIONNEL)
+    App\Import\Csv\Importer:
+        arguments:
+            - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
+
+    # 3) Importers "nommés" pour la Factory (clé = csv.users / csv.company)
+    app.importer.csv.users:
+        class: App\Import\Csv\Importer
+        arguments:
+            - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
+        tags:
+            - { name: 'app.importer', key: 'csv.users' }
+
+    app.importer.csv.company:
+        class: App\Import\Csv\Importer
+        arguments:
+            - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
+        tags:
+            - { name: 'app.importer', key: 'csv.company' }
+
+    # 4) Factory concrète : reçoit le locator des importers (ARGUMENT POSITIONNEL)
+    App\Import\Contract\ImporterFactory:
+        arguments:
+            - !tagged_locator { tag: 'app.importer', index_by: 'key' }

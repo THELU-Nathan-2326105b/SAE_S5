@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class HomeController extends AbstractController
 {
@@ -13,5 +13,14 @@ final class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig');
+    }
+
+    #[Route('/session-test', name: 'session_test')]
+    public function sessionTest(Request $request): Response
+    {
+        $session = $request->getSession();
+        $session->set('foo', 'bar');
+
+        dd($session->get('foo'));
     }
 }
