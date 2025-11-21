@@ -20,9 +20,13 @@
   </div>
 
   <div id="user-actions" class="user-actions">
-    <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.id}) }}">Éditer</a>
-    <a class="btn back-user" href="{{ path('app_user_index', { id: user.id }) }}">Retour</a>
-    <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
+      {# {% if is_granted('ROLE_ADMIN') %} #}
+        <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.id}) }}">Éditer</a>
+      {# {% endif %} #}
+      <a class="btn back-user" href="{{ path('app_user_index', { id: user.id }) }}">Retour</a>
+      {# {% if is_granted('ROLE_ADMIN') %} #}
+        <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
+      {# {% endif %} #}
   </div>
 </div>
 

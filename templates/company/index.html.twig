@@ -1,18 +1,19 @@
-{% extends 'base.html.twig' %}
+{% extends 'company/base.html.twig' %}
 
 {% block title %}Liste des entreprises{% endblock %}
 
 {% block body %}
     <h1>Entreprises</h1>
 
-    <a href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
+    {# {% if is_granted('ROLE_ADMIN') %} #}
+        <a id="company-new" class="btn btn-primary" href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
 
-    {# Import CSV partial - passes action route explicitly for company import #}
-    {% if importForm is defined %}
-        {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
-    {% endif %}
+        {% if importForm is defined %}
+            {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
+        {% endif %}
+    {# {% endif %} #}
 
-    <table>
+    <table id="company-table" class="company-table">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -38,15 +39,18 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a> |
-                    <a href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a> |
-                    <form method="post"
-                          action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
-                          style="display:inline"
-                          onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
-                        <button>Supprimer</button>
-                    </form>
+                    <a class="action-link view-company" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>
+                    {# {% if is_granted('ROLE_ADMIN') %} #}
+                        | <a class="action-link edit-company" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
+                        |
+                        <form class="delete-company-form" method="post"
+                              action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
+                              style="display:inline"
+                              onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
+                            <button class="btn btn-link delete-company">Supprimer</button>
+                        </form>
+                    {# {% endif %} #}
                 </td>
             </tr>
         {% else %}

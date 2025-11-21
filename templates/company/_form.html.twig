@@ -1,12 +1,24 @@
 {# templates/company/_form.html.twig #}
-{{ form_start(form) }}
-  {{ form_errors(form) }}
-  {{ form_row(form.company_name) }}
-  {{ form_row(form.company_description) }}
-  {{ form_row(form.company_logo) }}
+{{ form_start(form, {'attr': {'id': 'company-form', 'class': 'company-form'}}) }}
+  <div id="company-form-errors" class="form-errors">{{ form_errors(form) }}</div>
 
-  <button type="submit">
-    {{ button_label|default('Enregistrer') }}
-  </button>
-  <a href="{{ path('app_company_index') }}">← Retour</a>
+  <div class="form-group">
+    {{ form_row(form.company_name, {'attr': {'class': 'form-control company-name'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.company_description, {'attr': {'class': 'form-control company-description'}}) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_row(form.company_logo, {'attr': {'class': 'form-control company-logo'}}) }}
+  </div>
+
+  <div id="company-form-actions" class="form-actions">
+    <button id="company-submit" class="btn btn-primary company-submit" type="submit">
+      {{ button_label|default('Enregistrer') }}
+    </button>
+    <a id="company-back" class="btn btn-secondary company-back" href="{{ path('app_company_index') }}">← Retour</a>
+  </div>
+
 {{ form_end(form) }}

@@ -3,13 +3,15 @@
 {% block title %}Modifier {{ company.companyName }}{% endblock %}
 
 {% block body %}
-    <h1>Modifier l’entreprise : {{ company.companyName }}</h1>
+    <div id="company-edit" class="company-edit container">
+        <h1 id="company-edit-title">Modifier l’entreprise : {{ company.companyName }}</h1>
 
-    {# Inclusion du formulaire #}
-    {% include 'company/_form.html.twig' with {
-        form: form,
-        button_label: 'Mettre à jour'
-    } %}
+        {# Inclusion du formulaire #}
+        {% include 'company/_form.html.twig' with {
+            form: form,
+            button_label: 'Mettre à jour'
+        } %}
 
-    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">← Retour au détail</a>
+        <a id="company-edit-back" class="btn company-back" href="{{ path('app_company_show', { company_name: company.companyName }) }}">← Retour au détail</a>
+    </div>
 {% endblock %}
