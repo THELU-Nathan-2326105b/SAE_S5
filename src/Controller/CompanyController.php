@@ -23,6 +23,10 @@ use App\Service\CsvImportService;
 #[Route('/company', name: 'app_company_')]
 class CompanyController extends AbstractController
 {
+    // private function accessControl(): void
+    // {
+    //     //$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Accès réservé aux administrateurs.');
+    // }
     /**
      * Liste toutes les entreprises.
      *
@@ -60,6 +64,7 @@ class CompanyController extends AbstractController
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response{
+        // $this->accessControl();
         $company = new Company();
 
         $form = $this->createForm(CompanyType::class, $company);
@@ -115,6 +120,7 @@ class CompanyController extends AbstractController
 
     #[Route('/{company_name}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request,#[MapEntity(mapping: ['company_name' => 'company_name'])] Company $company,EntityManagerInterface $em): Response {
+        // $this->accessControl();
         $form = $this->createForm(CompanyType::class, $company);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -139,6 +145,7 @@ class CompanyController extends AbstractController
      */
     #[Route('/{company_name}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request,#[MapEntity(mapping: ['company_name' => 'company_name'])] Company $company,EntityManagerInterface $em): Response {
+        // $this->accessControl();
         $name = $company->getCompanyName();
         if ($request->isMethod('POST')) {
             if ($this->isCsrfTokenValid('delete'.$name, $request->request->get('_token'))) {
@@ -167,6 +174,7 @@ class CompanyController extends AbstractController
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(Request $request, EntityManagerInterface $em, ImporterFactory $importerFactory, CsvImportService $csvImportService): Response
     {
+        // $this->accessControl();
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
 

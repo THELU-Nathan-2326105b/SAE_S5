@@ -27,7 +27,14 @@ use App\Service\CsvImportService;
 class UsersController extends AbstractController
 {
 
-
+    private function accessControl(string $role='nobody'):bool {
+        return $role !== 'admin';
+        // if($role !== 'admin') {
+        //     return $this->redirect('/');
+        // }
+        // Accès réservé aux administrateurs
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Accès non autorisé.');
+    }
     /**
      * Liste tous les utilisateurs.
      *
@@ -41,6 +48,12 @@ class UsersController extends AbstractController
     {
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
+        if($sessionUser === null){
+            return $this->redirect('/login');
+        }
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
 
         $importForm = $this->createForm(CsvImportType::class, null, [
             'action' => $this->generateUrl('app_user_import'), 
@@ -52,6 +65,7 @@ class UsersController extends AbstractController
             'user'       => $sessionUser,
             'importForm' => $importForm->createView(),  
         ]);
+
     }
 
     /**
@@ -66,7 +80,11 @@ class UsersController extends AbstractController
      * Contrainte: id numérique via regex <\d+>
      */
     #[Route('/{id<\d+>}', name: 'show', methods: ['GET'])]
-    public function show(Users $user): Response{
+    public function show(Request $request,Users $user): Response{
+        $sessionUser = $request->getSession()->get('user');
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -88,6 +106,14 @@ class UsersController extends AbstractController
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response{
+
+        $sessionUser = $request->getSession()->get('user');
+        if($sessionUser === null){
+            return $this->redirect('/login');
+        }
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
 
         // Nouvelle entité Users avec valeur par défaut
         $user = new Users();
@@ -143,6 +169,10 @@ class UsersController extends AbstractController
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Users $user, EntityManagerInterface $em): Response{
+        $sessionUser = $request->getSession()->get('user');
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
         $form = $this->createForm(UsersType::class, $user, [
             'require_password' => false, 
         ]);
@@ -189,6 +219,10 @@ class UsersController extends AbstractController
      */
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $em): Response{
+        $sessionUser = $request->getSession()->get('user');
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
         if ($request->isMethod('POST')) {
             $id = $user->getId();
 
@@ -230,8 +264,15 @@ class UsersController extends AbstractController
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(
-        Request $request, EntityManagerInterface $em, ImporterFactory $importerFactory, CsvImportService $csvImportService
+        Request $request, EntityManagerInterface $em, 
+        ImporterFactory $importerFactory, CsvImportService $csvImportService
     ): Response {
+        
+        $sessionUser = $request->getSession()->get('user');
+        if($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
+        
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
 
@@ -247,7 +288,7 @@ class UsersController extends AbstractController
             $csvImportService->persistImportedEntities($users, $em);
             $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($users)} utilisateurs).");
         } catch (\Throwable $e) {
-            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+            $this->addFlash('danger', 'Échec de l’import : ' /*. $e->getMessage()*/);
         }
 
         return $this->redirectToRoute('app_user_index');
