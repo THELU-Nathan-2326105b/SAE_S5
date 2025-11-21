@@ -34,6 +34,12 @@ final class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/forum', name: 'admin_companies')]
+    public function showForum(EntityManagerInterface $em): Response
+    {
+        return $this->render('admin/forum.html.twig');
+    }
+
     #[Route('/admin/company/update', name: 'company_update', methods: ['POST'])]
     public function updateCompany(Request $request, EntityManagerInterface $em): JsonResponse
     {

@@ -68,7 +68,6 @@ a{
     color: #008b57;
     text-align: center;
     font-size: 2.5rem;
-    font-family: 'Oswald', sans-serif;
 }
 
 .admincompaniespage {
@@ -261,4 +260,12 @@ a{
         transform: scale(1);
         opacity: 1;
     }
+}
+
+/* ======== Gestion du forum ======== */
+
+.title-forum{
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
 }
