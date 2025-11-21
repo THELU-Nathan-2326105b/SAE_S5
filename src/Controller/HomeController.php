@@ -14,13 +14,4 @@ final class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig');
     }
-
-    #[Route('/session-test', name: 'session_test')]
-    public function sessionTest(Request $request): Response
-    {
-        $session = $request->getSession();
-        $session->set('foo', 'bar');
-
-        dd($session->get('foo'));
-    }
 }

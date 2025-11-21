@@ -5,81 +5,91 @@
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
     <meta charset="UTF-8" />
     <title>AMOS FAMES - Connexion</title>
+
     <link rel="stylesheet" href="/assets/styles/app.css">
     <link rel="stylesheet" href="/assets/styles/login.css">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y"></script>
+
+    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
 </head>
+
 <body>
 {% include "navbar.html.twig" %}
+
 <main class="loginpage">
+
     <div class="title">
         <span class="title-text_start">Connectez-vous</span>
         <span class="title-text_end">à votre compte</span>
     </div>
+
     <section class="login-section">
+
         {% if error %}
             <div style="color:red; margin-bottom:10px;">{{ error }}</div>
         {% endif %}
 
         <form id="loginForm" action="{{ path('login_handler') }}" method="POST" class="login-form">
+
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" required placeholder="Votre email">
             </div>
+
             <div class="form-group">
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
             </div>
+
             <div class="show-password">
                 <input type="checkbox" id="showPassword">
                 <label for="showPassword">Afficher le mot de passe</label>
             </div>
-            
-            <!-- Champ caché pour le token reCAPTCHA -->
+
             <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-            
+
             <button type="submit" class="validate-btn">Se connecter</button>
         </form>
+
         <a href="/reset-password" class="forgot-link">Mot de passe oublié ?</a>
+
     </section>
+
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Gestion affichage mot de passe
-        const showPasswordCheckbox = document.getElementById('showPassword');
-        const passwordInput = document.getElementById('password');
+document.addEventListener('DOMContentLoaded', function() {
 
-        showPasswordCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
-        });
+    // Affichage / masquage du mot de passe
+    const showPassword = document.getElementById('showPassword');
+    const passwordField = document.getElementById('password');
 
-        // Gestion reCAPTCHA v3
-        const loginForm = document.getElementById('loginForm');
-        
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Empêche la soumission immédiate
-            
-            grecaptcha.ready(function() {
-                grecaptcha.execute('6LeygQAsAAAAABtEkvtq36M84SIhKL3RGzREsw-Y', {action: 'login'})
-                    .then(function(token) {
-                        // Injecte le token dans le champ caché
-                        document.getElementById('g-recaptcha-response').value = token;
-                        
-                        // Soumet le formulaire
-                        loginForm.submit();
-                    })
-                    .catch(function(error) {
-                        console.error('Erreur reCAPTCHA:', error);
-                        alert('Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.');
-                    });
-            });
+    showPassword.addEventListener('change', () => {
+        passwordField.type = showPassword.checked ? 'text' : 'password';
+    });
+
+    // reCAPTCHA v3
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Empêcher la soumission
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'login'})
+                .then(function(token) {
+
+                    document.getElementById('g-recaptcha-response').value = token;
+
+                    // Soumission réelle
+                    loginForm.submit();
+                })
+                .catch(function(err) {
+                    console.error('Erreur reCAPTCHA:', err);
+                    alert('Erreur lors de la vérification reCAPTCHA. Veuillez réessayer.');
+                });
         });
     });
+
+});
 </script>
 
 {% include "footer.html.twig" %}

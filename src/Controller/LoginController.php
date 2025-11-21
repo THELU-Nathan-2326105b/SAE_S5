@@ -17,6 +17,7 @@ final class LoginController extends AbstractController
         
         return $this->render('login/login.html.twig', [
             'error' => $error,
+            'recaptcha_site_key' => $_ENV['GOOGLE_RECAPTCHA_SITE_KEY'],
         ]);
     }
 
