@@ -48,7 +48,19 @@
     {% endif %}
 
     <a id="add-user" class="btn add-user" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
-
+    {# Tout supprimer #}
+        {% if users is not empty %}
+            <form method="post" 
+                  action="{{ path('app_user_delete_non_admins') }}" 
+                  class="delete-mass-form"
+                  onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les utilisateurs non-admins.\n\nCette action est irréversible.\n\nConfirmer ?');">
+                
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
+                <button type="submit" class="btn btn-danger mass-delete-btn">
+                    Supprimer les non-admins
+                </button>
+            </form>
+        {% endif %}
     <div id="user-import" class="import-block">
       {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_user_import' }) }}
     </div>

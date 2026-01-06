@@ -265,8 +265,7 @@ class UsersController extends AbstractController
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(
         Request $request, EntityManagerInterface $em, 
-        ImporterFactory $importerFactory, CsvImportService $csvImportService
-    ): Response {
+        ImporterFactory $importerFactory, CsvImportService $csvImportService): Response {
         
         $sessionUser = $request->getSession()->get('user');
         if($this->accessControl($sessionUser['role'])) {
@@ -294,7 +293,58 @@ class UsersController extends AbstractController
         return $this->redirectToRoute('app_user_index');
     }
 
-    
+
+    /**
+     * Supprime tous les utilisateurs qui ne sont pas 'admin'.
+     */
+    #[Route('/delete-non-admins', name: 'delete_non_admins', methods: ['POST'])]
+    public function deleteAllNonAdmins(Request $request, EntityManagerInterface $em, UsersRepository $usersRepository): Response
+    {
+        // 1. Vérification des droits (Admin seulement)
+        $sessionUser = $request->getSession()->get('user');
+        if ($this->accessControl($sessionUser['role'])) {
+            return $this->redirect('/');
+        }
+
+        // 2. Vérification CSRF pour éviter les suppressions accidentelles via des liens malveillants
+        if ($this->isCsrfTokenValid('delete_all_non_admins', $request->request->get('_token'))) {
+            
+            // Appel de la méthode privée pour effectuer la suppression
+            $deletedCount = $this->removeNonAdminUsers($em, $usersRepository);
+
+            if ($deletedCount > 0) {
+                $this->addFlash('success', "$deletedCount utilisateurs non-admin ont été supprimés.");
+            } 
+            else {
+                $this->addFlash('info', "Aucun utilisateur à supprimer.");
+            }
+        } else {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirectToRoute('app_user_index');
+    }
+
+    /**
+     * Méthode privée pour identifier et supprimer les non-admins.
+     * Retourne le nombre d'utilisateurs supprimés.
+     */
+    private function removeNonAdminUsers(EntityManagerInterface $em, UsersRepository $repo): int
+    {
+        $users = $repo->findAll();
+        $count = 0;
+        foreach ($users as $user) {
+            if ($user->getUserRole() !== 'admin') {
+                $em->remove($user);
+                $count++;
+            }
+        }
+        $em->flush();
+
+        return $count;
+    }
+
+
 
 
 }
