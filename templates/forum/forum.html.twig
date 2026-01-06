@@ -1,102 +1,141 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1"/>
     <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>AMOS FAMES - Forum</title>
     <link rel="stylesheet" href="/assets/styles/app.css">
     <link rel="stylesheet" href="/assets/styles/forum.css">
-
 </head>
 <body>
 
 {% include "navbar.html.twig" %}
 
 <div class="main-content">
-    <h1><span class="first-word">Choisissez</span> vos entreprises</h1>
 
-    {% if selected is empty %}
-        <form action="" method="post" enctype="multipart/form-data">
-            {% for company in companies %}
-                <div class="bubble">
-                    <div class="left">
-                        <input type="checkbox"
-                               id="entreprise{{ company.getCompanyName()|e }}"
-                               name="entreprises[]"
-                               value="{{ company.getCompanyName() }}">
-                        <label for="entreprise{{ company.getCompanyName()|e }}">
-                            {{ company.getCompanyName() }}
-                        </label>
+    {% if not showCv %}
+        <section class="forum-section entreprises-section">
+            <h1>Choisissez vos entreprises</h1>
+            {% if cvUrl %}
+                <p class="cv-status">Vous avez déjà déposé un CV. Vous pourrez le mettre à jour dans l'étape suivante.</p>
+            {% else %}
+                <p class="cv-status">Vous n'avez pas encore déposé de CV.</p>
+            {% endif %}
+            <form action="" method="post" id="entreprisesForm">
+                {% for company in companies %}
+                    <div class="bubble">
+                        <div class="left">
+                            <input type="checkbox"
+                                   id="entreprise{{ company.getCompanyName()|e }}"
+                                   name="entreprises[]"
+                                   value="{{ company.getCompanyName() }}"
+                                   {% if company.getCompanyName() in selected %}checked{% endif %}>
+                            <label for="entreprise{{ company.getCompanyName()|e }}">
+                                {{ company.getCompanyName() }}
+                            </label>
+                        </div>
+                        <span class="info" title="{{ company.getCompanyDescription() }}">i</span>
                     </div>
-                    <span class="info" title="{{ company.getCompanyDescription() }}">
-                        i
-                    </span>
-                </div>
-            {% endfor %}
-            <button type="submit">Valider les choix</button>
-        </form>
+                {% endfor %}
+                <button type="submit" name="submit_entreprises" class="btn-primary" id="submitBtn" disabled>
+                    Valider et passer au CV
+                </button>
+            </form>
 
-    {% else %}
-        <div class="step2-container">
-            <h2><span class="first-word">Entreprises</span> sélectionnées</h2>
+            <script>
+                const form = document.getElementById('entreprisesForm');
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                const submitBtn = document.getElementById('submitBtn');
+
+                function toggleButton() {
+                    const checked = Array.from(checkboxes).some(cb => cb.checked);
+                    submitBtn.disabled = !checked; // désactive si aucune case cochée
+                }
+
+                checkboxes.forEach(cb => cb.addEventListener('change', toggleButton));
+                toggleButton();
+            </script>
+        </section>
+    {% endif %}
+
+    <hr class="separator">
+
+    {# --- Section CV (visible uniquement après validation) --- #}
+    {% if showCv %}
+        <section class="forum-section cv-section">
+            <h2>Votre CV</h2>
 
             <div class="selected-companies">
+                <p>Entreprises sélectionnées :</p>
                 {% for entreprise in selected %}
-                    <div class="company-bubble">
-                        {{ entreprise }}
-                    </div>
+                    <span class="company-bubble">{{ entreprise }}</span>
                 {% endfor %}
             </div>
 
             <form action="" method="post" enctype="multipart/form-data" class="upload-form">
                 <div class="file-upload-container">
-                    <label for="cv" class="file-label">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        <span>Déposez votre CV</span>
-                    </label>
+                    <label for="cv" class="file-label">Déposez votre CV</label>
                     <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="file-input">
-                    <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
-                </div>
 
-                <div class="buttons-container">
-                    <a href="" class="back-button">Revenir au formulaire</a>
-                    <button type="submit" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
+                    {% if cvUrl %}
+                        <div class="cv-preview">
+                            <p>Votre CV actuel :</p>
+                            <a href="{{ cvUrl }}" target="_blank">Voir le CV</a>
+                            {% if cvUrl ends with '.pdf' %}
+                                <embed src="{{ cvUrl }}" type="application/pdf" width="100%" height="400px">
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
+                    <button type="submit" name="submit_cv" id="submitBtnCv" class="submit-button" disabled>Valider l'envoi</button>
                 </div>
             </form>
-        </div>
-        <script>
-            const fileInput = document.getElementById('cv');
-            const submitBtn = document.getElementById('submitBtn');
-            const fileInfo = document.getElementById('fileInfo');
-
-            fileInput.addEventListener('change', function() {
-                const files = fileInput.files;
-                submitBtn.disabled = files.length === 0;
-
-                if (files.length > 0) {
-                    fileInfo.textContent = `${files[0].name} (${formatFileSize(files[0].size)})`;
-                    fileInfo.style.color = '#008b57';
-                } else {
-                    fileInfo.textContent = 'Aucun fichier sélectionné';
-                    fileInfo.style.color = '#666';
-                }
-            });
-
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-        </script>
+        </section>
     {% endif %}
+
 </div>
+
 {% include "footer.html.twig" %}
+
+<script>
+    const fileInput = document.getElementById('cv');
+    const submitBtnCv = document.getElementById('submitBtnCv');
+    const fileInfo = document.getElementById('fileInfo');
+
+    if(fileInput) {
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            submitBtnCv.disabled = !file;
+
+            if (file) {
+                fileInfo.textContent = `${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+                fileInfo.style.color = '#008b57';
+            } else {
+                fileInfo.textContent = 'Aucun fichier sélectionné';
+                fileInfo.style.color = '#666';
+            }
+
+            const oldPreview = document.querySelector('.cv-preview');
+            if (oldPreview) oldPreview.remove();
+
+            if (file && file.type === 'application/pdf') {
+                const previewContainer = document.createElement('div');
+                previewContainer.classList.add('cv-preview');
+
+                const embed = document.createElement('embed');
+                embed.src = URL.createObjectURL(file);
+                embed.type = 'application/pdf';
+                embed.width = '100%';
+                embed.height = '500px';
+
+                previewContainer.appendChild(embed);
+                fileInput.parentNode.appendChild(previewContainer);
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
