@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 2%;
-    height: 100px;
+    min-height: 100px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     position: sticky;
     top: 0;
@@ -21,9 +21,11 @@
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 80px;
+    gap: 40px;
     margin: 0;
     padding: 0;
+    flex: 1;
+    justify-content: center;
 }
 
 .navbar-links li a {
