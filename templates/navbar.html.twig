@@ -21,6 +21,13 @@
                 <li><a href="{{ path('profil') }}">PROFIL</a></li>
             {% endif %}
         {% endif %}
+        <li class="navbar-button-mobile">
+            {% if app.session is defined and app.session is not null and app.session.get('user') %}
+                <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
+            {% else %}
+                <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
+            {% endif %}
+        </li>
     </ul>
     <div class="navbar-action">
         {% if app.session is defined and app.session is not null and app.session.get('user') %}
@@ -29,4 +36,23 @@
             <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
         {% endif %}
     </div>
+    <button class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 </nav>
+
+<script>
+    document.querySelector('.hamburger').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.querySelector('.navbar-links').classList.toggle('active');
+    });
+
+    document.querySelectorAll('.navbar-links li a').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelector('.hamburger').classList.remove('active');
+            document.querySelector('.navbar-links').classList.remove('active');
+        });
+    });
+</script>

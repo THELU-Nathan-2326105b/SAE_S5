@@ -18,7 +18,7 @@ final class AdminController extends AbstractController
         return $this->render('admin/admin.html.twig');
     }
 
-    #[Route('/admin/users', name: 'admin-users')]
+    #[Route('/admin/users', name: 'admin_users')]
     public function users(): Response
     {
         return $this->render('admin/users.html.twig');
@@ -34,7 +34,7 @@ final class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/forum', name: 'admin_companies')]
+    #[Route('/admin/forum', name: 'admin_forum')]
     public function showForum(EntityManagerInterface $em): Response
     {
         return $this->render('admin/forum.html.twig');
