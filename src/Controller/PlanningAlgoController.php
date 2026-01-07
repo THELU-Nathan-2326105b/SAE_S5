@@ -6,60 +6,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\DBAL\Connection;
-use App\Service\PlanningAlgo;
+use App\Repository\AppointmentRepository;
+use App\Repository\UsersRepository;
 
 final class PlanningAlgoController extends AbstractController
 {
     #[Route('/planning-algo', name: 'planning-algo')]
-    public function view(Connection $conn): Response
+    public function view(Request $request, AppointmentRepository $appointmentRepository, UsersRepository $usersRepository): Response
     {
-        $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
-
-        return $this->render('planning/planningalgo.html.twig', [
-            'forums' => $forums,
-        ]);
-    }
-
-    #[Route('/planning/run', name: 'planning_algo_run')]
-    public function run(Request $request, Connection $conn): Response
-    {
-        $forum_id = $request->query->getInt('forum_id');
-
-        // Call the new planning generator which reads data and writes appointments
-        $result = PlanningAlgo::generatePlanning($conn, $forum_id);
-
-        $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
-
-        // Pass result to the template: message, count and appointments list
-        return $this->render('planning/planningalgo.html.twig', [
-            'forums' => $forums,
-            'planning_result' => $result,
-            'appointments' => $result['appointments'] ?? [],
-            'appointments_count' => $result['count'] ?? 0,
-        ]);
-    }
-
-    #[Route('/planning/reset', name: 'planning_algo_reset')]
-    public function reset(Request $request, Connection $conn): Response
-    {
-        $forum_id = $request->query->get('forum_id');
-
-        if ($forum_id && is_numeric($forum_id) && $forum_id > 0) {
-            try {
-                PlanningAlgo::resetAppointments($conn, (int)$forum_id);
-                $this->addFlash('success', 'Les rendez-vous du forum ont été réinitialisés avec succès.');
-            } catch (\Throwable $e) {
-                $this->addFlash('error', 'Erreur lors de la réinitialisation : ' . $e->getMessage());
-            }
-        } else {
-            $this->addFlash('error', 'Veuillez sélectionner un forum valide.');
+        // Récupérer l'utilisateur depuis la session
+        $sessionUser = $request->getSession()->get('user');
+        
+        if (!$sessionUser) {
+            $this->addFlash('error', 'Vous devez être connecté pour consulter votre emploi du temps.');
+            return $this->redirectToRoute('login');
         }
 
-        $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
+        // Récupérer l'utilisateur en base
+        $user = $usersRepository->find($sessionUser['id']);
+        
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+
+        // Récupérer tous les rendez-vous de l'utilisateur avec un horaire planifié
+        $appointments = $appointmentRepository->createQueryBuilder('a')
+            ->select('a', 'f')
+            ->join('a.forum', 'f')
+            ->where('a.user = :user')
+            ->andWhere('a.appointmentTime IS NOT NULL')
+            ->setParameter('user', $user)
+            ->orderBy('a.appointmentTime', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         return $this->render('planning/planningalgo.html.twig', [
-            'forums' => $forums,
+            'appointments' => $appointments,
         ]);
     }
 }
