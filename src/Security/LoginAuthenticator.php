@@ -20,7 +20,8 @@ class LoginAuthenticator extends AbstractAuthenticator
     public function __construct(
         private RouterInterface $router,
         private UsersRepository $usersRepository,
-        private HttpClientInterface $client
+        private HttpClientInterface $client,
+        private RateLimiter $limiter
     ) {}
 
     public function supports(Request $request): ?bool
@@ -31,6 +32,17 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
+        $ip = $request->getClientIp() ?? 'unknown';
+        $key = 'login:' . $ip;
+
+        // 5 tentatives max / 15 minutes
+        if ($this->limiter->tooManyAttempts($key, 5, 900)) {
+            $seconds = $this->limiter->availableIn($key);
+
+            throw new AuthenticationException(
+                "Trop de tentatives. Réessayez dans {$seconds} secondes."
+            );
+        }
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $recaptchaResponse = $request->request->get('g-recaptcha-response');
