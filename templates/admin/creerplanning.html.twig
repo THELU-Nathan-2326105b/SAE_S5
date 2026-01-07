@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Générer le planning</title>
+    <link rel="stylesheet" href="/assets/styles/admin.css">
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <link rel="stylesheet" href="/assets/styles/planning.css">
+</head>
+<body>
+{% include 'navbar.html.twig' %}
+
+<main class="main-content">
+    <div class="container">
+        <h1>Générer le planning forum</h1>
+
+        {# Messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <div class="forum-select" style="max-width:420px; margin-bottom:20px;">
+            <label for="forum" class="form-label" style="font-weight:600; color:#008b57;">Choisir un forum :</label>
+            <select id="forum" name="forum_id" class="form-select" required style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc;">
+                {% for forum in forums %}
+                    <option value="{{ forum.forum_id }}">Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="btn-group" role="group" style="display:flex; gap:12px; flex-wrap:wrap;">
+            <form method="get" action="{{ path('admin_creerplanning_run') }}" id="generateForm">
+                <input type="hidden" name="forum_id" id="generate_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+                <button type="submit" name="execute" value="1" class="btn btn-primary" style="background:#008b57; border:none; padding:10px 16px; border-radius:10px; color:white;">Générer le planning</button>
+            </form>
+            
+            <form method="get" action="{{ path('admin_creerplanning_reset') }}" id="resetForm">
+                <input type="hidden" name="forum_id" id="reset_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+                <button type="submit" class="btn btn-warning" style="background:#ffb347; border:none; padding:10px 16px; border-radius:10px; color:white;">Réinitialiser</button>
+            </form>
+        </div>
+
+        {# Résultat #}
+        {% if planning_result is defined %}
+            <hr>
+            <h3>Résultat du planning</h3>
+
+            {% if planning_result.success is defined and planning_result.success %}
+                <div class="alert alert-success">
+                    {{ planning_result.message ?? 'Planning généré' }} — {{ planning_result.count|default(0) }} rendez-vous.
+                </div>
+            {% else %}
+                <div class="alert alert-danger">
+                    {{ planning_result.message ?? 'Aucun planning généré' }}
+                </div>
+            {% endif %}
+
+            {% if appointments is defined and appointments is not empty %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Utilisateur (ID)</th>
+                                <th>Entreprise</th>
+                                <th>Horaire</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in appointments %}
+                            <tr>
+                                <td>{{ row.user_id ?? row.userId ?? row.user }}</td>
+                                <td>{{ row.company_name ?? row.companyName }}</td>
+                                <td>{{ row.appointment_time ?? row.appointmentTime }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>Aucun rendez-vous inséré en base.</p>
+            {% endif %}
+
+        {% endif %}
+    </div>
+</main>
+
+{% include 'footer.html.twig' %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const forumSelect = document.getElementById('forum');
+        const generateForumInput = document.getElementById('generate_forum_id');
+        const resetForumInput = document.getElementById('reset_forum_id');
+        const resetForm = document.getElementById('resetForm');
+        
+        if (forumSelect) {
+            forumSelect.addEventListener('change', function() {
+                const forumId = this.value;
+                if (generateForumInput) generateForumInput.value = forumId;
+                if (resetForumInput) resetForumInput.value = forumId;
+            });
+        }
+        
+        if (resetForm) {
+            resetForm.addEventListener('submit', function(e) {
+                if (!confirm('Êtes-vous sûr de vouloir réinitialiser tous les rendez-vous de ce forum ?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
