@@ -11,7 +11,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]  // Protection de la route
     public function index(): Response
     {
         // Récupération de l'utilisateur connecté via le système Symfony

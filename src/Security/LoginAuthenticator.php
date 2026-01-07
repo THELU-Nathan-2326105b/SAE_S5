@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Repository\UsersRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,8 @@ class LoginAuthenticator extends AbstractAuthenticator
         private RouterInterface $router,
         private UsersRepository $usersRepository,
         private HttpClientInterface $client,
-        private RateLimiter $limiter
+        private RateLimiter $limiter,
+        private EntityManagerInterface $em  // Ajout de l'EntityManager
     ) {}
 
     public function supports(Request $request): ?bool
@@ -43,6 +45,7 @@ class LoginAuthenticator extends AbstractAuthenticator
                 "Trop de tentatives. Réessayez dans {$seconds} secondes."
             );
         }
+        
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $recaptchaResponse = $request->request->get('g-recaptcha-response');
@@ -77,6 +80,13 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        // Mise à jour de la date de dernière connexion
+        $user = $token->getUser();
+        if ($user instanceof \App\Entity\Users) {
+            $user->setUserLastconnexion(new \DateTimeImmutable('today'));
+            $this->em->flush();
+        }
+        
         return new RedirectResponse($this->router->generate('home'));
     }
 
