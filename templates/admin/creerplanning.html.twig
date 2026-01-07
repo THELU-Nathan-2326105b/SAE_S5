@@ -34,22 +34,64 @@
             <label for="forum" class="form-label" style="font-weight:600; color:#008b57;">Choisir un forum :</label>
             <select id="forum" name="forum_id" class="form-select" required style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc;">
                 {% for forum in forums %}
-                    <option value="{{ forum.forum_id }}">Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
+                    <option value="{{ forum.forum_id }}" {% if selected_forum_id is defined and selected_forum_id == forum.forum_id %}selected{% endif %}>Forum #{{ forum.forum_id }} - {{ forum.forum_name ?? 'Sans nom' }}</option>
                 {% endfor %}
             </select>
         </div>
 
         <div class="btn-group" role="group" style="display:flex; gap:12px; flex-wrap:wrap;">
             <form method="get" action="{{ path('admin_creerplanning_run') }}" id="generateForm">
-                <input type="hidden" name="forum_id" id="generate_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+                <input type="hidden" name="forum_id" id="generate_forum_id" value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
                 <button type="submit" name="execute" value="1" class="btn btn-primary" style="background:#008b57; border:none; padding:10px 16px; border-radius:10px; color:white;">Générer le planning</button>
             </form>
             
             <form method="get" action="{{ path('admin_creerplanning_reset') }}" id="resetForm">
-                <input type="hidden" name="forum_id" id="reset_forum_id" value="{{ forums[0].forum_id ?? '' }}">
+                <input type="hidden" name="forum_id" id="reset_forum_id" value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
                 <button type="submit" class="btn btn-warning" style="background:#ffb347; border:none; padding:10px 16px; border-radius:10px; color:white;">Réinitialiser</button>
             </form>
         </div>
+
+        {# Rendez-vous non distribués #}
+        {% if undistributed is defined %}
+            <hr>
+            <h3>Rendez-vous non distribués</h3>
+            {% if undistributed is empty %}
+                <div class="alert alert-success">Aucun rendez-vous en attente de créneau.</div>
+            {% else %}
+                <div class="alert alert-info">{{ undistributed_count }} rendez-vous sans créneau.</div>
+
+                <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                        <input type="checkbox" id="select_all_undistributed">
+                        <span>Tout sélectionner</span>
+                    </label>
+                    <button type="button" id="copy_selected" class="btn btn-primary" style="background:#008b57; border:none; padding:8px 14px; border-radius:8px; color:white;">Copier la sélection</button>
+                    <small style="color:#555;">(copie sous forme "Prénom Nom - Entreprise")</small>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table" id="undistributed_table">
+                        <thead>
+                            <tr>
+                                <th style="width:42px;"></th>
+                                <th>Étudiant</th>
+                                <th>Entreprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in undistributed %}
+                            {% set fullname = (row.user_firstname ?? '') ~ ' ' ~ (row.user_lastname ?? '') %}
+                            <tr>
+                                <td><input type="checkbox" class="undistributed-checkbox" value="{{ fullname|trim }} - {{ row.company_name }}"></td>
+                                <td>{{ fullname|trim }}</td>
+                                <td>{{ row.company_name }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
 
         {# Résultat #}
         {% if planning_result is defined %}
@@ -71,7 +113,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Utilisateur (ID)</th>
+                                <th>Étudiant</th>
                                 <th>Entreprise</th>
                                 <th>Horaire</th>
                             </tr>
@@ -79,7 +121,7 @@
                         <tbody>
                         {% for row in appointments %}
                             <tr>
-                                <td>{{ row.user_id ?? row.userId ?? row.user }}</td>
+                                <td>{{ row.user_firstname ?? row.userFirstname ?? '' }} {{ row.user_lastname ?? row.userLastname ?? '' }}</td>
                                 <td>{{ row.company_name ?? row.companyName }}</td>
                                 <td>{{ row.appointment_time ?? row.appointmentTime }}</td>
                             </tr>
@@ -117,6 +159,39 @@
                 if (!confirm('Êtes-vous sûr de vouloir réinitialiser tous les rendez-vous de ce forum ?')) {
                     e.preventDefault();
                     return false;
+                }
+            });
+        }
+
+        // Checklist et copie des non distribués
+        const selectAll = document.getElementById('select_all_undistributed');
+        const checkboxes = document.querySelectorAll('.undistributed-checkbox');
+        const copyBtn = document.getElementById('copy_selected');
+
+        if (selectAll && checkboxes) {
+            selectAll.addEventListener('change', () => {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            });
+        }
+
+        if (copyBtn) {
+            copyBtn.addEventListener('click', async () => {
+                const lines = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value.trim())
+                    .filter(Boolean);
+
+                if (!lines.length) {
+                    alert('Sélectionnez au moins un rendez-vous.');
+                    return;
+                }
+
+                try {
+                    await navigator.clipboard.writeText(lines.join('\n'));
+                    copyBtn.textContent = 'Copié !';
+                    setTimeout(() => copyBtn.textContent = 'Copier la sélection', 1200);
+                } catch (e) {
+                    alert('Impossible de copier dans le presse-papiers.');
                 }
             });
         }
