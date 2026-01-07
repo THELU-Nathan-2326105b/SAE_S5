@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\ForumRepository;
+use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PlanningController extends AbstractController
 {
     #[Route('/planning', name: 'planning')]
-    public function index(ForumRepository $forumRepository): Response
+    public function index(Connection $conn): Response
     {
-        $forums = $forumRepository->findAll();
+        $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
         
         return $this->render('planning/planningalgo.html.twig', [
             'forums' => $forums,
