@@ -33,12 +33,14 @@ class ForumController extends AbstractController
 
         $cvUrl = $user->getUserUrlCv();
         $forum = $em->getRepository(Forum::class)->find(1);
-        $companies = $companyRepository->findAllOrderedByName();
 
-        // Récupérer les entreprises déjà sélectionnées
+        // Récupération des entreprises filtrées selon le niveau de l'éleve connectée
+        $studentLevel = $user->getUserLevel();
+        $companies = $companyRepository->findCompaniesForStudent($forum->getId(), $studentLevel);
+
+        // Récupération des entreprises déjà sélectionnées
         $selectedAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
         $selectedCompanies = array_map(fn($a) => $a->getCompanyName(), $selectedAppointments);
-
         $showCv = false; // par défaut, Step 2 caché
 
         // --- Step 1 : validation entreprises ---
@@ -76,12 +78,30 @@ class ForumController extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $cvFile->guessExtension();
                 try {
-                    $cvFile->move($this->getParameter('uploads_directory'), $newFilename);
-                    $cvUrl = '/uploads/' . $newFilename;
+                    // On veut un sous dossier par user pour éviter toute erreur
+                    $studentFolder = $this->getParameter('uploads_directory') . '/' . $user->getId();
+                    if (!file_exists($studentFolder)) {
+                        mkdir($studentFolder, 0755, true);
+                    }
 
+                    // Suppression de l'ancien CV
+                    $oldCv = $user->getUserUrlCv();
+                    if ($oldCv) {
+                        $oldCvPath = $this->getParameter('kernel.project_dir') . '/public' . $oldCv;
+                        if (file_exists($oldCvPath)) {
+                            unlink($oldCvPath); // suppression du fichier précédent
+                        }
+                    }
+
+                    // On ajoute le nouveau CV
+                    $cvFile->move($studentFolder, $newFilename);
+                    $cvUrl = '/uploads/' . $user->getId() . '/' . $newFilename;
+
+                    // Maj BD
                     $user->setUserUrlCv($cvUrl);
                     $em->persist($user);
                     $em->flush();
+
 
                     $this->addFlash('success', 'CV envoyé avec succès !');
                 } catch (\Exception) {
