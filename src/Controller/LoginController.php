@@ -23,7 +23,7 @@ final class LoginController extends AbstractController
     }
 
     #[Route('/login-handler', name: 'login_handler', methods: ['POST'])]
-    public function loginHandler(Request $request, UsersRepository $usersRepository): Response
+    public function loginHandler(Request $request, UsersRepository $usersRepository, EntityManagerInterface $em): Response
     {
         // Récupération des champs du formulaire
         $email = $request->request->get('email');
@@ -41,7 +41,7 @@ final class LoginController extends AbstractController
         ]);
 
         $result = $response->toArray();
-        //dd($result, $recaptchaResponse);    
+        //dd($result, $recaptchaResponse);
 
         // Vérifie la validité du token et le score minimal
         if (
@@ -62,6 +62,10 @@ final class LoginController extends AbstractController
                 'error' => 'Email ou mot de passe incorrect.',
             ]);
         }
+
+        // On et à jour la date de dernière connexion
+        $user->setUserLastconnexion(new \DateTimeImmutable('today'));
+        $em->flush();
 
         // Étape 3 : Sauvegarde des infos utilisateur en session
         $session = $request->getSession();
