@@ -8,22 +8,24 @@
     <link rel="stylesheet" href="/assets/styles/navbar.css">
     <ul class="navbar-links">
         <li><a href="{{ path('home') }}">ACCUEIL</a></li>
-        {% if app.session is defined and app.session is not null %}
-            {% set user = app.session.get('user') %}
-            {% if user is not null %}
-                {% if user.role is defined and (user.role|lower != 'admin') %}
-                    <li><a href="{{ path('forum') }}">FORUM</a></li>
-                    <li><a href="{{ path('planning') }}">PLANNING</a></li>
-                {% endif %}
-                {% if user.role is defined and (user.role|lower == 'admin') %}
-                    <li><a href="{{ path('admin') }}">INTERFACE ADMIN</a></li>
-                {% endif %}
-                <li><a href="{{ path('profil') }}">PROFIL</a></li>
+        
+        {% if app.user %}
+            {# Afficher FORUM et PLANNING seulement si l'utilisateur n'est PAS admin #}
+            {% if not is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('forum') }}">FORUM</a></li>
+                <li><a href="{{ path('planning') }}">PLANNING</a></li>
             {% endif %}
+            
+            {# Afficher INTERFACE ADMIN seulement pour les admins #}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('admin') }}">INTERFACE ADMIN</a></li>
+            {% endif %}
+            
+            <li><a href="{{ path('profil') }}">PROFIL</a></li>
         {% endif %}
     </ul>
     <div class="navbar-action">
-        {% if app.session is defined and app.session is not null and app.session.get('user') %}
+        {% if app.user %}
             <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
         {% else %}
             <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>

@@ -25,11 +25,10 @@ class ForumController extends AbstractController
         SluggerInterface $slugger,
         UsersRepository $usersRepository
     ): Response {
-        $sessionUser = $request->getSession()->get('user');
-        if (!$sessionUser) return $this->redirectToRoute('login');
-
-        $user = $usersRepository->find($sessionUser['id']);
-        if (!$user) return $this->redirectToRoute('login');
+         $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
 
         $cvUrl = $user->getUserUrlCv();
         $forum = $em->getRepository(Forum::class)->find(1);

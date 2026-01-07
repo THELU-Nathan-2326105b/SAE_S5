@@ -3,39 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Users;
-use App\Repository\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil')]
-    public function index(Request $request, UsersRepository $usersRepository): Response
+    public function index(): Response
     {
-        $session = $request->getSession();
-        $userSession = $session->get('user');
+        // Récupération de l'utilisateur connecté via le système Symfony
+        /** @var Users $user */
+        $user = $this->getUser();
 
-        if (!$userSession) {
-            // ⚠️ pas connecté → redirection vers login
+        // Si getUser() retourne null (ne devrait pas arriver grâce à IsGranted)
+        if (!$user) {
             return $this->redirectToRoute('login');
         }
 
-        // Utilisation de Doctrine pour récupérer l’utilisateur
-        /** @var Users|null $dbUser */
-        $dbUser = $usersRepository->find($userSession['id']);
-
-        if (!$dbUser) {
-            throw $this->createNotFoundException("Utilisateur introuvable en base");
-        }
-
         return $this->render('profil/profil.html.twig', [
-            'firstname' => $dbUser->getUserFirstname(),
-            'lastname'  => $dbUser->getUserLastname(),
-            'level'     => $dbUser->getUserLevel(),
-            'mail'      => $dbUser->getUserEmail(),
-            'role'      => $dbUser->getUserRole(),
+            'firstname' => $user->getUserFirstname(),
+            'lastname'  => $user->getUserLastname(),
+            'level'     => $user->getUserLevel(),
+            'mail'      => $user->getUserEmail(),
+            'role'      => $user->getUserRole(),
         ]);
     }
 }
