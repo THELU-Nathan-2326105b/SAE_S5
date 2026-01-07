@@ -28,8 +28,7 @@
             <div style="color:red; margin-bottom:10px;">{{ error }}</div>
         {% endif %}
 
-        <form id="loginForm" action="{{ path('login_handler') }}" method="POST" class="login-form">
-
+        <form id="loginForm" action="{{ path('login_handler') }}" method="POST" class="login-form"> 
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" required placeholder="Votre email">
