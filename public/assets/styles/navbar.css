@@ -103,7 +103,7 @@
 }
 
 .hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    transform: rotate(-45deg) translate(7px, -6px);
 }
 
 @media (max-width: 768px) {
