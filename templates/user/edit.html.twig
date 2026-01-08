@@ -3,17 +3,16 @@
 {% block title %}Modifier l’utilisateur{% endblock %}
 
 {% block body %}
-  <div id="user-edit" class="user-edit container py-4">
-    <h1 id="user-edit-title" class="user-edit-title mb-3">Modifier l’utilisateur</h1>
+    <div class="admin-page-container">
+        <h1 class="page-title">Modifier l’utilisateur</h1>
 
-    {% include 'user/_form.html.twig' with {
-      form: form,
-      button_label: 'Modifier',
-      include_submit: true
-    } %}
+        {% include 'user/_form.html.twig' with {
+            form: form,
+            button_label: 'Modifier'
+        } %}
 
-    <div class="mt-4">
-      <a id="user-edit-back" class="btn back-user" href="{{ path('app_user_index', {id: user.id}) }}">Retour</a>
+        <div class="page-actions">
+            <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour à la liste</a>
+        </div>
     </div>
-  </div>
 {% endblock %}

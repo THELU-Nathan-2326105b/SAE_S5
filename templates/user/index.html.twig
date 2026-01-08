@@ -3,75 +3,79 @@
 {% block title %}Liste des utilisateurs{% endblock %}
 
 {% block body %}
-  <div class="admincompaniespage container">
-     <h1 id="users-title" class="users-title">Utilisateurs</h1>
+<div class="admin-page-container">
+    <h1 class="page-title">Gestion des Utilisateurs</h1>
 
+    {# Messages Flash #}
+    <div class="flash-messages">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message|raw }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# Tableau #}
     {% if users is not empty %}
-      <table id="users-table" class="users-table">
-        <thead>
-          <tr>
-            {# <th>ID</th> #}
-            <th>Email</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Niveau</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in users %}
-            <tr>
-              {# <td>{{ user.id }}</td> #}
-              <td>{{ user.userEmail }}</td>
-              <td>{{ user.userFirstname }}</td>
-              <td>{{ user.userLastname }}</td>
-              <td>{{ user.userLevel }}</td>
-              <td>
-                  <a class="action-link view-user" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
-                  {# {% if is_granted('ROLE_ADMIN') %} #}
-                    <a class="action-link edit-user" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
-                    <form method="post"
-                          action="{{ path('app_user_delete', { id: user.id }) }}"
-                          class="delete-user-form"
-                          onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                      <button class="action-button delete-user">Supprimer</button>
-                    </form>
-                  {# {% endif %} #}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Niveau</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td data-label="Email">{{ user.userEmail }}</td>
+                        <td data-label="Prénom">{{ user.userFirstname }}</td>
+                        <td data-label="Nom">{{ user.userLastname }}</td>
+                        <td data-label="Niveau">
+                            <span class="text-bold">{{ user.userLevel }}</span>
+                        </td>
+                        <td class="actions-cell" data-label="Actions">
+                            <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                            
+                            {# {% if is_granted('ROLE_ADMIN') %} #}
+                            <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+
+                            <form method="post" 
+                                  action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                  class="form-inline-delete"
+                                  onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                <button class="btn btn-link-danger">Supprimer</button>
+                            </form>
+                            {# {% endif %} #}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-      <p>Aucun utilisateur trouvé.</p>
+        <p class="no-data">Aucun utilisateur trouvé.</p>
     {% endif %}
 
-    <a id="add-user" class="btn add-user" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
-    {# Tout supprimer #}
+    {# Actions Globales #}
+    <div class="page-actions">
+        <a class="btn btn-edit" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
+        
         {% if users is not empty %}
-            <form method="post" 
-                  action="{{ path('app_user_delete_non_admins') }}" 
-                  class="delete-mass-form"
+            <form method="post" action="{{ path('app_user_delete_non_admins') }}" 
                   onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les utilisateurs non-admins.\n\nCette action est irréversible.\n\nConfirmer ?');">
-                
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
-                <button type="submit" class="btn btn-danger mass-delete-btn">
-                    Supprimer les non-admins
-                </button>
+                <button type="submit" class="btn btn-delete">Supprimer les non-admins</button>
             </form>
         {% endif %}
-    <div id="user-import" class="import-block">
-      {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_user_import' }) }}
     </div>
-    
 
-  </div>
-  <div id="flash-messages" class="flash-messages">
-    {% for label, messages in app.flashes %}
-      {% for message in messages %}
-        <div class="flash flash-{{ label }}">{{ message|raw }}</div>
-      {% endfor %}
-    {% endfor %}
-  </div>
+    {# Bloc Import #}
+    <div class="import-box">
+        <h3 class="import-title">Import CSV Utilisateurs</h3>
+        {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_user_import' }) }}
+    </div>
+</div>
 {% endblock %}

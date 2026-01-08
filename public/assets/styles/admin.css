@@ -1,5 +1,11 @@
 /*==================== PAGE ADMIN ==================== */
-
+:root {
+    --primary: #008b57;
+    --primary-dark: #006b47;
+    --danger: #B0413E;
+    --bg-light: #f9fbf9;
+    --text-main: #222;
+}
 .admin-buttons {
     display: flex;
     flex-direction: row;
@@ -411,4 +417,199 @@
     .title-entreprises {
         font-size: 1.6rem;
     }
+}
+/*==================== GESTION UTILISATEURS ADMIN ==================== */
+
+.admin-page-container {
+    text-align: center;
+    padding: 2rem;
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Oswald', sans-serif;
+}
+
+.admin-table {
+    width: 100%;
+    margin: 2rem auto;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: middle;
+}
+
+.admin-table th {
+    background-color: #008b57;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.admin-table tr:hover {
+    background-color: #f9fbf9;
+}
+
+
+.table-img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+.table-img.circle {
+    border-radius: 50%; 
+}
+
+
+.actions-cell {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-view {
+    background-color: #64748b;
+}
+.btn-view:hover {
+    background-color: #475569;
+}
+
+/* Lien de suppression discret (dans les formulaires) */
+.btn-link-danger {
+    background: transparent;
+    color: #B0413E;
+    border: 1px solid rgba(176, 65, 62, 0.3);
+    padding: 6px 10px;
+}
+.btn-link-danger:hover {
+    background: #fff5f5;
+}
+
+/* --- Messages Flash (Alertes) --- */
+.flash-messages {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.flash {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 500;
+}
+.flash-success { background-color: #008b57; }
+.flash-error, .flash-danger { background-color: #B0413E; }
+.flash-info { background-color: #64748b; }
+
+/* --- Responsive pour le nouveau tableau .admin-table --- */
+@media (max-width: 900px) {
+    .admin-table thead { display: none; }
+    .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+        display: block;
+        width: 100%;
+    }
+    .admin-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid #eee;
+    }
+    .admin-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: #008b57;
+    }
+    .actions-cell {
+        justify-content: flex-end;
+    }
+}
+/* Pour les textes spécifiques dans les tableaux */
+.text-bold {
+    font-weight: 600;
+    color: #444;
+}
+
+.text-muted {
+    color: #999;
+    font-style: italic;
+}
+
+/* Pour aligner le formulaire de suppression à côté du bouton modifier */
+.form-inline-delete {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Conteneur des boutons en bas de page */
+.page-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+/* Titre dans la boîte d'import */
+.import-title {
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+/* Centrage simple */
+.center-text {
+    text-align: center;
+}
+
+/* Style pour la boîte d'import générique */
+.import-box {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 2px dashed var(--primary); /* Utilise la variable définie en haut */
+    border-radius: 12px;
+    background-color: var(--bg-light);
+    text-align: center;
+}
+
+/* Ajoutez ceci avec les autres boutons à la fin pour sécuriser le style */
+.btn-edit {
+    background-color: var(--primary);
+    color: white;
+}
+.btn-edit:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-delete {
+    background-color: var(--danger);
+    color: white;
+}
+.btn-delete:hover {
+    background-color: #8e3532;
 }

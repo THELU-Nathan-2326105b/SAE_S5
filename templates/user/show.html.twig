@@ -3,35 +3,49 @@
 {% block title %}Utilisateur{% endblock %}
 
 {% block body %}
-<div id="user-show" class="user-show container">
-  <h1 id="user-title" class="user-title">Utilisateur</h1>
+<div class="admin-page-container">
+    <h1 class="page-title">Détails Utilisateur</h1>
 
-  <div id="user-data" class="user-data">
-    {# <p>ID : {{ user.id }}</p> #}
-    <p id="user-email" class="user-email">Email : {{ user.userEmail|default('') }}</p>
-    {# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
-    {# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
-    <p id="user-role" class="user-role">Rôle : {{ user.userRole }}</p>
-    <p id="user-firstconnexion" class="user-firstconnexion">Première connexion : {{ user.userFirstconnexion ? 'oui' : 'non' }}</p>
-    <p id="user-firstname" class="user-firstname">Prénom : {{ user.userFirstname|default('') }}</p>
-    <p id="user-lastname" class="user-lastname">Nom : {{ user.userLastname|default('') }}</p>
-    <p id="user-level" class="user-level">Niveau : {{ user.userLevel|default('') }}</p>
-    {# <p>Dernière connexion : {{ user.userLastconnexion ? user.userLastconnexion|date('Y-m-d H:i:s') : '' }}</p> #}
-  </div>
+    <div class="user-details-card">
+        <div class="detail-row">
+            <span class="detail-label">Email :</span>
+            <span class="detail-value">{{ user.userEmail }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Prénom :</span>
+            <span class="detail-value">{{ user.userFirstname }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Nom :</span>
+            <span class="detail-value">{{ user.userLastname }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Niveau :</span>
+            <span class="detail-value">{{ user.userLevel }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Rôle :</span>
+            <span class="detail-value">{{ user.userRole }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Première connexion :</span>
+            <span class="detail-value">
+                {% if user.userFirstconnexion %}
+                    <span style="color:green;">Oui</span>
+                {% else %}
+                    <span style="color:gray;">Non</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
 
-  <div id="user-actions" class="user-actions">
-      {# {% if is_granted('ROLE_ADMIN') %} #}
-        <a class="btn edit-user" href="{{ path('app_user_edit', {id: user.id}) }}">Éditer</a>
-      {# {% endif %} #}
-      <a class="btn back-user" href="{{ path('app_user_index', { id: user.id }) }}">Retour</a>
-      {# {% if is_granted('ROLE_ADMIN') %} #}
-        <a class="btn delete-user" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
-      {# {% endif %} #}
-  </div>
+    <div class="page-actions">
+        <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour</a>
+        
+        {# {% if is_granted('ROLE_ADMIN') %} #}
+            <a class="btn btn-edit" href="{{ path('app_user_edit', {id: user.id}) }}">Modifier</a>
+            <a class="btn btn-delete" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
+        {# {% endif %} #}
+    </div>
 </div>
-
-{# <form method="post" action="{{ path('app_user_delete', {id: user.id}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-  <button>Supprimer</button>
-</form> #}
 {% endblock %}

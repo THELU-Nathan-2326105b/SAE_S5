@@ -3,13 +3,16 @@
 {% block title %}Nouvel utilisateur{% endblock %}
 
 {% block body %}
-  <div id="user-new" class="user-new container py-4">
-    <h1 id="user-new-title" class="user-new-title mb-3">Créer un utilisateur</h1>
+    <div class="admin-page-container">
+        <h1 class="page-title">Créer un utilisateur</h1>
 
-    {% include 'user/_form.html.twig' with {
-      form: form,
-      button_label: 'Créer',
-      include_submit: true
-    } %}
-  </div>
+        {% include 'user/_form.html.twig' with {
+            form: form,
+            button_label: 'Créer'
+        } %}
+        
+        <div class="page-actions">
+            <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour à la liste</a>
+        </div>
+    </div>
 {% endblock %}
