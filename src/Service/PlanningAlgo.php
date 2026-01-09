@@ -24,9 +24,9 @@ class PlanningAlgo
     private const RATIO_MODERATE = 0.6;      // Saturation modérée
     private const RATIO_GOOD = 0.4;          // Bonne capacité
     
-    /**
-     * Réinitialise les rendez-vous pour un forum donné
-     */
+    
+      //Réinitialise les rendez-vous pour un forum donné
+     
     public static function resetAppointments(Connection $conn, int $forum_id): void
     {
         $conn->executeStatement(
@@ -169,7 +169,7 @@ class PlanningAlgo
                 'max_possible_5min' => 0,
                 'max_possible_10min' => 0,
                 'max_possible_15min' => 0,
-                'issue_reasons' => ["⚠️ AUCUNE DISPONIBILITÉ : L'entreprise n'est pas présente au forum (pas d'entrée dans is_present)"],
+                'issue_reasons' => [" AUCUNE DISPONIBILITÉ : L'entreprise n'est pas présente au forum (pas d'entrée dans is_present)"],
                 'severity' => 'CRITIQUE',
                 'saturations' => [
                     '5min' => 0,
@@ -568,9 +568,7 @@ class PlanningAlgo
 
     }
 
-    /**
-     * Vérifie si le rôle de l'étudiant correspond au search_type de l'entreprise
-     */
+     // Vérifie si le rôle de l'étudiant correspond au search_type de l'entreprise
     private static function matchesSearchType(string $user_role, ?string $search_type): bool
     {
         if ($search_type === null) {
@@ -598,9 +596,7 @@ class PlanningAlgo
         return in_array($user_level, $levels);
     }
 
-    /**
-     * Calcule la capacité totale en minutes pour une liste de créneaux
-     */
+     // Calcule la capacité totale en minutes pour une liste de créneaux
     private static function calculateTotalCapacity(array $windows): float
     {
         $total_minutes = 0;
@@ -616,9 +612,9 @@ class PlanningAlgo
         return $total_minutes;
     }
 
-    /**
-     * Analyse la capacité d'une entreprise et calcule les saturations
-     */
+    
+     // Analyse la capacité d'une entreprise et calcule les saturations
+     
     private static function analyzeCompanyCapacity(float $capacity_minutes, int $demand): array
     {
         $max_5min = max(1, floor($capacity_minutes / self::DURATION_MIN));
@@ -637,9 +633,8 @@ class PlanningAlgo
         ];
     }
 
-    /**
-     * Détecte les problèmes de capacité et détermine leur sévérité
-     */
+     // Détecte les problèmes de capacité et détermine leur sévérité
+     
     private static function detectCapacityIssues(array $capacity_data, string $company, float $total_capacity): array
     {
         $has_issue = false;
@@ -700,10 +695,9 @@ class PlanningAlgo
         ];
     }
 
-    /**
-     * Calcule la durée optimale de rendez-vous selon la capacité et la demande
-     * Méthode : Division directe du temps disponible par le nombre de demandes
-     */
+     // Calcule la durée optimale de rendez-vous selon la capacité et la demande
+     // Méthode : Division directe du temps disponible par le nombre de demandes
+     
     private static function calculateOptimalDuration(float $capacity_minutes, int $demand): int
     {
         if ($demand === 0) {
