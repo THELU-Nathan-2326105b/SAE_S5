@@ -7,10 +7,57 @@
         width: 100%;
         margin-top: auto;
         box-sizing: border-box;
+        flex-shrink: 0;
     }
-    a{
+    
+    footer p {
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+    
+    footer a {
         color: white;
         text-decoration: underline;
+        display: inline-block;
+        margin: 0 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    footer a:hover {
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        footer {
+            padding: 1.5rem 1rem;
+        }
+        
+        footer p {
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            display: block;
+            margin: 0.3rem 0;
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        footer {
+            padding: 1rem;
+        }
+        
+        footer p {
+            font-size: 0.8rem;
+            margin: 0.3rem 0;
+        }
+        
+        footer a {
+            font-size: 0.75rem;
+            display: block;
+            margin: 0.2rem 0;
+        }
     }
 </style>
 <footer>

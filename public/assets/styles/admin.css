@@ -85,7 +85,7 @@ a{
     border-collapse: collapse;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 5px rgba(71, 71, 71);
     overflow: hidden;
     font-family: 'Poppins', sans-serif;
 }
@@ -152,6 +152,79 @@ a{
     font-style: italic;
     color: #777;
     margin-top: 2rem;
+}
+
+/* ======== Formulaire d'ajout d'entreprise ======== */
+
+.add-company-section {
+    width: 40%;
+    margin: 3rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 5px rgb(71, 71, 71);
+    font-family: 'Poppins', sans-serif;
+}
+
+.add-company-section h2 {
+    font-size: 1.4rem;
+    color: #008b57;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.add-company-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group textarea {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 80px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #008b57;
+    box-shadow: 0 0 5px rgba(71, 71, 71);
+}
+
+.add-company-form button[type="submit"] {
+    padding: 0.8rem 1.5rem;
+    background-color: #008b57;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: center;
+    min-width: 150px;
+}
+
+.add-company-form button[type="submit"]:hover {
+    background-color: #006b47;
 }
 
 /* ===================== MODAL POPUP ===================== */
@@ -305,6 +378,19 @@ a{
         padding: 0.8rem 1rem;
         font-size: 0.9rem;
     }
+
+    .add-company-section {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .add-company-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .form-group textarea {
+        min-height: 70px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -371,6 +457,26 @@ a{
     .modal input[type="text"] {
         font-size: 0.9rem;
         padding: 0.6rem;
+    }
+
+    .add-company-section {
+        width: 100%;
+        padding: 1.2rem;
+    }
+
+    .add-company-section h2 {
+        font-size: 1.1rem;
+    }
+
+    .form-group textarea {
+        min-height: 60px;
+        font-size: 0.9rem;
+    }
+
+    .add-company-form button[type="submit"] {
+        width: 100%;
+        padding: 0.7rem;
+        font-size: 0.9rem;
     }
 
     .admincompaniespage {
