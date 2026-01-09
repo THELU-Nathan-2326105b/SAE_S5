@@ -11,12 +11,12 @@
         {{ form_widget(form.user_email, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.user_email) }}
     </div>
-
-    <div class="form-group">
+    {% do form.plainPassword.setRendered() %}
+    {# <div class="form-group">
         {{ form_label(form.plainPassword) }}
         {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.plainPassword) }}
-    </div>
+    </div> #}
 
     <div class="form-group">
         {{ form_label(form.user_role) }}
