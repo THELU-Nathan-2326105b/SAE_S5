@@ -294,7 +294,7 @@ class UsersController extends AbstractController
             $csvImportService->persistImportedEntities($users, $em);
             $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($users)} utilisateurs).");
         } catch (\Throwable $e) {
-            $this->addFlash('danger', 'Échec de l’import : ' /*. $e->getMessage()*/);
+            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
         }
 
         return $this->redirectToRoute('app_user_index');
@@ -320,10 +320,10 @@ class UsersController extends AbstractController
             $deletedCount = $this->removeNonAdminUsers($em, $usersRepository);
 
             if ($deletedCount > 0) {
-                $this->addFlash('success', "$deletedCount utilisateurs non-admin ont été supprimés.");
+                $this->addFlash('success', "$deletedCount étudiants ont été supprimés.");
             } 
             else {
-                $this->addFlash('info', "Aucun utilisateur à supprimer.");
+                $this->addFlash('info', "Aucun étudiant à supprimer.");
             }
         } else {
             $this->addFlash('error', 'Token de sécurité invalide.');
