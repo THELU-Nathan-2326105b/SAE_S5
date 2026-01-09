@@ -613,3 +613,57 @@
 .btn-delete:hover {
     background-color: #8e3532;
 }
+
+/* --- Zone de tableau défilante (Scrollable) --- */
+.table-scroll-container {
+    max-height: 500px; /* Hauteur max avant de scroller (environ 10 lignes) */
+    overflow-y: auto;  /* Active le scroll vertical */
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+    margin-bottom: 2rem;
+    display: none; /* Caché par défaut pour l'effet "liste déroulante" */
+}
+
+/* Garder l'en-tête fixe en haut quand on scrolle */
+.table-scroll-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Le bouton pour déplier la liste */
+.btn-toggle-list {
+    background-color: #f3f5f8;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.btn-toggle-list:hover {
+    background-color: #e6fcf5;
+}
+
+.btn-toggle-list.active .arrow-icon {
+    transform: rotate(180deg);
+}
+.arrow-icon {
+    transition: transform 0.3s ease;
+    display: inline-block; 
+}
+
+
+.js-toggle-btn.active .arrow-icon {
+    transform: rotate(180deg);
+}

@@ -1,7 +1,11 @@
 {% extends 'user/base.html.twig' %}
 
 {% block title %}Liste des utilisateurs{% endblock %}
-
+{% block javascripts %}
+    {{ parent() }}
+    {# On inclut le script générique #}
+    <script src="{{ asset('assets/toggle.js') }}" defer></script>
+{% endblock %}
 {% block user_content %}
 <div class="admin-page-container">
     <h1 class="page-title">Gestion des Utilisateurs</h1>
@@ -70,53 +74,62 @@
     {# ========================================== #}
     {#       TABLEAU 2 : AUTRES UTILISATEURS      #}
     {# ========================================== #}
+    {# ... #}
     <h3 class="section-title">Autres Utilisateurs</h3>
 
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Niveau</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set has_users = false %}
-            
-            {% for user in users %}
-                {# CORRECTION ICI : On utilise user.userRole #}
-                {% if user.userRole is defined and user.userRole|lower != 'admin' %}
-                    {% set has_users = true %}
-                    <tr>
-                        <td data-label="Email">{{ user.userEmail }}</td>
-                        <td data-label="Prénom">{{ user.userFirstname }}</td>
-                        <td data-label="Nom">{{ user.userLastname }}</td>
-                        <td data-label="Niveau">
-                            <span class="text-bold">{{ user.userLevel }}</span>
-                        </td>
-                        <td class="actions-cell" data-label="Actions">
-                            <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
-                            <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+    <button class="btn-toggle-list js-toggle-btn" data-target="users-list-container">
+        <span>Voir la liste des étudiants </span>
+        <span class="arrow-icon">▼</span>
+    </button>
 
-                            <form method="post" 
-                                  action="{{ path('app_user_delete', { id: user.id }) }}" 
-                                  class="form-inline-delete"
-                                  onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                <button class="btn btn-link-danger">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
+    <div id="users-list-container" class="table-scroll-container">
+        <table class="admin-table" style="margin:0; box-shadow:none; border-radius:0;">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Niveau</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set has_users = false %}
+                
+                {% for user in users %}
+                    {% if user.userRole is defined and user.userRole|lower != 'admin' %}
+                        {% set has_users = true %}
+                        <tr>
+                            <td data-label="Email">{{ user.userEmail }}</td>
+                            <td data-label="Prénom">{{ user.userFirstname }}</td>
+                            <td data-label="Nom">{{ user.userLastname }}</td>
+                            <td data-label="Niveau">
+                                <span class="text-bold">{{ user.userLevel }}</span>
+                            </td>
+                            <td class="actions-cell" data-label="Actions">
+                                <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                                <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+
+                                <form method="post" 
+                                    action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                    class="form-inline-delete"
+                                    onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                    <button class="btn btn-link-danger">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+                {% if not has_users %}
+                    <tr><td colspan="5" class="no-data">Aucun autre utilisateur trouvé.</td></tr>
                 {% endif %}
-            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            {% if not has_users %}
-                <tr><td colspan="5" class="no-data">Aucun autre utilisateur trouvé.</td></tr>
-            {% endif %}
-        </tbody>
-    </table>
+    {# ========================================== #}
 
     {# Actions Globales #}
     <div class="page-actions">
