@@ -47,7 +47,16 @@
                         <td class="actions-cell" data-label="Actions">
                             <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
                             <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+                            {# --- AJOUT DU BOUTON SUPPRIMER POUR ADMIN --- #}
+                            <form method="post" 
+                                  action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                  class="form-inline-delete"
+                                  onsubmit="return confirm('⚠️ ATTENTION : Vous êtes sur le point de supprimer un ADMINISTRATEUR !\n\nCette action est irréversible.\n\nÊtes-vous VRAIMENT sûr de vouloir continuer ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                <button class="btn btn-link-danger">Supprimer</button>
+                            </form>
                         </td>
+                        
                     </tr>
                 {% endif %}
             {% endfor %}
@@ -117,7 +126,7 @@
             <form method="post" action="{{ path('app_user_delete_non_admins') }}" 
                   onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les utilisateurs non-admins.\n\nCette action est irréversible.\n\nConfirmer ?');">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
-                <button type="submit" class="btn btn-delete">Supprimer les non-admins</button>
+                <button type="submit" class="btn btn-delete">Supprimer tous les étudiants</button>
             </form>
         {% endif %}
     </div>
