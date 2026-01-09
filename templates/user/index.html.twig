@@ -31,14 +31,13 @@
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>Niveau</th>
-                <th>Actions</th>
+                {# <th>Actions</th> #}
             </tr>
         </thead>
         <tbody>
             {% set has_admins = false %}
             
             {% for user in users %}
-                {# CORRECTION ICI : On utilise user.userRole #}
                 {% if user.userRole is defined and user.userRole|lower == 'admin' %}
                     {% set has_admins = true %}
                     <tr>
@@ -48,10 +47,10 @@
                         <td data-label="Niveau">
                             <span class="text-bold text-primary">ADMIN</span>
                         </td>
-                        <td class="actions-cell" data-label="Actions">
+                        {# <td class="actions-cell" data-label="Actions">
                             <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
                             <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
-                            {# --- AJOUT DU BOUTON SUPPRIMER POUR ADMIN --- #}
+                            
                             <form method="post" 
                                   action="{{ path('app_user_delete', { id: user.id }) }}" 
                                   class="form-inline-delete"
@@ -59,7 +58,7 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                                 <button class="btn btn-link-danger">Supprimer</button>
                             </form>
-                        </td>
+                        </td> #}
                         
                     </tr>
                 {% endif %}
@@ -130,8 +129,6 @@
     </div>
 
     {# ========================================== #}
-
-    {# Actions Globales #}
     <div class="page-actions">
         <a class="btn btn-edit" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
         
