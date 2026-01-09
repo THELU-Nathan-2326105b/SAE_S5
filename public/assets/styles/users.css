@@ -1,0 +1,328 @@
+.adminuserspage {
+    text-align: center;
+    padding: 2rem;
+}
+
+.title-etudiants {
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* ======== Tableau des utilisateurs ======== */
+
+.users-table {
+    width: 90%;
+    margin: 3rem auto;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.users-table th,
+.users-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: middle;
+}
+
+.users-table th {
+    background-color: #008b57;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.users-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-etudiant {
+    background-color: #e8f4f8;
+    color: #0066cc;
+}
+
+.role-admin {
+    background-color: #fff3cd;
+    color: #ff6600;
+}
+
+.role-entreprise {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.user-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border-radius: 5px;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-weight: 500;
+    transition: ease 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+.btn-edit {
+    background-color: #008b57;
+}
+
+.btn-edit:hover {
+    background-color: #006b47;
+}
+
+.btn-delete {
+    background-color: #B0413E;
+}
+
+.btn-delete:hover {
+    background-color: #8e3532;
+}
+
+.no-user {
+    font-style: italic;
+    color: #777;
+    margin-top: 2rem;
+}
+
+/* ======== Responsive ======== */
+
+@media (max-width: 1024px) {
+    .users-table {
+        width: 95%;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .title-etudiants {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .adminuserspage {
+        padding: 1rem;
+    }
+
+    .users-table {
+        width: 100%;
+        margin: 2rem 0;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .user-actions {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 6px 4px;
+        font-size: 0.7rem;
+        text-align: center;
+    }
+
+    .title-etudiants {
+        font-size: 1.8rem;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Masquer les colonnes moins importantes sur tablette */
+    .user-level {
+        display: none;
+    }
+
+    .users-table th:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .adminuserspage {
+        padding: 0.8rem;
+    }
+
+    .users-table {
+        width: 100%;
+        margin: 1.5rem 0;
+        font-size: 0.75rem;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .users-table th {
+        font-size: 0.7rem;
+    }
+
+    .role-badge {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.6rem;
+    }
+
+    .btn {
+        padding: 4px 2px;
+        font-size: 0.65rem;
+    }
+
+    .title-etudiants {
+        font-size: 1.5rem;
+        margin: 0.8rem 0 1rem 0;
+    }
+
+    /* Masquer plus de colonnes sur petit écran */
+    .user-email {
+        display: none;
+    }
+
+    .user-level {
+        display: none;
+    }
+
+    .user-lastconnexion {
+        display: none;
+    }
+
+    .users-table th:nth-child(3),
+    .users-table th:nth-child(5),
+    .users-table th:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .adminuserspage {
+        padding: 0.5rem;
+    }
+
+    .users-table {
+        width: 100%;
+        margin: 1rem 0;
+        font-size: 0.7rem;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.65rem;
+    }
+
+    .users-table th {
+        font-size: 0.6rem;
+        font-weight: 600;
+    }
+
+    .role-badge {
+        padding: 0.15rem 0.3rem;
+        font-size: 0.55rem;
+    }
+
+    .btn {
+        padding: 3px 2px;
+        font-size: 0.6rem;
+        min-width: 40px;
+    }
+
+    .user-actions {
+        gap: 0.2rem;
+    }
+
+    .title-etudiants {
+        font-size: 1.2rem;
+        margin: 0.5rem 0 0.8rem 0;
+    }
+
+    .no-user {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    /* Sur très petit écran, afficher que prénom, nom et actions */
+    .user-role {
+        display: none;
+    }
+
+    .user-email {
+        display: none;
+    }
+
+    .user-level {
+        display: none;
+    }
+
+    .user-lastconnexion {
+        display: none;
+    }
+
+    .users-table th:nth-child(3),
+    .users-table th:nth-child(4),
+    .users-table th:nth-child(5),
+    .users-table th:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .adminuserspage {
+        padding: 0.3rem;
+    }
+
+    .users-table {
+        margin: 0.8rem 0;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.25rem 0.3rem;
+        font-size: 0.6rem;
+    }
+
+    .btn {
+        padding: 2px 2px;
+        font-size: 0.55rem;
+        min-width: 35px;
+    }
+
+    .title-etudiants {
+        font-size: 1rem;
+        margin: 0.3rem 0 0.6rem 0;
+    }
+}
