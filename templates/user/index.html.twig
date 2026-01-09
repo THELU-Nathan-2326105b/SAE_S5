@@ -137,7 +137,7 @@
         
         {% if users is not empty %}
             <form method="post" action="{{ path('app_user_delete_non_admins') }}" 
-                  onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les utilisateurs non-admins.\n\nCette action est irréversible.\n\nConfirmer ?');">
+                  onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les étudiants.\n\nCette action est irréversible.\n\nConfirmer ?');">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
                 <button type="submit" class="btn btn-delete">Supprimer tous les étudiants</button>
             </form>
