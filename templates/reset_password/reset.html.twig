@@ -1,12 +1,25 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Réinitialisation de mot de passe</title>
 
-{% block title %}Modifiez votre mot de passe{% endblock %}
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <link rel="stylesheet" href="/assets/styles/reset.css">
 
-{% block body %}
-    <h1>Modifiez votre mot de passe</h1>
+</head>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Modifiez votre mot de passe</button>
-    {{ form_end(resetForm) }}
-{% endblock %}
+<body>
+    <main>
+        <div class="reset-container">
+            <h1>Modifiez votre mot de passe</h1>
+
+            {{ form_start(resetForm) }}
+                {{ form_row(resetForm.plainPassword) }}
+                <button class="btn btn-primary">Modifiez votre mot de passe</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </main>
+</body>

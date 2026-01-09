@@ -12,7 +12,6 @@
     z-index: 1000;
     gap: 20px;
     flex-wrap: wrap;
-    box-sizing: border-box;
 }
 
 .navbar-logo {
@@ -22,12 +21,12 @@
     flex-shrink: 0; 
 }
 
-/* Logo */
 .navbar-logo img {
     height: 50px;
+    width: auto;
+    display: block;
 }
 
-/* Liens */
 .navbar-links {
     list-style: none;
     display: flex;
@@ -46,9 +45,9 @@
     transition: color 0.3s;
     position: relative;
     display: inline-block;
+    white-space: nowrap;
 }
 
-/* Soulignement au hover avec effet de scale */
 .navbar-links li a::after {
     content: "";
     position: absolute;
@@ -66,12 +65,18 @@
     transform: scaleX(1);
 }
 
-/* Soulignement pour le lien actif */
 .navbar-links li a.active::after {
     transform: scaleX(1);
 }
 
-/* Bouton connexion */
+.navbar-action {
+    flex-shrink: 0;
+}
+
+.navbar-button-mobile {
+    display: none;
+}
+
 .navbar-button {
     background: white;
     padding: 10px 20px;
@@ -79,6 +84,7 @@
     color: #222223;
     text-decoration: none;
     transition: background 0.3s, color 0.3s;
+    white-space: nowrap;
 }
 
 .navbar-button:hover {

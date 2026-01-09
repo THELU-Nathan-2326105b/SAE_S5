@@ -1,7 +1,26 @@
-<h1>Hi!</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Réinitialisation de mot de passe</title>
 
-<p>Pour modifier votre mot de passe, suivez le lien suivant</p>
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <link rel="stylesheet" href="/assets/styles/reset.css">
 
-<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+</head>
 
-<p>Ce lien va expirer dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+<body>
+    <main>
+        <div class="reset-container">
+            <h1>Bonjour !</h1>
+
+            <p>Pour modifier votre mot de passe, suivez le lien suivant</p>
+
+            <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+            <p>Ce lien va expirer dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+        </div>
+    </main>
+</body>

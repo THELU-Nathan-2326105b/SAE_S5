@@ -20,6 +20,13 @@
         {% if app.session.get('user') is not null %}
             <li><a href="{{ path('profil') }}">PROFIL</a></li>
         {% endif %}
+        <li class="navbar-button-mobile">
+            {% if app.session is defined and app.session is not null and app.session.get('user') %}
+                <a href="{{ path('logout') }}" class="navbar-button">Se déconnecter</a>
+            {% else %}
+                <a href="{{ path('login') }}" class="navbar-button">Se connecter</a>
+            {% endif %}
+        </li>
     </ul>
     <div class="navbar-action">
         {% if app.session.get('user') %}

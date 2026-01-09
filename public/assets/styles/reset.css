@@ -1,0 +1,134 @@
+/* ==================== RESET PASSWORD PAGES ==================== */
+
+/* Reset global minimal (SAFE) */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout général (sticky footer compatible) */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Sécurise navbar */
+.navbar {
+    flex-shrink: 0;
+}
+
+/* Main centré */
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+}
+
+/* Conteneur commun */
+.reset-container {
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    padding: 3rem;
+    border-left: 6px solid #008b57;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Titres */
+.reset-container h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    color: #008b57;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Paragraphes */
+.reset-container p,
+.reset-container small {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 1rem;
+    display: block;
+    text-align: center;
+}
+
+/* Liens */
+.reset-container a {
+    color: #008b57;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.reset-container a:hover {
+    text-decoration: underline;
+}
+
+/* Formulaire */
+.reset-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Champs Symfony */
+.reset-container input[type="email"],
+.reset-container input[type="password"],
+.reset-container input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/* Boutons */
+.reset-container button,
+.reset-container .btn {
+    margin-top: 1rem;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background-color: #00a34a;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.reset-container button:hover,
+.reset-container .btn:hover {
+    background-color: #008b57;
+}
+
+/* Alertes (flash messages) */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.alert-danger {
+    background-color: #ffe5e5;
+    color: #a30000;
+    border-left: 4px solid #a30000;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .reset-container {
+        padding: 2rem;
+    }
+
+    .reset-container h1 {
+        font-size: 1.7rem;
+    }
+}
