@@ -111,3 +111,18 @@
     justify-content: center;
     gap: 15px;
 }
+
+
+.section-title {
+    color: var(--primary);
+    font-size: 1.5rem;
+    margin: 3rem 0 1rem 0;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    font-family: 'Oswald', sans-serif;
+}
+
+.text-primary {
+    color: var(--primary);
+}

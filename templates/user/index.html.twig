@@ -15,20 +15,71 @@
         {% endfor %}
     </div>
 
-    {# Tableau #}
-    {% if users is not empty %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Prénom</th>
-                    <th>Nom</th>
-                    <th>Niveau</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
+    {# ========================================== #}
+    {#       TABLEAU 1 : ADMINISTRATEURS          #}
+    {# ========================================== #}
+    <h3 class="section-title">Administrateurs</h3>
+    
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Niveau</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set has_admins = false %}
+            
+            {% for user in users %}
+                {# CORRECTION ICI : On utilise user.userRole #}
+                {% if user.userRole is defined and user.userRole|lower == 'admin' %}
+                    {% set has_admins = true %}
+                    <tr>
+                        <td data-label="Email" class="text-bold">{{ user.userEmail }}</td>
+                        <td data-label="Prénom">{{ user.userFirstname }}</td>
+                        <td data-label="Nom">{{ user.userLastname }}</td>
+                        <td data-label="Niveau">
+                            <span class="text-bold text-primary">ADMIN</span>
+                        </td>
+                        <td class="actions-cell" data-label="Actions">
+                            <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                            <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            
+            {% if not has_admins %}
+                <tr><td colspan="5" class="no-data">Aucun administrateur trouvé.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    {# ========================================== #}
+    {#       TABLEAU 2 : AUTRES UTILISATEURS      #}
+    {# ========================================== #}
+    <h3 class="section-title">Autres Utilisateurs</h3>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Niveau</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set has_users = false %}
+            
+            {% for user in users %}
+                {# CORRECTION ICI : On utilise user.userRole #}
+                {% if user.userRole is defined and user.userRole|lower != 'admin' %}
+                    {% set has_users = true %}
                     <tr>
                         <td data-label="Email">{{ user.userEmail }}</td>
                         <td data-label="Prénom">{{ user.userFirstname }}</td>
@@ -38,8 +89,6 @@
                         </td>
                         <td class="actions-cell" data-label="Actions">
                             <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
-                            
-                            {# {% if is_granted('ROLE_ADMIN') %} #}
                             <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
 
                             <form method="post" 
@@ -49,15 +98,16 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                                 <button class="btn btn-link-danger">Supprimer</button>
                             </form>
-                            {# {% endif %} #}
                         </td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="no-data">Aucun utilisateur trouvé.</p>
-    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if not has_users %}
+                <tr><td colspan="5" class="no-data">Aucun autre utilisateur trouvé.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
 
     {# Actions Globales #}
     <div class="page-actions">
