@@ -1,17 +1,21 @@
+{# templates/company/delete.html.twig #}
 {% extends 'company/base.html.twig' %}
 
 {% block title %}Supprimer {{ company.companyName }}{% endblock %}
 
-{% block body %}
-    <div id="company-delete" class="company-delete container">
-        <h1 id="company-delete-title">Supprimer {{ company.companyName }}</h1>
-
-        <p id="company-delete-confirm">Es-tu sûr de vouloir supprimer cette entreprise ?</p>
-
-        <form id="company-delete-form" class="company-delete-form" method="post" action="{{ path('app_company_delete', { company_name: company.companyName }) }}">
+{% block company_content %}
+<div class="admin-page-container">
+    <h1 class="page-title page-title-danger">Supprimer {{ company.companyName }}</h1>
+    
+    <div class="delete-container">
+        <p class="warning-text">Es-tu sûr de vouloir supprimer cette entreprise ?</p>
+        
+        <form method="post" action="{{ path('app_company_delete', { company_name: company.companyName }) }}" class="delete-actions">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
-            <button id="company-delete-yes" class="btn btn-danger">Oui, supprimer</button>
-            <a id="company-delete-no" class="btn btn-secondary" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Non, revenir</a>
+            
+            <button class="btn btn-delete">Oui, supprimer</button>
+            <a class="btn btn-view" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Non, revenir</a>
         </form>
     </div>
+</div>
 {% endblock %}

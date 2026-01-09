@@ -1,63 +1,79 @@
+{# templates/company/index.html.twig #}
 {% extends 'company/base.html.twig' %}
 
 {% block title %}Liste des entreprises{% endblock %}
 
-{% block body %}
-    <h1>Entreprises</h1>
+{# ATTENTION : On utilise 'company_content' #}
+{% block company_content %}
+<div class="admin-page-container">
+    <h1 class="page-title">Gestion des Entreprises</h1>
 
-    {# {% if is_granted('ROLE_ADMIN') %} #}
-        <a id="company-new" class="btn btn-primary" href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
+    <div class="flash-messages">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message|raw }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
 
-        {% if importForm is defined %}
-            {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
-        {% endif %}
-    {# {% endif %} #}
-
-    <table id="company-table" class="company-table">
+    <table class="admin-table">
         <thead>
             <tr>
+                <th>Logo</th>
                 <th>Nom</th>
                 <th>Description</th>
-                <th>Logo</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for company in companies %}
             <tr>
-                <td>
-                    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">
-                        {{ company.companyName }}
-                    </a>
-                </td>
-                <td>{{ company.companyDescription ?: '—' }}</td>
-                <td>
+                <td data-label="Logo">
                     {% if company.companyLogo %}
-                        <img src="{{ company.companyLogo }}" alt="Logo {{ company.companyName }}" style="max-height:40px;">
+                        <img class="table-img" src="{{ company.companyLogo }}" alt="Logo">
                     {% else %}
-                        Aucun
+                        <span class="text-muted">—</span>
                     {% endif %}
                 </td>
-                <td>
-                    <a class="action-link view-company" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>
+                <td data-label="Nom" class="text-bold">
+                    {{ company.companyName }}
+                </td>
+                <td data-label="Description">
+                    {{ company.companyDescription|length > 60 ? company.companyDescription|slice(0, 60) ~ '...' : company.companyDescription ?: '—' }}
+                </td>
+                <td class="actions-cell" data-label="Actions">
+                    <a class="btn btn-view" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>
+                    
                     {# {% if is_granted('ROLE_ADMIN') %} #}
-                        | <a class="action-link edit-company" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
+                        <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
 
-                        <form class="delete-company-form" method="post"
+                        <form method="post" 
                               action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
-                              style="display:inline"
+                              class="form-inline-delete"
                               onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
-                            <button class="btn btn-link delete-company">Supprimer</button>
+                            <button class="btn btn-link-danger">Supprimer</button>
                         </form>
                     {# {% endif %} #}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">Aucune entreprise trouvée.</td>
+                <td colspan="4" class="no-data">Aucune entreprise trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="page-actions center-text">
+        <a class="btn btn-edit" href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
+    </div>
+
+    {% if importForm is defined %}
+        <div class="import-box">
+             <h3 class="import-title">Import CSV Entreprises</h3>
+            {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

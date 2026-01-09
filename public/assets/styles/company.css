@@ -1,233 +1,130 @@
-/* =========================================================================
-   company.css — styles partagés pour templates/company
-   ========================================================================== */
+/* assets/styles/company.css */
 
-/* Variables */
-:root{
-  --primary: #008b57;
-  --primary-dark: #006b47;
-  --danger: #B0413E;
-  --muted: #777;
-  --card-bg: #fff;
-  --radius: 12px;
-  --shadow: 0 6px 20px rgba(0,0,0,0.06);
-  --max-width: 1200px;
-}
-
-/* Container global */
-.container {
-  width: 95%;
-  max-width: var(--max-width);
-  margin: 24px auto;
-  box-sizing: border-box;
-  font-family: "Helvetica Nue", Arial, sans-serif;
-  color: #222;
-}
-
-/* Titres */
-h1, .company-new-title, .company-edit-title {
-  color: var(--primary);
-  font-family: 'Oswald', sans-serif;
-  font-size: 1.9rem;
-  margin: 6px 0 16px;
-}
-
-/* ===== Table des entreprises ===== */
-.company-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 18px 0;
-  background: var(--card-bg);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-  font-family: 'Poppins', sans-serif;
-}
-
-.company-table th,
-.company-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #f1f1f1;
-  text-align: left;
-  vertical-align: middle;
-  font-size: 0.95rem;
-}
-
-.company-table thead th {
-  background: var(--primary);
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.company-table tbody tr:hover {
-  background: #f9fbf9;
-}
-
-/* Logo dans le tableau */
-.company-table img {
-  max-height: 40px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-/* Actions cellule */
-.action-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-  padding: 4px 6px;
-  border-radius: 6px;
-}
-.action-link:hover { text-decoration: underline; }
-
-/* Boutons cohérents */
-.btn {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: background 0.18s ease, transform .06s ease;
-  font-size: 0.95rem;
-  text-decoration: none;
-  color: inherit;
-}
-.btn:active { transform: translateY(1px); }
-
-.btn-primary, .btn.btn-primary {
-  background: var(--primary);
-  color: #fff;
-}
-.btn-primary:hover { background: var(--primary-dark); }
-
-.btn-secondary {
-  background: #f3f5f8;
-  color: #1e293b;
-  border: 1px solid rgba(0,0,0,0.04);
-}
-
-.btn-danger, .btn.btn-danger {
-  background: var(--danger);
-  color: #fff;
-}
-.btn-danger:hover { background: #8e3532; }
-
-/* Style spécifique des "link" delete button */
-.btn-link {
-  background: transparent;
-  color: var(--danger);
-  border: 1px solid rgba(176,65,62,0.08);
-  padding: 6px 8px;
-  border-radius: 8px;
-}
-
-/* ===== Formulaire d'entreprise ===== */
+/* --- Formulaires (New / Edit) --- */
 .company-form {
-  width: 100%;
-  box-sizing: border-box;
-  margin-top: 8px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .form-group {
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #444;
 }
 
 .form-control {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #e6e6e6;
-  font-size: 0.95rem;
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: border-color 0.2s;
 }
 
 .form-control:focus {
-  outline: none;
-  border-color: rgba(0,139,87,0.6);
-  box-shadow: 0 0 0 4px rgba(0,139,87,0.06);
+    outline: none;
+    border-color: #008b57;
+    box-shadow: 0 0 0 3px rgba(0, 139, 87, 0.1);
 }
 
-/* Form actions (submit + back) */
-#company-form-actions, .form-actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
+.form-actions {
+    margin-top: 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-/* ===== Page show (détail entreprise) ===== */
-.company-show {
-  display: grid;
-  gap: 14px;
+.form-errors ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+    color: #B0413E;
+    background: #fff2f2;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
 }
 
-.company-logo {
-  max-height: 150px;
-  display: block;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  object-fit: contain;
+/* --- Page Show (Détails) --- */
+.company-details-card {
+    background: #fff;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center; /* Centré pour le logo */
 }
 
-/* Description */
-.company-description {
-  padding: 12px;
-  background: linear-gradient(180deg, rgba(0,139,87,0.03), #fff);
-  border-radius: 10px;
-  border: 1px solid rgba(0,139,87,0.04);
-  color: #333;
-  line-height: 1.5;
+.company-logo-show {
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
 }
 
-/* Actions sur la page show */
-.company-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
+.company-description-box {
+    text-align: left;
+    background: #f9fbf9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    color: #444;
+    line-height: 1.6;
+    border: 1px solid #eee;
 }
 
-/* ===== Modal / Delete page specific ===== */
-.company-delete {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;
-  padding: 24px;
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+/* --- Page Delete --- */
+.delete-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
-.company-delete-title {
-  color: var(--danger);
-  font-size: 1.4rem;
+.warning-text {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #444;
 }
 
-/* ===== Import block (si utilisé) ===== */
-.import-block {
-  margin-top: 18px;
-  padding: 12px;
-  background: linear-gradient(180deg, rgba(0,139,87,0.03), #fff);
-  border-radius: 10px;
-  border: 1px solid rgba(0,139,87,0.06);
+.delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 900px) {
-  .company-table thead { display: none; }
-  .company-table, .company-table tbody td { display: block; width: 100%; }
-  .company-table tbody td { padding: 10px 12px; box-sizing: border-box; }
-  .company-table tbody td:first-child { font-weight: 700; color: var(--primary); }
-  #company-form-actions { flex-direction: column; align-items: stretch; }
-  .company-actions { flex-direction: column; align-items: stretch; }
-  .company-logo { max-height: 120px; }
+
+.page-title-danger {
+    color: var(--danger); 
 }
 
-/* Petites finitions */
-a.btn, button.btn { text-decoration: none; }
+
+.description-title {
+    margin-top: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+
+.text-center {
+    text-align: center;
+}

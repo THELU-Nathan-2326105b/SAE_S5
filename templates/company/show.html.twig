@@ -1,25 +1,31 @@
+{# templates/company/show.html.twig #}
 {% extends 'company/base.html.twig' %}
 
 {% block title %}{{ company.companyName }}{% endblock %}
 
-{% block body %}
-    <div id="company-show" class="company-show container">
-        <h1 id="company-title">{{ company.companyName }}</h1>
+{% block company_content %}
+<div class="admin-page-container">
+    <h1 class="page-title">{{ company.companyName }}</h1>
 
+    <div class="company-details-card">
         {% if company.companyLogo %}
-            <img id="company-logo" class="company-logo" src="{{ asset('uploads/logos/' ~ company.companyLogo) }}" alt="Logo de {{ company.companyName }}" style="max-height: 150px;">
+            {# Utilise le chemin d'asset correct selon votre projet #}
+            <img class="company-logo-show" src="{{ company.companyLogo }}" alt="Logo {{ company.companyName }}">
         {% endif %}
 
-        <div id="company-description" class="company-description">
+        <div class="company-description-box">
+            <h3 style="margin-top:0; color:#008b57;">Description</h3>
             {{ company.companyDescription is not empty ? company.companyDescription : 'Aucune description disponible.' }}
         </div>
-
-        <div id="company-actions" class="company-actions">
-            <a id="company-back" class="btn company-back" href="{{ path('app_company_index') }}">Retour</a>
-            {# {% if is_granted('ROLE_ADMIN') %} #}
-                | <a id="company-edit" class="btn company-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
-                | <a id="company-delete" class="btn btn-danger company-delete" href="{{ path('app_company_delete', { company_name: company.companyName}) }}">Supprimer</a>
-            {# {% endif %} #}
-        </div>
     </div>
+
+    <div class="page-actions">
+        <a class="btn btn-view" href="{{ path('app_company_index') }}">Retour</a>
+        
+        {# {% if is_granted('ROLE_ADMIN') %} #}
+            <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
+            <a class="btn btn-delete" href="{{ path('app_company_delete', { company_name: company.companyName}) }}">Supprimer</a>
+        {# {% endif %} #}
+    </div>
+</div>
 {% endblock %}
