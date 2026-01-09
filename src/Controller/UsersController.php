@@ -27,13 +27,11 @@ use App\Service\CsvImportService;
 class UsersController extends AbstractController
 {
 
-    private function accessControl(string $role='nobody'):bool {
-        return $role !== 'admin';
-        // if($role !== 'admin') {
-        //     return $this->redirect('/');
-        // }
-        // Accès réservé aux administrateurs
-        //$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Accès non autorisé.');
+    private function accessControl($sessionUser):bool {
+        if($sessionUser === null){
+            return false;
+        }
+        return $sessionUser['role'] !== 'admin';
     }
     /**
      * Liste tous les utilisateurs.
@@ -51,7 +49,7 @@ class UsersController extends AbstractController
         if($sessionUser === null){
             return $this->redirect('/login');
         }
-        if($this->accessControl($sessionUser['role'])) {
+        if($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
 
@@ -82,7 +80,7 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}', name: 'show', methods: ['GET'])]
     public function show(Request $request,Users $user): Response{
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser['role'])) {
+        if($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
         return $this->render('user/show.html.twig', [
@@ -111,7 +109,7 @@ class UsersController extends AbstractController
         if($sessionUser === null){
             return $this->redirect('/login');
         }
-        if($this->accessControl($sessionUser['role'])) {
+        if($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
 
@@ -170,44 +168,49 @@ class UsersController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Users $user, EntityManagerInterface $em): Response{
         $sessionUser = $request->getSession()->get('user');
-       if ($sessionUser === null) {
+        if ($sessionUser === null) {
             return $this->redirect('/login');
         }
         else{
-            if ($this->accessControl($sessionUser['role'])) {
+            if ($this->accessControl($sessionUser)) {
                 return $this->redirect('/');
             }
-            $form = $this->createForm(UsersType::class, $user, [
-                'require_password' => false, 
-            ]);
-            $form->handleRequest($request);
-
-            // if($request->isMethod('POST')){ 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $plainPassword = $form->get('plainPassword')->getData();
-                if ($plainPassword) {
-                    $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
+            else{
+                if ($user->getUserRole() === 'admin' && $user->getId() !== $sessionUser['id']) {
+                    $this->addFlash('error', 'Vous ne pouvez pas modifier un autre administrateur.');
+                    return $this->redirectToRoute('app_user_index');
                 }
+                else{
+                    $form = $this->createForm(UsersType::class, $user, [
+                        'require_password' => false, 
+                    ]);
+                    $form->handleRequest($request);
+                    if ($form->isSubmitted() && $form->isValid()) {
+                        $plainPassword = $form->get('plainPassword')->getData();
+                        if ($plainPassword) {
+                            $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
+                        }
 
-                $em->flush();
+                        $em->flush();
 
-                $this->addFlash('success', 'Utilisateur mis à jour.');
+                        $this->addFlash('success', 'Utilisateur mis à jour.');
 
-                // Redirige vers la fiche de l’utilisateur édité
-                return $this->redirectToRoute(
-                        'app_user_show',
-                        ['id' => $user->getId()],
-                        Response::HTTP_SEE_OTHER
-                    );
+                        // Redirige vers la fiche de l’utilisateur édité
+                        return $this->redirectToRoute(
+                                'app_user_show',
+                                ['id' => $user->getId()],
+                                Response::HTTP_SEE_OTHER
+                            );
+                    }
+                    // Affichage du formulaire
+                    return $this->render('user/edit.html.twig', [
+                        'user' => $user,
+                        'form' => $form->createView(),
+                    ]);
+                    
+                }
             }
-            // Affichage du formulaire
-            return $this->render('user/edit.html.twig', [
-                'user' => $user,
-                'form' => $form->createView(),
-            ]);
         }
-
-        
     }
 
 
@@ -227,7 +230,7 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $em): Response{
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser['role'])) {
+        if($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
         if ($request->isMethod('POST')) {
@@ -275,7 +278,7 @@ class UsersController extends AbstractController
         ImporterFactory $importerFactory, CsvImportService $csvImportService): Response {
         
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser['role'])) {
+        if($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
         
@@ -309,7 +312,7 @@ class UsersController extends AbstractController
     {
         // 1. Vérification des droits (Admin seulement)
         $sessionUser = $request->getSession()->get('user');
-        if ($this->accessControl($sessionUser['role'])) {
+        if ($this->accessControl($sessionUser)) {
             return $this->redirect('/');
         }
 
