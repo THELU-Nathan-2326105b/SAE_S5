@@ -170,37 +170,44 @@ class UsersController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Users $user, EntityManagerInterface $em): Response{
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser['role'])) {
-            return $this->redirect('/');
+       if ($sessionUser === null) {
+            return $this->redirect('/login');
         }
-        $form = $this->createForm(UsersType::class, $user, [
-            'require_password' => false, 
-        ]);
-        $form->handleRequest($request);
-
-        // if($request->isMethod('POST')){ 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword) {
-                $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
+        else{
+            if ($this->accessControl($sessionUser['role'])) {
+                return $this->redirect('/');
             }
+            $form = $this->createForm(UsersType::class, $user, [
+                'require_password' => false, 
+            ]);
+            $form->handleRequest($request);
 
-            $em->flush();
+            // if($request->isMethod('POST')){ 
+            if ($form->isSubmitted() && $form->isValid()) {
+                $plainPassword = $form->get('plainPassword')->getData();
+                if ($plainPassword) {
+                    $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
+                }
 
-            $this->addFlash('success', 'Utilisateur mis à jour.');
+                $em->flush();
 
-            // Redirige vers la fiche de l’utilisateur édité
-            return $this->redirectToRoute(
-                    'app_user_show',
-                    ['id' => $user->getId()],
-                    Response::HTTP_SEE_OTHER
-                );
+                $this->addFlash('success', 'Utilisateur mis à jour.');
+
+                // Redirige vers la fiche de l’utilisateur édité
+                return $this->redirectToRoute(
+                        'app_user_show',
+                        ['id' => $user->getId()],
+                        Response::HTTP_SEE_OTHER
+                    );
+            }
+            // Affichage du formulaire
+            return $this->render('user/edit.html.twig', [
+                'user' => $user,
+                'form' => $form->createView(),
+            ]);
         }
-        // Affichage du formulaire
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
+
+        
     }
 
 

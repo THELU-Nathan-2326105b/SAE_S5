@@ -9,12 +9,12 @@
 
     <div class="company-details-card">
         {% if company.companyLogo %}
-            {# Utilise le chemin d'asset correct selon votre projet #}
             <img class="company-logo-show" src="{{ company.companyLogo }}" alt="Logo {{ company.companyName }}">
         {% endif %}
 
         <div class="company-description-box">
-            <h3 style="margin-top:0; color:#008b57;">Description</h3>
+            <h3 class="description-title">Description</h3>
+            
             {{ company.companyDescription is not empty ? company.companyDescription : 'Aucune description disponible.' }}
         </div>
     </div>
