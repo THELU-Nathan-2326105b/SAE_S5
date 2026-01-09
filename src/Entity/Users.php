@@ -176,15 +176,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        // Convertit votre champ user_role en format Symfony
         $role = $this->user_role;
 
-        // Ajoute le préfixe ROLE_ si nécessaire
         if (!str_starts_with($role, 'ROLE_')) {
             $role = 'ROLE_' . strtoupper($role);
         }
 
-        // Garantit que chaque utilisateur a au moins ROLE_USER
         return array_unique([$role, 'ROLE_USER']);
     }
 
