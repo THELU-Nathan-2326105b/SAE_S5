@@ -24,13 +24,13 @@ final class LoginController extends AbstractController
     #[Route('/login-handler', name: 'login_handler', methods: ['POST'])]
     public function loginHandler(): never
     {
-        
+        // Lance explicitement une exception
+        throw new \LogicException('This method should never be reached - intercepted by LoginAuthenticator');
     }
 
     #[Route('/logout', name: 'logout')]
-    public function logout(Request $request): Response
+    public function logout(): never
     {
-        // Cette méthode peut rester vide, elle sera interceptée par Symfony
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new \LogicException('This method should never be reached - intercepted by logout handler');
     }
 }
