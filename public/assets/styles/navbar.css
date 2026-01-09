@@ -10,6 +10,16 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+    gap: 20px;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-shrink: 0; 
 }
 
 /* Logo */
