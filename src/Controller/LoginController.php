@@ -24,7 +24,6 @@ final class LoginController extends AbstractController
     #[Route('/login-handler', name: 'login_handler', methods: ['POST'])]
     public function loginHandler(): never
     {
-        // Lance explicitement une exception
         throw new \LogicException('This method should never be reached - intercepted by LoginAuthenticator');
     }
 

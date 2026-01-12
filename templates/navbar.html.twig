@@ -13,14 +13,13 @@
             {# Afficher FORUM et PLANNING seulement si l'utilisateur n'est PAS admin #}
             {% if not is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('forum') }}">FORUM</a></li>
-                <li><a href="{{ path('planning') }}">PLANNING</a></li>
             {% endif %}
             
             {# Afficher INTERFACE ADMIN seulement pour les admins #}
             {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="{{ path('admin') }}">INTERFACE ADMIN</a></li>
             {% endif %}
-            
+            <li><a href="{{ path('planning') }}">PLANNING</a></li>
             <li><a href="{{ path('profil') }}">PROFIL</a></li>
         {% endif %}
         <li class="navbar-button-mobile">

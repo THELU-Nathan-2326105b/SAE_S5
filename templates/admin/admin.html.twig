@@ -37,7 +37,33 @@
         </a>
 
     </div>
+    
+    <div class="admin-danger-zone">
+    <form id="reset-form" method="post" action="{{ path('admin_reset_data') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('reset_data') }}">
+
+        <button type="button" class="reset-button" onclick="confirmReset()">
+            Réinitialiser toutes les données
+        </button>
+    </form>
+</div>
+
 </main>
 {% include "footer.html.twig" %}
 </body>
 </html>
+<script>
+    function confirmReset() {
+        const confirmation = confirm(
+            "ATTENTION\n\n" +
+            "Cette action supprimera TOUTES les données de manière définitive.\n" +
+            "Cette action est IRRÉVERSIBLE.\n\n" +
+            "Voulez-vous vraiment continuer ?"
+        );
+
+        if (confirmation) {
+            document.getElementById('reset-form').submit();
+        }
+    }
+</script>
+
