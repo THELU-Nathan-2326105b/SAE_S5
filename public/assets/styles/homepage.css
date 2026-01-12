@@ -1,7 +1,3 @@
-/*==================== PAGE Accueil ==================== */
-/* ----- PAGE ACCUEIL ----- */
-
-/* Section avec l'image de fond */
 .image-section {
     position: relative;
     width: 100%;
@@ -19,20 +15,18 @@
     filter: brightness(50%);
 }
 
-/* Contenu centré */
 .head-content {
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* aligne le texte à gauche */
+    align-items: flex-start;
     justify-content: center;
     height: 100%;
     padding-left: 5%;
     color: white;
 }
 
-/* Titre principal */
 .headline-text {
     font-size: 5rem;
     line-height: 1.2;
@@ -40,15 +34,14 @@
 
 .headline-text_start {
     display: block;
-    color: #008b57; /* vert */
+    color: #008b57;
 }
 
 .headline-text_end {
     display: block;
-    color: white; /* blanc */
+    color: white;
 }
 
-/* Bouton */
 .button1 {
     display: inline-block;
     margin-top: 20px;
@@ -64,6 +57,7 @@
 .button1:hover {
     background-color: #008b57;
 }
+
 
 /* Partie forum */
 .forum-section {
@@ -107,16 +101,198 @@
     object-fit: cover
 }
 
+@media (max-width: 1024px) {
+    .image-section {
+        height: 80vh;
+    }
+
+    .headline-text {
+        font-size: 3.5rem;
+    }
+
+    .head-content {
+        padding-left: 4%;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-section {
+        height: 60vh;
+    }
+
+    .headline-text {
+        font-size: 2.5rem;
+    }
+
+    .head-content {
+        padding-left: 3%;
+    }
+
+    .button1 {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-section {
+        height: 50vh;
+    }
+
+    .headline-text {
+        font-size: 1.8rem;
+    }
+
+    .head-content {
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+
+    .button1 {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        margin-top: 12px;
+    }
+}
+
+
 @media (max-width: 900px) {
+    .image-section {
+        height: 70vh;
+    }
+
+    .head-content {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    .headline-text {
+        font-size: 3.5rem;
+    }
+
     .forum-section {
         flex-direction: column;
     }
+
     .forum-text, .forum-section img {
         width: 100%;
     }
+
     .forum-text {
         padding: 2rem;
         text-align: center;
+    }
+
+    .forum-text .text-title {
+        font-size: 2rem;
+    }
+
+    .forum-text .text-main {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-section {
+        height: 60vh;
+    }
+
+    .head-content {
+        padding-left: 2rem;
+        padding-right: 2rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .headline-text {
+        font-size: 2.5rem;
+    }
+
+    .button1 {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    .forum-text {
+        padding: 1.5rem;
+        gap: 0.8rem;
+    }
+
+    .forum-text .text-title {
+        font-size: 1.6rem;
+    }
+
+    .forum-text .text-main {
+        font-size: 0.95rem;
+    }
+
+    .forum-section img {
+        height: 250px;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-section {
+        height: 50vh;
+    }
+
+    .head-content {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .headline-text {
+        font-size:2rem;
+        line-height: 1.3;
+    }
+
+    .button1 {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        margin-top: 10px;
+    }
+
+    .forum-text {
+        padding: 1rem;
+        gap: 0.6rem;
+    }
+
+    .forum-text .text-title {
+        font-size: 1.3rem;
+    }
+
+    .forum-text .text-main {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .forum-section img {
+        height: 180px;
+    }
+}
+
+@media (max-width: 360px) {
+    .image-section {
+        height: 45vh;
+    }
+
+    .headline-text {
+        font-size: 1.5rem;
+    }
+
+    .forum-text {
+        padding: 0.8rem;
+    }
+
+    .forum-text .text-title {
+        font-size: 1.1rem;
+    }
+
+    .forum-text .text-main {
+        font-size: 0.8rem;
     }
 }
 

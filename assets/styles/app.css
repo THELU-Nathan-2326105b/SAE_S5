@@ -3,10 +3,11 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: "Helvetica Nue", sans-serif;
-    height: 100%;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 main {
@@ -18,5 +19,7 @@ footer {
     color: white;
     text-align: center;
     padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 

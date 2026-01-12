@@ -1,0 +1,74 @@
+/* ==================== PAGE A PROPOS ==================== */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: 'Inter', sans-serif;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    
+}
+
+/* Conteneur principal */
+.apropos-content {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.a_propos {
+    background-color: #ffffff;
+    padding: 4rem;
+    border-left: 8px solid #008b57;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.a_propos h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.5rem;
+    color: #008b57;
+    margin-bottom: 2rem;
+}
+
+.a_propos p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 1.2rem;
+}
+
+.a_propos strong {
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .apropos-content {
+        width: 90%;
+    }
+
+    .a_propos {
+        padding: 2rem;
+    }
+
+    .a_propos h3 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .a_propos p {
+        text-align: center;
+    }
+}

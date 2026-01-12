@@ -1,27 +1,19 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: center;
-    font-family: "Helvetica Nue", sans-serif;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin: 5vh 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .first-word {
     color: #008b57;
+}
+
+.forum-section{
+    text-align: center;
 }
 
 h1 {
@@ -38,6 +30,7 @@ form {
     gap: 30px;
     justify-items: center;
     box-sizing: border-box;
+    overflow: visible;
 }
 
 label {
@@ -185,16 +178,24 @@ button:disabled {
 @media (max-width: 600px) {
     form {
         grid-template-columns: 1fr;
-        padding: 20px;
         gap: 20px;
+        overflow: visible;
+        width: 100%;
+        box-sizing: border-box;
     }
     .bubble {
         max-width: none;
+        width: 100%;
         min-height: 55px;
     }
     h1 {
         font-size: 2rem;
         margin-bottom: 30px;
+    }
+    .main-content {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 }
 

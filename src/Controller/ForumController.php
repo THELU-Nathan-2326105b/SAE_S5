@@ -25,11 +25,10 @@ class ForumController extends AbstractController
         SluggerInterface $slugger,
         UsersRepository $usersRepository
     ): Response {
-        $sessionUser = $request->getSession()->get('user');
-        if (!$sessionUser) return $this->redirectToRoute('login');
-
-        $user = $usersRepository->find($sessionUser['id']);
-        if (!$user) return $this->redirectToRoute('login');
+         $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
 
         $cvUrl = $user->getUserUrlCv();
         $forum = $em->getRepository(Forum::class)->find(1);
@@ -48,27 +47,47 @@ class ForumController extends AbstractController
             $selectedFromForm = $request->request->all('entreprises') ?? [];
             if (!is_array($selectedFromForm)) $selectedFromForm = [$selectedFromForm];
 
-            // Supprimer les anciens appointments
-            $oldAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
-            foreach ($oldAppointments as $oldAppointment) $em->remove($oldAppointment);
-            $em->flush();
-            foreach ($oldAppointments as $oldAppointment) $em->detach($oldAppointment);
+            $existingAppointments = $appointmentRepository->findBy([
+                'user' => $user,
+                'forum' => $forum
+            ]);
 
-            // Persister les nouvelles sélections
             foreach ($selectedFromForm as $companyName) {
-                $appointment = new \App\Entity\Appointment();
-                $appointment->setUser($user);
-                $appointment->setForum($forum);
-                $appointment->setCompanyName($companyName);
-                $appointment->setAppointmentRequest(true);
-                $appointment->setAppointmentTime(new \DateTime());
-                $em->persist($appointment);
+                $existing = null;
+                foreach ($existingAppointments as $app) {
+                    if ($app->getCompanyName() === $companyName) {
+                        $existing = $app;
+                        break;
+                    }
+                }
+
+                if ($existing) {
+                    $existing->setAppointmentRequest(true);
+                    $existing->setAppointmentTime(new \DateTime());
+                } else {
+                    $appointment = new \App\Entity\Appointment();
+                    $appointment->setUser($user);
+                    $appointment->setForum($forum);
+                    $appointment->setCompanyName($companyName);
+                    $appointment->setAppointmentRequest(true);
+                    $appointment->setAppointmentTime(new \DateTime());
+                    $em->persist($appointment);
+                }
             }
+
+            foreach ($existingAppointments as $app) {
+                if (!in_array($app->getCompanyName(), $selectedFromForm, true)) {
+                    $app->setAppointmentRequest(false);
+                }
+            }
+
             $em->flush();
 
             $selectedCompanies = $selectedFromForm;
             $showCv = true; // Step 2 devient visible
         }
+
+
 
         // --- Step 2 : traitement CV ---
         if ($request->isMethod('POST') && $request->request->has('submit_cv') && $request->files->get('cv')) {
