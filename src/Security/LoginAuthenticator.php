@@ -23,9 +23,8 @@ class LoginAuthenticator extends AbstractAuthenticator
         private UsersRepository $usersRepository,
         private HttpClientInterface $client,
         private RateLimiter $limiter,
-        private EntityManagerInterface $em  // Ajout de l'EntityManager
-    ) {
-    }
+        private EntityManagerInterface $em 
+    ) {}
 
     public function supports(Request $request): ?bool
     {
