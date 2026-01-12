@@ -124,8 +124,22 @@
 
 @media (max-width: 768px) {
 
+    .navbar {
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+
     .hamburger {
         display: flex;
+        order: 3;
+    }
+
+    .navbar-logo {
+        order: 1;
+    }
+
+    .navbar-action {
+        order: 2;
     }
 
     .navbar-links {
