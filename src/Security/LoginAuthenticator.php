@@ -24,18 +24,19 @@ class LoginAuthenticator extends AbstractAuthenticator
         private HttpClientInterface $client,
         private RateLimiter $limiter,
         private EntityManagerInterface $em  // Ajout de l'EntityManager
-    ) {}
+    ) {
+    }
 
     public function supports(Request $request): ?bool
     {
-        return $request->isMethod('POST') 
+        return $request->isMethod('POST')
             && $request->getPathInfo() === '/login-handler';
     }
 
     public function authenticate(Request $request): Passport
     {
         $ip = $request->getClientIp() ?? 'unknown';
-        $key = 'login:' . $ip;
+        $key = 'login_' . str_replace(':', '_', $ip);
 
         // 5 tentatives max / 15 minutes
         if ($this->limiter->tooManyAttempts($key, 5, 900)) {
@@ -45,14 +46,14 @@ class LoginAuthenticator extends AbstractAuthenticator
                 "Trop de tentatives. Réessayez dans {$seconds} secondes."
             );
         }
-        
+
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $recaptchaResponse = $request->request->get('g-recaptcha-response');
 
         // Vérification reCAPTCHA
         $secretKey = '6LeygQAsAAAAAK-6I0IrVAZGjUk02p4Iw5oguPHq';
-        
+
         $response = $this->client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
             'body' => [
                 'secret' => $secretKey,
@@ -61,7 +62,7 @@ class LoginAuthenticator extends AbstractAuthenticator
         ]);
 
         $result = $response->toArray();
-        
+
         if (
             !$result['success'] ||
             ($result['score'] ?? 0) < 0.5 ||
@@ -71,7 +72,7 @@ class LoginAuthenticator extends AbstractAuthenticator
         }
 
         return new Passport(
-            new UserBadge($email, function($userIdentifier) {
+            new UserBadge($email, function ($userIdentifier) {
                 return $this->usersRepository->findOneBy(['user_email' => $userIdentifier]);
             }),
             new PasswordCredentials($password)
@@ -86,7 +87,7 @@ class LoginAuthenticator extends AbstractAuthenticator
             $user->setUserLastconnexion(new \DateTimeImmutable('today'));
             $this->em->flush();
         }
-        
+
         return new RedirectResponse($this->router->generate('home'));
     }
 

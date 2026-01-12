@@ -42,6 +42,21 @@
         {% endif %}
     </section>
 
+    <section class="add-company-section">
+        <h2>Ajouter une nouvelle entreprise</h2>
+        <form id="addCompanyForm" class="add-company-form">
+            <div class="form-group">
+                <label for="addCompanyName">Nom de l'entreprise :</label>
+                <textarea name="companyName" id="addCompanyName" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="addCompanyDescription">Description :</label>
+                <textarea name="companyDescription" id="addCompanyDescription" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-edit">Ajouter</button>
+        </form>
+    </section>
+
 </main>
 
 <div class="modal-overlay" id="editModal">
@@ -68,11 +83,103 @@
         const modal = document.getElementById("editModal");
         const form = document.getElementById("editForm");
         const closeModal = document.getElementById("closeModal");
+        const addCompanyForm = document.getElementById("addCompanyForm");
 
+        // Ajouter une nouvelle entreprise
+        if (addCompanyForm) {
+            addCompanyForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const data = {
+                    companyName: document.getElementById("addCompanyName").value,
+                    companyDescription: document.getElementById("addCompanyDescription").value
+                };
+
+                try {
+                    const response = await fetch("/admin/company/create", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(responseData.message || responseData.error || 'Erreur serveur');
+                    }
+
+                    if (responseData.success) {
+                        // Récréer la table ou ajouter la nouvelle ligne
+                        const companiesList = document.querySelector(".companies-list");
+                        let table = companiesList.querySelector(".companies-table");
+
+                        // Si pas de table, créer la structure
+                        if (!table) {
+                            companiesList.innerHTML = `
+                                <table class="companies-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Nom de l'entreprise</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            `;
+                            table = companiesList.querySelector(".companies-table");
+                        }
+
+                        // Ajouter la nouvelle ligne
+                        const tbody = table.querySelector("tbody");
+                        const newRow = document.createElement("tr");
+                        newRow.className = "company-row";
+                        newRow.dataset.name = data.companyName;
+                        newRow.innerHTML = `
+                            <td class="company-name">${data.companyName}</td>
+                            <td class="company-description">${data.companyDescription}</td>
+                            <td class="company-actions">
+                                <button class="btn btn-edit" data-name="${data.companyName}">Modifier</button>
+                                <button class="btn btn-delete" data-name="${data.companyName}">Supprimer</button>
+                            </td>
+                        `;
+                        tbody.appendChild(newRow);
+
+                        // Réattacher les événements aux nouveaux boutons
+                        attachEditAndDeleteEvents();
+
+                        // Réinitialiser le formulaire
+                        addCompanyForm.reset();
+
+                        alert("Entreprise ajoutée avec succès!");
+                    }
+                } catch (error) {
+                    console.error('Erreur détaillée:', error);
+                    alert("Erreur lors de l'ajout : " + error.message);
+                }
+            });
+        }
+
+        // Fonction pour attacher les événements
+        function attachEditAndDeleteEvents() {
         // Modification d'une entreprise
         document.querySelectorAll(".btn-edit").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const row = btn.closest(".company-row");
+                btn.removeEventListener("click", handleEdit);
+                btn.addEventListener("click", handleEdit);
+            });
+
+            // Suppression d'une entreprise
+            document.querySelectorAll(".btn-delete").forEach(btn => {
+                btn.removeEventListener("click", handleDelete);
+                btn.addEventListener("click", handleDelete);
+            });
+        }
+
+        function handleEdit() {
+            const row = this.closest(".company-row");
                 const name = row.dataset.name;
                 const desc = row.querySelector(".company-description").textContent.trim();
 
@@ -84,8 +191,51 @@
                 // Afficher la modale
                 modal.style.display = "flex";
                 document.body.style.overflow = "hidden";
-            });
-        });
+        }
+
+        async function handleDelete() {
+            const name = this.dataset.name;
+            if (!confirm(`Voulez-vous vraiment supprimer l'entreprise "${name}" ?`)) return;
+
+            try {
+                console.log('Tentative de suppression de:', name);
+                const response = await fetch(`/admin/company/delete/${encodeURIComponent(name)}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                const responseData = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(responseData.message || responseData.error || 'Erreur serveur');
+                }
+
+                if (responseData.success) {
+                    // Supprimer la ligne du tableau
+                    const row = this.closest(".company-row");
+                    if (row) {
+                        row.remove();
+                        // Message de succès optionnel
+                        alert("Entreprise supprimée avec succès!");
+
+                        // Vérifier s'il reste des entreprises
+                        const remainingRows = document.querySelectorAll(".company-row");
+                        if (remainingRows.length === 0) {
+                            // S'il n'y a plus d'entreprises, afficher le message "Aucune entreprise"
+                            const tableSection = document.querySelector(".companies-list");
+                            if (tableSection) {
+                                tableSection.innerHTML = '<p class="no-company">Aucune entreprise enregistrée pour le moment.</p>';
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur détaillée:', error);
+                alert("Erreur lors de la suppression : " + error.message);
+            }
+        }
 
         // Fermer la modale
         closeModal.addEventListener("click", () => {
