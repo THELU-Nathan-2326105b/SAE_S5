@@ -120,9 +120,3 @@
 .signup-text a:hover {
     color: #006b50;
 }
-
-@media (max-width: 480px) {
-    .title {
-        font-size: 2rem;
-    }
-}

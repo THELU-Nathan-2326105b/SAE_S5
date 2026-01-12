@@ -1,11 +1,11 @@
 .navbar {
-    width: 100%;
+    width: 96%;
     background-color: #008b57;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2%;
-    min-height: 100px;
+    padding: 15px 2%;
+    min-height: 80px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     position: sticky;
     top: 0;
@@ -30,9 +30,10 @@
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 40px;
+    gap: 80px;
     margin: 0;
     padding: 0;
+    align-items: center;
     flex: 1;
     justify-content: center;
 }
@@ -95,23 +96,23 @@
 .hamburger {
     display: none;
     flex-direction: column;
-    gap: 5px;
+    cursor: pointer;
+    gap: 6px;
     background: none;
     border: none;
-    cursor: pointer;
     padding: 0;
 }
 
 .hamburger span {
-    width: 25px;
+    width: 28px;
     height: 3px;
-    background: white;
+    background-color: white;
     border-radius: 2px;
     transition: all 0.3s ease;
 }
 
 .hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: rotate(45deg) translate(8px, 8px);
 }
 
 .hamburger.active span:nth-child(2) {
@@ -119,92 +120,118 @@
 }
 
 .hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 1024px) {
+    .navbar-links {
+        gap: 40px;
+    }
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
 
     .hamburger {
         display: flex;
+        order: 3;
     }
 
-    .navbar-links {
+    .navbar-action {
         display: none;
+    }
+
+    .navbar-button-mobile {
+        display: block !important;
+        padding: 0 !important;
+        border-bottom: none !important;
+    }
+
+    .navbar-button-mobile a {
+        display: block !important;
+        padding: 12px 2%;
+        color: black !important;
+        font-size: 0.85rem !important;
+        background-color: white !important;
+        border-radius: 5px;
+        margin: 10px 2%;
+        text-align: center;
+    }
+
+
+    .navbar-links {
         position: absolute;
-        top: 100px;
+        top: 100%;
         left: 0;
         right: 0;
-        background-color: #007a4a;
+        background-color: #008b57;
         flex-direction: column;
         gap: 0;
         padding: 20px 0;
+        margin: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: flex-start;
+        flex: none;
+        display: none;
     }
 
     .navbar-links.active {
+        max-height: 500px;
         display: flex;
     }
 
     .navbar-links li {
+        padding: 15px 2%;
         width: 100%;
-        text-align: center;
-        padding: 15px 0;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar-links li a {
+        display: block;
+        white-space: normal;
     }
 
     .navbar-links li a::after {
         display: none;
     }
+}
 
-    .navbar-links li a:hover {
-        background-color: #006a40;
-        width: 100%;
-    }
-
-    .navbar-action {
-        display: flex;
-        gap: 10px;
-        padding: 10px;
-    }
-
-    .navbar-button {
-        padding: 8px 15px;
-        font-size: 0.8rem;
+@media (max-width: 480px) {
+    .navbar {
+        padding: 12px 2%;
+        min-height: 70px;
     }
 
     .navbar-logo img {
         height: 40px;
     }
-}
 
-@media (max-width: 640px) {
-    .navbar-logo img {
-        height: 35px;
+    .navbar-links li {
+        padding: 12px 2%;
     }
 
-    .navbar-button {
-        padding: 6px 12px;
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-logo img {
-        height: 30px;
+    .navbar-links li a {
+        font-size: 0.85rem;
     }
 
-    .navbar-button {
-        padding: 5px 10px;
-        font-size: 0.65rem;
+    .navbar-button-mobile a {
+        padding: 10px 2% !important;
+        font-size: 0.8rem !important;
+        color: black !important;
+        background-color: white !important;
+        margin: 8px 2% !important;
     }
 
-    
-}
-
-@media (max-width: 360px) {
-    .navbar-logo img {
-        height: 25px;
-    }
-
-    .navbar {
-        min-height: 60px;
+    .hamburger span {
+        width: 24px;
+        height: 2.5px;
     }
 }

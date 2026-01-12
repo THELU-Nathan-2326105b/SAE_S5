@@ -2,12 +2,10 @@
 .admin-buttons{
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 80%;
     gap: 5rem;
-    padding: 5% 2%;
-    margin: 0;
+    margin: 5% auto 10% auto;
     justify-content: center;
-    box-sizing: border-box;
 }
 
 .etudiant-box,
@@ -85,7 +83,7 @@ a{
     border-collapse: collapse;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 0 5px rgba(71, 71, 71);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     font-family: 'Poppins', sans-serif;
 }
@@ -152,79 +150,6 @@ a{
     font-style: italic;
     color: #777;
     margin-top: 2rem;
-}
-
-/* ======== Formulaire d'ajout d'entreprise ======== */
-
-.add-company-section {
-    width: 40%;
-    margin: 3rem auto;
-    background: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 5px rgb(71, 71, 71);
-    font-family: 'Poppins', sans-serif;
-}
-
-.add-company-section h2 {
-    font-size: 1.4rem;
-    color: #008b57;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    font-weight: 600;
-}
-
-.add-company-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-group label {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.95rem;
-}
-
-.form-group textarea {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    resize: vertical;
-    min-height: 80px;
-    font-size: 0.95rem;
-    font-family: inherit;
-    transition: border-color 0.3s ease;
-}
-
-.form-group textarea:focus {
-    outline: none;
-    border-color: #008b57;
-    box-shadow: 0 0 5px rgba(71, 71, 71);
-}
-
-.add-company-form button[type="submit"] {
-    padding: 0.8rem 1.5rem;
-    background-color: #008b57;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-self: center;
-    min-width: 150px;
-}
-
-.add-company-form button[type="submit"]:hover {
-    background-color: #006b47;
 }
 
 /* ===================== MODAL POPUP ===================== */
@@ -337,181 +262,10 @@ a{
     }
 }
 
+/* ======== Gestion du forum ======== */
 
-/* ======== Responsive ======== */
-
-@media (max-width: 1024px) {
-    .admin-buttons {
-        width: 90%;
-        gap: 2rem;
-    }
-
-    .etudiant-box,
-    .forum-box,
-    .entreprise-box {
-        width: 220px;
-        height: 220px;
-    }
-
-    .title-admin {
-        font-size: 2rem;
-    }
-
-    .title-entreprises,
-    .title-forum {
-        font-size: 2rem;
-    }
-
-    .companies-table {
-        width: 95%;
-    }
-
-    .companies-table th,
-    .companies-table td {
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .add-company-section {
-        width: 95%;
-        padding: 1.5rem;
-    }
-
-    .add-company-section h2 {
-        font-size: 1.2rem;
-    }
-
-    .form-group textarea {
-        min-height: 70px;
-    }
-}
-
-@media (max-width: 768px) {
-    .admin-buttons {
-        flex-direction: column;
-        width: 80%;
-        gap: 1.5rem;
-        margin: 10% auto;
-    }
-
-    .etudiant-box,
-    .forum-box,
-    .entreprise-box {
-        width: 100%;
-        height: auto;
-        min-height: 200px;
-    }
-
-    .title-admin,
-    .title-entreprises,
-    .title-forum {
-        font-size: 1.8rem;
-        margin-top: 3%;
-    }
-
-    .companies-table {
-        width: 100%;
-        margin: 2rem auto;
-    }
-
-    .companies-table th,
-    .companies-table td {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
-    }
-
-    .company-logo img {
-        width: 40px;
-        height: 40px;
-    }
-
-    .company-actions {
-        flex-direction: column;
-        gap: 0.4rem;
-    }
-
-    .btn {
-        width: 100%;
-        padding: 8px 5px;
-        font-size: 0.8rem;
-    }
-
-    .modal {
-        width: 95%;
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-
-    .modal h2 {
-        font-size: 1.2rem;
-    }
-
-    .modal textarea,
-    .modal input[type="text"] {
-        font-size: 0.9rem;
-        padding: 0.6rem;
-    }
-
-    .add-company-section {
-        width: 100%;
-        padding: 1.2rem;
-    }
-
-    .add-company-section h2 {
-        font-size: 1.1rem;
-    }
-
-    .form-group textarea {
-        min-height: 60px;
-        font-size: 0.9rem;
-    }
-
-    .add-company-form button[type="submit"] {
-        width: 100%;
-        padding: 0.7rem;
-        font-size: 0.9rem;
-    }
-
-    .admincompaniespage {
-        padding: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .etudiant-box,
-    .forum-box,
-    .entreprise-box {
-        width: 100%;
-    }
-
-    .etudiant-box img,
-    .forum-box img,
-    .entreprise-box img {
-        width: 80px;
-        height: 80px;
-    }
-
-    .etudiant-box p,
-    .forum-box p,
-    .entreprise-box p {
-        font-size: 1rem;
-    }
-
-    .title-admin,
-    .title-entreprises,
-    .title-forum {
-        font-size: 1.5rem;
-        margin-top: 5%;
-    }
-
-    .companies-table th,
-    .companies-table td {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    .modal {
-        width: 100%;
-    }
+.title-forum{
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
 }
