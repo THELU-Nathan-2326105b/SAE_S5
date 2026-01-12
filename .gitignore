@@ -8,6 +8,8 @@
 /var/
 /vendor/
 /.idea/
+/.env
+/.gitignore
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
@@ -18,3 +20,4 @@
 ###> symfony/asset-mapper ###
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
