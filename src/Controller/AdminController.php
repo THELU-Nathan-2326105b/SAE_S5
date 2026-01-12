@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Company;
-use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,14 +18,10 @@ final class AdminController extends AbstractController
         return $this->render('admin/admin.html.twig');
     }
 
-    #[Route('/admin/users', name: 'admin-users')]
-    public function users(EntityManagerInterface $em): Response
+    #[Route('/admin/users', name: 'admin_users')]
+    public function users(): Response
     {
-        $users = $em->getRepository(Users::class)->findAll();
-
-        return $this->render('admin/users.html.twig', [
-            'users' => $users
-        ]);
+        return $this->render('admin/users.html.twig');
     }
 
     #[Route('/admin/companies', name: 'admin_companies')]
@@ -61,10 +56,12 @@ final class AdminController extends AbstractController
                 ], 404);
             }
 
+            // Conserver le logo existant si non fourni dans la mise à jour
             $currentLogo = $company->getCompanyLogo();
 
             $company->setCompanyName($data['companyName']);
             $company->setCompanyDescription($data['companyDescription'] ?? '');
+            // Préserver le logo existant si pas de nouveau logo fourni
             $company->setCompanyLogo($data['companyLogo'] ?? $currentLogo);
 
             $em->flush();

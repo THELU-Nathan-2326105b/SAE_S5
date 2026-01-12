@@ -165,8 +165,8 @@
 
         // Fonction pour attacher les événements
         function attachEditAndDeleteEvents() {
-            // Modification d'une entreprise
-            document.querySelectorAll(".btn-edit").forEach(btn => {
+        // Modification d'une entreprise
+        document.querySelectorAll(".btn-edit").forEach(btn => {
                 btn.removeEventListener("click", handleEdit);
                 btn.addEventListener("click", handleEdit);
             });
@@ -180,17 +180,17 @@
 
         function handleEdit() {
             const row = this.closest(".company-row");
-            const name = row.dataset.name;
-            const desc = row.querySelector(".company-description").textContent.trim();
+                const name = row.dataset.name;
+                const desc = row.querySelector(".company-description").textContent.trim();
 
-            // Remplir le formulaire avec les données existantes
-            form.oldCompanyName.value = name;
-            form.editCompanyName.value = name;
-            form.editCompanyDescription.value = desc;
+                // Remplir le formulaire avec les données existantes
+                form.oldCompanyName.value = name;
+                form.editCompanyName.value = name;
+                form.editCompanyDescription.value = desc;
 
-            // Afficher la modale
-            modal.style.display = "flex";
-            document.body.style.overflow = "hidden";
+                // Afficher la modale
+                modal.style.display = "flex";
+                document.body.style.overflow = "hidden";
         }
 
         async function handleDelete() {
@@ -311,8 +311,52 @@
             }
         });
 
-        // Initialiser les événements au chargement
-        attachEditAndDeleteEvents();
+        // Supprimer une entreprise
+        document.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const name = btn.dataset.name;
+                if (!confirm(`Voulez-vous vraiment supprimer l'entreprise "${name}" ?`)) return;
+
+                try {
+                    console.log('Tentative de suppression de:', name);
+                    const response = await fetch(`/admin/company/delete/${encodeURIComponent(name)}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(responseData.message || responseData.error || 'Erreur serveur');
+                    }
+
+                    if (responseData.success) {
+                        // Supprimer la ligne du tableau
+                        const row = btn.closest(".company-row");
+                        if (row) {
+                            row.remove();
+                            // Message de succès optionnel
+                            alert("Entreprise supprimée avec succès!");
+
+                            // Vérifier s'il reste des entreprises
+                            const remainingRows = document.querySelectorAll(".company-row");
+                            if (remainingRows.length === 0) {
+                                // S'il n'y a plus d'entreprises, afficher le message "Aucune entreprise"
+                                const tableSection = document.querySelector(".companies-list");
+                                if (tableSection) {
+                                    tableSection.innerHTML = '<p class="no-company">Aucune entreprise enregistrée pour le moment.</p>';
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur détaillée:', error);
+                    alert("Erreur lors de la suppression : " + error.message);
+                }
+            });
+        });
     });
 </script>
 </body>
