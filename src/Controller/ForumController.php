@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * ForumController
+ * 
+ * Gère l'affichage et l'interaction avec le forum de recrutement.
+ * Permet aux étudiants de sélectionner des entreprises et d'uploader leur CV.
+ * 
+ * @package App\Controller
+ */
+
 namespace App\Controller;
 
 use App\Entity\Forum;
@@ -14,8 +23,29 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\UsersRepository;
 
+/**
+ * Class ForumController
+ * 
+ * Contrôleur pour la gestion du forum de recrutement.
+ * Gère la sélection des entreprises et l'upload du CV par les étudiants.
+ */
 class ForumController extends AbstractController
 {
+    /**
+     * Affiche la page du forum de recrutement
+     * Gère la sélection des entreprises et l'upload du CV en deux étapes
+     * 
+     * Step 1: Sélection des entreprises filtrées selon le niveau de l'étudiant
+     * Step 2: Upload du CV en PDF/DOC/DOCX
+     * 
+     * @param Request $request Requête HTTP
+     * @param CompanyRepository $companyRepository Repository des entreprises
+     * @param AppointmentRepository $appointmentRepository Repository des rendez-vous
+     * @param EntityManagerInterface $em Entity manager Doctrine
+     * @param SluggerInterface $slugger Service de slugification pour les noms de fichiers
+     * @param UsersRepository $usersRepository Repository des utilisateurs
+     * @return Response
+     */
     #[Route('/forum', name: 'forum')]
     public function index(
         Request $request,
@@ -25,6 +55,7 @@ class ForumController extends AbstractController
         SluggerInterface $slugger,
         UsersRepository $usersRepository
     ): Response {
+         /** @var Users|null $user */
          $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('login');

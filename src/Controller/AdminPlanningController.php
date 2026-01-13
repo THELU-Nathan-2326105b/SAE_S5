@@ -10,8 +10,22 @@ use Doctrine\DBAL\Connection;
 use App\Service\PlanningAlgo;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * AdminPlanningController
+ * 
+ * Contrôleur responsable de la gestion du planning des rendez-vous en admin.
+ * Permet de créer, réinitialiser et exporter le planning.
+ * 
+ * @package App\Controller
+ */
 final class AdminPlanningController extends AbstractController
 {
+    /**
+     * Affiche la page de création du planning
+     * 
+     * @param Connection $conn Connexion à la base de données
+     * @return Response Page de gestion du planning
+     */
     #[Route('/admin/creerplanning', name: 'admin_creerplanning', methods: ['GET'])]
     public function createPlanning(Connection $conn): Response
     {
@@ -31,6 +45,13 @@ final class AdminPlanningController extends AbstractController
     }
 
     #[Route('/admin/creerplanning/run', name: 'admin_creerplanning_run', methods: ['GET'])]
+    /**
+     * Exécute l'algorithme de génération du planning
+     * 
+     * @param Request $request Requête HTTP contenant l'ID du forum
+     * @param Connection $conn Connexion à la base de données
+     * @return Response Page avec le résultat du planning généré
+     */
     public function runPlanning(Request $request, Connection $conn): Response
     {
         $forumId = $request->query->getInt('forum_id');
@@ -55,6 +76,14 @@ final class AdminPlanningController extends AbstractController
     }
 
     #[Route('/admin/creerplanning/reset', name: 'admin_creerplanning_reset', methods: ['GET'])]
+    /**
+     * Réinitialise les rendez-vous d'un forum
+     * Remet tous les rendez-vous à null et les marque comme demandes
+     * 
+     * @param Request $request Requête HTTP contenant l'ID du forum
+     * @param Connection $conn Connexion à la base de données
+     * @return Response Page de gestion avec confirmation
+     */
     public function resetPlanning(Request $request, Connection $conn): Response
     {
         $forumId = $request->query->getInt('forum_id');
@@ -85,6 +114,13 @@ final class AdminPlanningController extends AbstractController
     }
 
     #[Route('/admin/creerplanning/export', name: 'admin_creerplanning_export', methods: ['GET'])]
+    /**
+     * Exporte le planning en fichier CSV
+     * 
+     * @param Request $request Requête HTTP contenant l'ID du forum et le nom de l'entreprise optionnel
+     * @param Connection $conn Connexion à la base de données
+     * @return Response Fichier CSV à télécharger
+     */
     public function exportPlanning(Request $request, Connection $conn): Response
     {
         $forumId = $request->query->getInt('forum_id');
@@ -131,7 +167,11 @@ final class AdminPlanningController extends AbstractController
     }
 
     /**
-     * Rendez-vous sans créneau affecté pour un forum donné.
+     * Récupère les rendez-vous sans créneau affecté pour un forum
+     * 
+     * @param Connection $conn Connexion à la base de données
+     * @param int $forumId Identifiant du forum
+     * @return array Liste des rendez-vous non distribuês
      */
     private function fetchUndistributed(Connection $conn, int $forumId): array
     {
@@ -147,6 +187,13 @@ final class AdminPlanningController extends AbstractController
         return $conn->fetchAllAssociative($sql, ['forumId' => $forumId]);
     }
 
+    /**
+     * Récupère les noms des entreprises pour un forum
+     * 
+     * @param Connection $conn Connexion à la base de données
+     * @param int $forumId Identifiant du forum
+     * @return array Liste des noms d'entreprises uniques
+     */
     private function fetchCompaniesForForum(Connection $conn, int $forumId): array
     {
         if ($forumId <= 0) {

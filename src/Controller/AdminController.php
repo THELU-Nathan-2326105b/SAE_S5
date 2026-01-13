@@ -10,20 +10,44 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * AdminController
+ * 
+ * Contrôleur responsable de la gestion administrative du site.
+ * Permet de gérer les utilisateurs, entreprises et données du système.
+ * 
+ * @package App\Controller
+ */
 final class AdminController extends AbstractController
 {
+    /**
+     * Affiche la page d'administration principale
+     * 
+     * @return Response Page d'administration
+     */
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
         return $this->render('admin/admin.html.twig');
     }
 
+    /**
+     * Affiche la page de gestion des utilisateurs
+     * 
+     * @return Response Page de gestion des utilisateurs
+     */
     #[Route('/admin/users', name: 'admin_users')]
     public function users(): Response
     {
         return $this->render('admin/users.html.twig');
     }
 
+    /**
+     * Affiche la page de gestion des entreprises
+     * 
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     * @return Response Page de gestion des entreprises
+     */
     #[Route('/admin/companies', name: 'admin_companies')]
     public function companies(EntityManagerInterface $em): Response
     {
@@ -34,12 +58,14 @@ final class AdminController extends AbstractController
         ]);
     }
 
-    /*#[Route('/admin/forum', name: 'admin_companies')]
-    public function showForum(EntityManagerInterface $em): Response
-    {
-        return $this->render('admin/forum.html.twig');
-    }*/
-
+    /**
+     * Réinitialise les données du système (sauf les admins)
+     * Supprime toutes les données des tables liées aux forums et rendez-vous
+     * 
+     * @param Request $request Requête HTTP contenant le token CSRF
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     * @return Response Redirection vers la page d'admin avec message flash
+     */
     #[Route('/admin/reset-data', name: 'admin_reset_data', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function resetData(
@@ -88,8 +114,13 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('admin');
     }
 
-
-
+    /**
+     * Met à jour les informations d'une entreprise
+     * 
+     * @param Request $request Requête HTTP contenant les données JSON
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     * @return JsonResponse Réponse JSON avec le résultat de l'opération
+     */
     #[Route('/admin/company/update', name: 'company_update', methods: ['POST'])]
     public function updateCompany(Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -140,6 +171,13 @@ final class AdminController extends AbstractController
         }
     }
 
+    /**
+     * Crée une nouvelle entreprise
+     * 
+     * @param Request $request Requête HTTP contenant les données JSON
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     * @return JsonResponse Réponse JSON avec les données de l'entreprise créée
+     */
     #[Route('/admin/company/create', name: 'company_create', methods: ['POST'])]
     public function createCompany(Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -187,6 +225,13 @@ final class AdminController extends AbstractController
         }
     }
 
+    /**
+     * Supprime une entreprise
+     * 
+     * @param string $companyName Nom de l'entreprise à supprimer
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     * @return JsonResponse Réponse JSON avec le résultat de l'opération
+     */
     #[Route('/admin/company/delete/{companyName}', name: 'company_delete', methods: ['DELETE'])]
     public function deleteCompany(string $companyName, EntityManagerInterface $em): JsonResponse
     {

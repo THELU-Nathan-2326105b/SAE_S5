@@ -9,8 +9,24 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\AppointmentRepository;
 use App\Repository\UsersRepository;
 
+/**
+ * PlanningController
+ * 
+ * Contrôleur responsable de l'affichage du planning personnel des rendez-vous.
+ * Affiche les rendez-vous planifiés de l'utilisateur connecté.
+ * 
+ * @package App\Controller
+ */
 final class PlanningController extends AbstractController
 {
+    /**
+    * Affiche le planning personnel des rendez-vous de l'utilisateur connecté
+     * 
+     * @param Request $request La requête HTTP courante
+     * @param AppointmentRepository $appointmentRepository Repository pour les rendez-vous
+     * @param UsersRepository $usersRepository Repository pour les utilisateurs
+     * @return Response Le template du planning avec les rendez-vous de l'utilisateur
+     */
     #[Route('/planning', name: 'planning')]
     public function index(Request $request, AppointmentRepository $appointmentRepository, UsersRepository $usersRepository): Response
     {

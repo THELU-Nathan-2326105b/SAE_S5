@@ -12,8 +12,23 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
 
+/**
+ * ChangePasswordFormType
+ * 
+ * Formulaire de changement de mot de passe.
+ * Utilisé dans le processus de réinitialisation de mot de passe avec validation de force et sécurité.
+ * 
+ * @package App\Form
+ */
 class ChangePasswordFormType extends AbstractType
 {
+    /**
+     * Construit le formulaire de changement de mot de passe
+     * 
+     * @param FormBuilderInterface $builder Le builder du formulaire
+     * @param array<string,mixed> $options Options du formulaire
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -51,6 +66,12 @@ class ChangePasswordFormType extends AbstractType
         ;
     }
 
+    /**
+     * Définit les options par défaut du formulaire
+     * 
+     * @param OptionsResolver $resolver Le résolveur d'options
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([]);

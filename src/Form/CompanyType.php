@@ -9,17 +9,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Formulaire Symfony lié à l’entité Company.
- *
- * Utilisé dans CompanyController pour créer et éditer une entreprise.
+ * CompanyType
+ * 
+ * Formulaire Symfony lié à l'entité Company.
+ * Utilisé dans CompanyController pour créer et éditer une entreprise avec ses informations.
+ * 
+ * @package App\Form
  */
 class CompanyType extends AbstractType
 {
     /**
-     * Construit le formulaire avec les champs de l’entité.
+     * Construit le formulaire avec les champs de l'entité.
      *
-     * @param FormBuilderInterface $builder
-     * @param array<string,mixed> $options
+     * @param FormBuilderInterface $builder Le builder du formulaire
+     * @param array<string,mixed> $options Options du formulaire
+     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -38,9 +42,10 @@ class CompanyType extends AbstractType
     }
 
     /**
-     * Définit les options par défaut du formulaire.
+     * Définit les options par défaut du formulaire
      *
-     * @param OptionsResolver $resolver
+     * @param OptionsResolver $resolver Le résolveur d'options
+     * @return void
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
