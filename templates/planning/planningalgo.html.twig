@@ -4,6 +4,9 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
     <link rel="stylesheet" href="/assets/styles/planning.css">
     <link rel="stylesheet" href="/assets/styles/navbar.css">
 {% endblock %}
@@ -14,13 +17,6 @@
 <div class="main-content">
     <div class="container">
         <h1>Mon Emploi du Temps</h1>
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
 
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -87,7 +83,7 @@
                             </div>
                             <div class="card-body">
                                 <p class="mb-1">
-                                    <i class="bi bi-calendar-check"></i> 
+                                    <i class="bi bi-calendar-check"></i>
                                     <strong>{{ forumAppointments|length }}</strong> rendez-vous
                                 </p>
                                 <ul class="list-unstyled">

@@ -1,0 +1,218 @@
+/* =========================
+   Variables globales
+========================= */
+:root {
+    --green-main: #00a34a;
+    --green-dark: #008b57;
+    --green-soft: rgba(0, 163, 74, 0.1);
+    --text-dark: #1e1e1e;
+    --text-muted: #6c757d;
+    --bg-light: #f8f9fa;
+    --card-radius: 14px;
+    --transition: all 0.3s ease;
+}
+
+/* =========================
+   Layout général
+========================= */
+.main-content {
+    background-color: var(--bg-light);
+    min-height: 100vh;
+    padding: 4rem 1rem;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* =========================
+   Titre
+========================= */
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 2rem;
+}
+
+/* =========================
+   Alerts
+========================= */
+.alert {
+    border-radius: var(--card-radius);
+    font-size: 0.95rem;
+}
+
+/* =========================
+   Texte résumé
+========================= */
+.text-muted {
+    font-size: 0.95rem;
+}
+
+/* =========================
+   Tableau planning
+========================= */
+.table-responsive {
+    background: white;
+    border-radius: var(--card-radius);
+    padding: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--green-soft);
+    color: var(--green-dark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: var(--green-soft);
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.table i {
+    color: var(--green-main);
+    margin-right: 0.4rem;
+}
+
+/* =========================
+   Section résumé par forum
+========================= */
+h3 {
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--green-dark);
+    font-weight: 600;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* =========================
+   Cards forum
+========================= */
+.card {
+    border: none;
+    border-radius: var(--card-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background-color: var(--green-dark);
+    color: white;
+    font-weight: 600;
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+    background-color: white;
+}
+
+.card-body i {
+    color: var(--green-main);
+    margin-right: 0.4rem;
+}
+
+.card-body ul {
+    margin-top: 0.75rem;
+    padding-left: 0;
+}
+
+.card-body li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 992px) {
+    h1 {
+        font-size: 2.4rem;
+    }
+
+    .main-content {
+        padding: 3rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    .table-responsive {
+        padding: 0.5rem;
+    }
+
+    .card-body li {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tr {
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .table td::before {
+        font-weight: 600;
+        color: var(--green-dark);
+    }
+
+    .table td:nth-child(1)::before {
+        content: "Date";
+    }
+
+    .table td:nth-child(2)::before {
+        content: "Entreprise";
+    }
+
+    .table td:nth-child(3)::before {
+        content: "Forum";
+    }
+}
