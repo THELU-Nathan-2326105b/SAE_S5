@@ -297,7 +297,7 @@ class UsersController extends AbstractController
             $csvImportService->persistImportedEntities($users, $em);
             $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($users)} utilisateurs).");
         } catch (\Throwable $e) {
-            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+            $this->addFlash('danger', 'Échec de l’import' /*. $e->getMessage()*/);
         }
 
         return $this->redirectToRoute('app_user_index');
