@@ -9,12 +9,22 @@ use Psr\Container\ContainerInterface;
 use InvalidArgumentException;
 use SplFileObject;
 
-
+/**
+ * Importer
+ * 
+ * Implémentation de l'importeur CSV pour la lecture et conversion de fichiers CSV.
+ * Utilise SplFileObject pour lire le fichier et des Mappers pour convertir les lignes en entités.
+ * Gère automatiquement les en-têtes CSV, le BOM UTF-8, et l'alignement des données.
+ * 
+ * @package App\Import\Csv
+ */
 class Importer implements ImporterContract
 {
-    // private string $delimiter = ',';
-    // private string $enclosure = '"';
-    // private string $escape    = '\\';
+    /**
+     * Service locator contenant les mappers disponibles
+     * 
+     * @var ContainerInterface
+     */
     private ContainerInterface $mapperLocator;
     
     public function __construct(ContainerInterface $mapperLocator ) {

@@ -14,9 +14,23 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+/**
+ * UsersType
+ * 
+ * Formulaire Symfony lié à l'entité Users.
+ * Permet de créer et éditer un utilisateur avec les champs nécessaires.
+ * 
+ * @package App\Form
+ */
 class UsersType extends AbstractType
 {
-
+    /**
+     * Construit le formulaire avec les champs de l'entité
+     * 
+     * @param FormBuilderInterface $builder Le builder du formulaire
+     * @param array<string,mixed> $options Options du formulaire (ex: require_password)
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void{
         $requirePassword = $options['require_password'] ?? true;
 
@@ -74,6 +88,12 @@ class UsersType extends AbstractType
         // }
     }
 
+    /**
+     * Définit les options par défaut du formulaire
+     * 
+     * @param OptionsResolver $resolver Le résolveur d'options
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void{
         $resolver->setDefaults([
             'data_class' => Users::class,

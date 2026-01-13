@@ -9,8 +9,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * PlanningController
+ * 
+ * Contrôleur responsable de l'affichage du planning personnel des rendez-vous.
+ * Affiche les rendez-vous planifiés de l'utilisateur connecté.
+ * 
+ * @package App\Controller
+ */
 class PlanningController extends AbstractController
 {
+    /**
+    * Affiche le planning personnel des rendez-vous de l'utilisateur connecté
+     * 
+     * @param Request $request La requête HTTP courante
+     * @param AppointmentRepository $appointmentRepository Repository pour les rendez-vous
+     * @param UsersRepository $usersRepository Repository pour les utilisateurs
+     * @return Response Le template du planning avec les rendez-vous de l'utilisateur
+     */
     #[Route('/planning', name: 'planning')]
     #[IsGranted('ROLE_USER')]
     public function index(AppointmentRepository $appointmentRepository): Response

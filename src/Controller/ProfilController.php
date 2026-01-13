@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Contrôleur ProfilController
+ * 
+ * Gére l'affichage du profil utilisateur
+ * Affiche les informations du compte de l'utilisateur connecté
+ * 
+ * @package App\Controller
+ */
+
 namespace App\Controller;
 
 use App\Entity\Users;
@@ -8,8 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Class ProfilController
+ * 
+ * Contrôleur pour l'affichage du profil utilisateur.
+ */
 class ProfilController extends AbstractController
 {
+    /**
+     * Affiche le profil de l'utilisateur connecté
+     * Récupère toutes les informations du compte
+     * 
+     * @return Response
+     * @Route('/profil', name: 'profil')
+     */
     #[Route('/profil', name: 'profil')]
     public function index(): Response
     {

@@ -8,13 +8,14 @@ use DateTimeImmutable;
 use Dom\Entity;
 use App\Mapper\Contract\Mapper as MapperContract;
 /**
- * UsersMapper
- *
- * Rôle :
- * - fromRow() : transforme un tableau associatif (ex. lu depuis CSV) en entité Users.
- * - toRow()   : transforme une entité Users en tableau associatif prêt à écrire (CSV).
- *
-**/
+ * Mapper
+ * 
+ * Mapper pour l'entité Company.
+ * Permet la conversion bidirectionnelle entre tableaux associatifs et entités Company.
+ * Utilisé pour l'import/export CSV des entreprises.
+ * 
+ * @package App\Mapper\Company
+ */
 final class Mapper implements MapperContract{
 
     /**
