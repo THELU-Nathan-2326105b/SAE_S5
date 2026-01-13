@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Emploi du Temps{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/assets/styles/planning.css">
+    <link rel="stylesheet" href="/assets/styles/navbar.css">
+{% endblock %}
+
+{% block body %}
+{% include 'navbar.html.twig' %}
+
+<div class="main-content">
+    <div class="container">
+        <h1>Mon Emploi du Temps</h1>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {% if appointments is empty %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Vous n'avez aucun rendez-vous planifié pour le moment.
+            </div>
+        {% else %}
+            <div class="mb-3">
+                <p class="text-muted">
+                    Vous avez <strong>{{ appointments|length }}</strong> rendez-vous planifié{{ appointments|length > 1 ? 's' : '' }}.
+                </p>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date et Heure</th>
+                            <th>Entreprise</th>
+                            <th>Forum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-calendar-event"></i>
+                                {{ appointment.appointmentTime|date('d/m/Y à H:i') }}
+                            </td>
+                            <td>
+                                <strong>{{ appointment.companyName }}</strong>
+                            </td>
+                            <td>
+                                {{ appointment.forum.name ?? 'Forum #' ~ appointment.forum.id }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {# Section résumé par forum - uniquement si plusieurs forums #}
+            {% set forumIds = [] %}
+            {% for appointment in appointments %}
+                {% if appointment.forum.id not in forumIds %}
+                    {% set forumIds = forumIds|merge([appointment.forum.id]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if forumIds|length > 1 %}
+                <h3>Résumé par forum</h3>
+                <div class="row">
+                    {% for forumId in forumIds %}
+                        {% set forumAppointments = appointments|filter(a => a.forum.id == forumId) %}
+                        <div class="card">
+                            <div class="card-header">
+                                <strong>{{ forumAppointments[0].forum.name }}</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-1">
+                                    <i class="bi bi-calendar-check"></i>
+                                    <strong>{{ forumAppointments|length }}</strong> rendez-vous
+                                </p>
+                                <ul class="list-unstyled">
+                                {% for appointment in forumAppointments %}
+                                    <li class="small">
+                                        {{ appointment.appointmentTime|date('H:i') }} - {{ appointment.companyName }}
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% include 'footer.html.twig' %}
+{% endblock %}
+

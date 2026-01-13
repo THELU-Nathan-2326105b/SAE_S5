@@ -20,7 +20,7 @@ use App\Service\CsvImportService;
  *
  * Préfixe de route: /company 
  */
-#[Route('/company', name: 'app_company_')]
+#[Route('/admin/company', name: 'app_company_')]
 class CompanyController extends AbstractController
 {
     // private function accessControl(): void

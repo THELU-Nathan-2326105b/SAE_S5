@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Import\Contract\ImporterFactory;
 use App\Service\CsvImportService;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 /**
@@ -23,16 +23,12 @@ use App\Service\CsvImportService;
  * Les méthodes exposent : index (liste), show (détail), new (création),
  * edit (édition), delete (suppression).
  */
-#[Route('/users', name: 'app_user_')]
+#[IsGranted('ROLE_ADMIN')]
+#[Route('/admin/users', name: 'app_user_')]
 class UsersController extends AbstractController
 {
 
-    private function accessControl($sessionUser):bool {
-        if($sessionUser === null){
-            return false;
-        }
-        return $sessionUser['role'] !== 'admin';
-    }
+    
     /**
      * Liste tous les utilisateurs.
      *
@@ -46,12 +42,6 @@ class UsersController extends AbstractController
     {
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
-        if($sessionUser === null){
-            return $this->redirect('/login');
-        }
-        if($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
 
         $importForm = $this->createForm(CsvImportType::class, null, [
             'action' => $this->generateUrl('app_user_import'), 
@@ -80,9 +70,6 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}', name: 'show', methods: ['GET'])]
     public function show(Request $request,Users $user): Response{
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -106,13 +93,6 @@ class UsersController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response{
 
         $sessionUser = $request->getSession()->get('user');
-        if($sessionUser === null){
-            return $this->redirect('/login');
-        }
-        if($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
-
         // Nouvelle entité Users avec valeur par défaut
         $user = new Users();
         $user->setUserLastconnexion(new \DateTimeImmutable('today'));
@@ -172,43 +152,37 @@ class UsersController extends AbstractController
             return $this->redirect('/login');
         }
         else{
-            if ($this->accessControl($sessionUser)) {
-                return $this->redirect('/');
+            if ($user->getUserRole() === 'admin' && $user->getId() !== $sessionUser['id']) {
+                $this->addFlash('error', 'Vous ne pouvez pas modifier un autre administrateur.');
+                return $this->redirectToRoute('app_user_index');
             }
             else{
-                if ($user->getUserRole() === 'admin' && $user->getId() !== $sessionUser['id']) {
-                    $this->addFlash('error', 'Vous ne pouvez pas modifier un autre administrateur.');
-                    return $this->redirectToRoute('app_user_index');
-                }
-                else{
-                    $form = $this->createForm(UsersType::class, $user, [
-                        'require_password' => false, 
-                    ]);
-                    $form->handleRequest($request);
-                    if ($form->isSubmitted() && $form->isValid()) {
-                        $plainPassword = $form->get('plainPassword')->getData();
-                        if ($plainPassword) {
-                            $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
-                        }
-
-                        $em->flush();
-
-                        $this->addFlash('success', 'Utilisateur mis à jour.');
-
-                        // Redirige vers la fiche de l’utilisateur édité
-                        return $this->redirectToRoute(
-                                'app_user_show',
-                                ['id' => $user->getId()],
-                                Response::HTTP_SEE_OTHER
-                            );
+                $form = $this->createForm(UsersType::class, $user, [
+                    'require_password' => false, 
+                ]);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $plainPassword = $form->get('plainPassword')->getData();
+                    if ($plainPassword) {
+                        $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
                     }
-                    // Affichage du formulaire
-                    return $this->render('user/edit.html.twig', [
-                        'user' => $user,
-                        'form' => $form->createView(),
-                    ]);
-                    
+
+                    $em->flush();
+
+                    $this->addFlash('success', 'Utilisateur mis à jour.');
+
+                    // Redirige vers la fiche de l’utilisateur édité
+                    return $this->redirectToRoute(
+                            'app_user_show',
+                            ['id' => $user->getId()],
+                            Response::HTTP_SEE_OTHER
+                        );
                 }
+                // Affichage du formulaire
+                return $this->render('user/edit.html.twig', [
+                    'user' => $user,
+                    'form' => $form->createView(),
+                ]);
             }
         }
     }
@@ -230,9 +204,6 @@ class UsersController extends AbstractController
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['GET', 'POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $em): Response{
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
         if ($request->isMethod('POST')) {
             $id = $user->getId();
 
@@ -278,10 +249,6 @@ class UsersController extends AbstractController
         ImporterFactory $importerFactory, CsvImportService $csvImportService): Response {
         
         $sessionUser = $request->getSession()->get('user');
-        if($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
-        
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
 
@@ -297,7 +264,7 @@ class UsersController extends AbstractController
             $csvImportService->persistImportedEntities($users, $em);
             $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($users)} utilisateurs).");
         } catch (\Throwable $e) {
-            $this->addFlash('danger', 'Échec de l’import' /*. $e->getMessage()*/);
+            $this->addFlash('danger', 'Échec de l’import' . $e->getMessage());
         }
 
         return $this->redirectToRoute('app_user_index');
@@ -310,12 +277,8 @@ class UsersController extends AbstractController
     #[Route('/delete-non-admins', name: 'delete_non_admins', methods: ['POST'])]
     public function deleteAllNonAdmins(Request $request, EntityManagerInterface $em, UsersRepository $usersRepository): Response
     {
-        // 1. Vérification des droits (Admin seulement)
         $sessionUser = $request->getSession()->get('user');
-        if ($this->accessControl($sessionUser)) {
-            return $this->redirect('/');
-        }
-
+        
         // 2. Vérification CSRF pour éviter les suppressions accidentelles via des liens malveillants
         if ($this->isCsrfTokenValid('delete_all_non_admins', $request->request->get('_token'))) {
             

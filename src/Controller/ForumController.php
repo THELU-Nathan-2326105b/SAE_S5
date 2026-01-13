@@ -25,20 +25,21 @@ class ForumController extends AbstractController
         SluggerInterface $slugger,
         UsersRepository $usersRepository
     ): Response {
-        $sessionUser = $request->getSession()->get('user');
-        if (!$sessionUser) return $this->redirectToRoute('login');
-
-        $user = $usersRepository->find($sessionUser['id']);
-        if (!$user) return $this->redirectToRoute('login');
+         $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
 
         $cvUrl = $user->getUserUrlCv();
         $forum = $em->getRepository(Forum::class)->find(1);
-        $companies = $companyRepository->findAllOrderedByName();
 
-        // Récupérer les entreprises déjà sélectionnées
+        // Récupération des entreprises filtrées selon le niveau de l'éleve connectée
+        $studentLevel = $user->getUserLevel();
+        $companies = $companyRepository->findCompaniesForStudent($forum->getId(), $studentLevel);
+
+        // Récupération des entreprises déjà sélectionnées
         $selectedAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
         $selectedCompanies = array_map(fn($a) => $a->getCompanyName(), $selectedAppointments);
-
         $showCv = false; // par défaut, Step 2 caché
 
         // --- Step 1 : validation entreprises ---
@@ -46,27 +47,47 @@ class ForumController extends AbstractController
             $selectedFromForm = $request->request->all('entreprises') ?? [];
             if (!is_array($selectedFromForm)) $selectedFromForm = [$selectedFromForm];
 
-            // Supprimer les anciens appointments
-            $oldAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
-            foreach ($oldAppointments as $oldAppointment) $em->remove($oldAppointment);
-            $em->flush();
-            foreach ($oldAppointments as $oldAppointment) $em->detach($oldAppointment);
+            $existingAppointments = $appointmentRepository->findBy([
+                'user' => $user,
+                'forum' => $forum
+            ]);
 
-            // Persister les nouvelles sélections
             foreach ($selectedFromForm as $companyName) {
-                $appointment = new \App\Entity\Appointment();
-                $appointment->setUser($user);
-                $appointment->setForum($forum);
-                $appointment->setCompanyName($companyName);
-                $appointment->setAppointmentRequest(true);
-                $appointment->setAppointmentTime(new \DateTime());
-                $em->persist($appointment);
+                $existing = null;
+                foreach ($existingAppointments as $app) {
+                    if ($app->getCompanyName() === $companyName) {
+                        $existing = $app;
+                        break;
+                    }
+                }
+
+                if ($existing) {
+                    $existing->setAppointmentRequest(true);
+                    $existing->setAppointmentTime(new \DateTime());
+                } else {
+                    $appointment = new \App\Entity\Appointment();
+                    $appointment->setUser($user);
+                    $appointment->setForum($forum);
+                    $appointment->setCompanyName($companyName);
+                    $appointment->setAppointmentRequest(true);
+                    $appointment->setAppointmentTime(new \DateTime());
+                    $em->persist($appointment);
+                }
             }
+
+            foreach ($existingAppointments as $app) {
+                if (!in_array($app->getCompanyName(), $selectedFromForm, true)) {
+                    $app->setAppointmentRequest(false);
+                }
+            }
+
             $em->flush();
 
             $selectedCompanies = $selectedFromForm;
             $showCv = true; // Step 2 devient visible
         }
+
+
 
         // --- Step 2 : traitement CV ---
         if ($request->isMethod('POST') && $request->request->has('submit_cv') && $request->files->get('cv')) {
@@ -76,12 +97,30 @@ class ForumController extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $cvFile->guessExtension();
                 try {
-                    $cvFile->move($this->getParameter('uploads_directory'), $newFilename);
-                    $cvUrl = '/uploads/' . $newFilename;
+                    // On veut un sous dossier par user pour éviter toute erreur
+                    $studentFolder = $this->getParameter('uploads_directory') . '/' . $user->getId();
+                    if (!file_exists($studentFolder)) {
+                        mkdir($studentFolder, 0755, true);
+                    }
 
+                    // Suppression de l'ancien CV
+                    $oldCv = $user->getUserUrlCv();
+                    if ($oldCv) {
+                        $oldCvPath = $this->getParameter('kernel.project_dir') . '/public' . $oldCv;
+                        if (file_exists($oldCvPath)) {
+                            unlink($oldCvPath); // suppression du fichier précédent
+                        }
+                    }
+
+                    // On ajoute le nouveau CV
+                    $cvFile->move($studentFolder, $newFilename);
+                    $cvUrl = '/uploads/' . $user->getId() . '/' . $newFilename;
+
+                    // Maj BD
                     $user->setUserUrlCv($cvUrl);
                     $em->persist($user);
                     $em->flush();
+
 
                     $this->addFlash('success', 'CV envoyé avec succès !');
                 } catch (\Exception) {

@@ -19,7 +19,7 @@ class Importer implements ImporterContract
     // private string $escape    = '\\';
     private MapperFactory $mapperFactory;
     
-    public function __construct(MapperFactory $mapperFactory ) {
+    public function __construct(MapperFactory $mapperFactory ){
         $this->mapperFactory=$mapperFactory;
     }
 
@@ -31,15 +31,15 @@ class Importer implements ImporterContract
         $headers = $this->readHeaders($file);
         $out = [];
 
-        while (!$file->eof()) {
+        while (!$file->eof()){
             $row = $this->readRow($file);
-            if (!is_null($row)&&!$this->isEmptyRow($row)) {
+            if(!is_null($row)&&!$this->isEmptyRow($row)){
                 $row= $this->alignRowToHeaders($headers, $row);
                 $assoc= $this->combineRow($headers, $row);
-                if (!is_null($assoc)) {
+                if(!is_null($assoc)){
                     $assoc=$this->trimAssoc($assoc);
                     $mappedEntity=$this->mapRow($assoc, $mapper);
-                    if ($mappedEntity !== null) {
+                    if($mappedEntity !== null){
                         $out[]= $mappedEntity;
                     }
                 }else{
@@ -55,7 +55,7 @@ class Importer implements ImporterContract
     private function openFile(string $path,string $mode="r"): SplFileObject
     {
         $f =new SplFileObject($path,$mode);
-        $f->setCsvControl(',', '"', '\\');
+        $f->setCsvControl(';', '"','\\');
         $f->rewind();
         return $f;
     }
@@ -63,8 +63,8 @@ class Importer implements ImporterContract
     private function readHeaders(SplFileObject $f): array
     {
         
-        $raw = $f->fgetcsv(',', '"', '\\')?:[]; 
-        if ($raw&&isset($raw[0])) {
+        $raw = $f->fgetcsv(';','"','\\')?:[]; 
+        if($raw&&isset($raw[0])){
             $raw[0]=preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw[0]) ?? $raw[0];
         }
 
@@ -73,7 +73,7 @@ class Importer implements ImporterContract
             static fn($h) => $h !== ''
         ));
 
-        if ($headers==[]){
+        if($headers==[]){
             throw new \RuntimeException('Entêtes CSV invalides.');
         }
         return $headers;
@@ -83,7 +83,7 @@ class Importer implements ImporterContract
     private function readRow(SplFileObject $f): ?array
     {
         $row = $f->fgetcsv();
-        if ($row==false || $row==[null]) {
+        if($row==false || $row==[null]){
             return null;
         }
         return $row;
@@ -91,8 +91,8 @@ class Importer implements ImporterContract
 
     private function isEmptyRow(array $row): bool
     {
-        foreach ($row as $v) {
-            if ( !is_null($v) && trim((string) $v) !== '') {
+        foreach ($row as $v){
+            if( !is_null($v) && trim((string) $v) !== ''){
                 return false;
             }
         }
@@ -103,10 +103,11 @@ class Importer implements ImporterContract
     {
         $cH = count($headers);
         $cR = count($row);
-        if ($cR < $cH) {
+        if($cR<$cH){
             return array_pad($row, $cH, null);
-        }else{
-            if ($cR > $cH) {
+        }
+        else{
+            if($cR>$cH){
                 return array_slice($row, 0, $cH);
             }
             return $row;

@@ -1,15 +1,22 @@
 /* Général */
+* {
+    box-sizing: border-box;
+}
+
 body, html {
     margin: 0;
     padding: 0;
-    font-family: "Helvetica Nue", sans-serif;
-    height: 100%;
+    width: 100%; 
+    max-width: 100%; 
+    overflow-x: hidden; 
+    font-family: "Helvetica Neue", sans-serif; 
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 main {
-    flex: 1; /
+    flex: 1;
+    width: 100%;
 }
 

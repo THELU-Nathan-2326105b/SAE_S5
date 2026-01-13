@@ -8,12 +8,35 @@
   }) }}
 
     <div id="import-field" class="import-field">
-      {{ form_row(importForm.csvFile, {'attr': {'id': 'import-csv-file', 'class': 'import-csv-file'}}) }}
+      {{ form_row(importForm.csvFile, {
+          'label': false, 
+          'attr': {'id': 'import-csv-file', 'class': 'import-csv-file'}
+      }) }}
     </div>
     <div id="import-actions" class="import-actions">
-      <button id="import-csv-submit" class="btn import-csv-submit">Importer</button>
+      <button type="submit" class="btn-import">Importer</button>
     </div>
 
   {{ form_end(importForm) }}
+
+  {% if csvHeader is defined and csvExample is defined %}
+        {# 1. AFFICHER L'IMAGE SI ELLE EXISTE (Visuel Excel) #}
+        {% if csvImage is defined %}
+            <p class="csv-help-title">Format attendu (Vue Excel) :</p>
+            <div class="csv-image-container">
+                <img src="{{ asset(csvImage) }}" alt="Exemple du fichier CSV dans Excel" class="csv-model-img">
+            </div>
+            <br>
+        {% endif %}
+
+        {# 2. AFFICHER LE TEXTE BRUT (Pour vérification technique) #}
+        {% if csvHeader is defined and csvExample is defined %}
+            <p class="csv-help-title">Structure du fichier (Texte brut) :</p>
+            <div class="csv-code-block">
+                <span class="csv-header">{{ csvHeader }}</span><br>
+                <span class="csv-data">{{ csvExample }}</span>
+            </div>
+        {% endif %}
+  {% endif %}
 
 </div>

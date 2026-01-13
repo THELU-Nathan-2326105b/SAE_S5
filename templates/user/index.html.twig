@@ -1,6 +1,12 @@
 {% extends 'user/base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/styles/csv-import.css') }}">
+{% endblock %}
+
 {% block title %}Liste des utilisateurs{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     {# On inclut le script générique #}
@@ -144,7 +150,12 @@
     {# Bloc Import #}
     <div class="import-box">
         <h3 class="import-title">Import CSV Utilisateurs</h3>
-        {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_user_import' }) }}
+        {{ include('_import_csv.html.twig', {
+            'importForm': importForm,
+            'csvHeader': 'user_email;user_firstname;user_lastname;user_role;user_level',
+            'csvExample': 'jean.dupont@email.com;Jean;Dupont;user;3',
+            'csvImage': 'assets/images/exemple_csv_users.png'  
+        }) }}
     </div>
 </div>
 {% endblock %}

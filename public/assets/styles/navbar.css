@@ -1,29 +1,40 @@
-/* ================= NAVBAR ================= */
 .navbar {
-    width: 96%;
     background-color: #008b57;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1% 2%;
+    padding: 0 2%;
+    min-height: 100px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     position: sticky;
     top: 0;
     z-index: 1000;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-/* Logo */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-shrink: 0; 
+}
+
 .navbar-logo img {
     height: 50px;
+    width: auto;
+    display: block;
 }
 
-/* Liens */
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 80px;
+    gap: 40px;
     margin: 0;
     padding: 0;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
 }
 
 .navbar-links li a {
@@ -34,9 +45,9 @@
     transition: color 0.3s;
     position: relative;
     display: inline-block;
+    white-space: nowrap;
 }
 
-/* Hover underline */
 .navbar-links li a::after {
     content: "";
     position: absolute;
@@ -50,12 +61,22 @@
     transition: transform 0.3s ease;
 }
 
-.navbar-links li a:hover::after,
+.navbar-links li a:hover::after {
+    transform: scaleX(1);
+}
+
 .navbar-links li a.active::after {
     transform: scaleX(1);
 }
 
-/* Bouton de connexion */
+.navbar-action {
+    flex-shrink: 0;
+}
+
+.navbar-button-mobile {
+    display: none;
+}
+
 .navbar-button {
     background: white;
     padding: 10px 20px;
@@ -63,6 +84,7 @@
     color: #222223;
     text-decoration: none;
     transition: background 0.3s, color 0.3s;
+    white-space: nowrap;
 }
 
 .navbar-button:hover {
@@ -70,70 +92,133 @@
     color: white;
 }
 
-/* =============== HAMBURGER =============== */
 .hamburger {
     display: none;
     flex-direction: column;
     gap: 5px;
+    background: none;
+    border: none;
     cursor: pointer;
+    padding: 0;
 }
 
 .hamburger span {
-    width: 28px;
+    width: 25px;
     height: 3px;
     background: white;
-    border-radius: 3px;
-    transition: 0.3s;
+    border-radius: 2px;
+    transition: all 0.3s ease;
 }
 
-/* =============== RESPONSIVE =============== */
-@media (max-width: 900px) {
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
 
-    .navbar-links {
-        position: fixed;
-        top: 0;
-        right: -100%; /* caché */
-        height: 100vh;
-        width: 250px;
-        background: #008b57;
-        flex-direction: column;
-        gap: 40px;
-        padding-top: 120px;
-        padding-left: 30px;
-        transition: 0.4s ease;
-        box-shadow: -2px 0 5px rgba(0,0,0,0.4);
-    }
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
 
-    .navbar-links.active {
-        right: 0; /* affiche */
-    }
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
 
-    .navbar-button {
-        background: white;
-        padding: 10px 20px;
-        border-radius: 10px;
-        color: #222223;
-        text-decoration: none;
-        transition: background 0.3s, color 0.3s;
-    }
+@media (max-width: 768px) {
 
-    .navbar-button:hover {
-        background: #22aa69;
-        color: white;
+    .navbar {
+        flex-wrap: nowrap;
+        gap: 10px;
     }
 
     .hamburger {
         display: flex;
+        order: 3;
     }
 
-    /* Animation croix */
-    .hamburger.active span:nth-child(1) {
-        transform: rotate(45deg) translateY(8px);
+    .navbar-logo {
+        order: 1;
     }
-    .hamburger.active span:nth-child(2) {
-        opacity: 0;
+
+    .navbar-action {
+        order: 2;
     }
-    .hamburger.active span:nth-child(3) {
-        transform: rotate(-45deg) translateY(-8px);
+
+    .navbar-links {
+        display: none;
+        position: absolute;
+        top: 100px;
+        left: 0;
+        right: 0;
+        background-color: #007a4a;
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+    }
+
+    .navbar-links.active {
+        display: flex;
+    }
+
+    .navbar-links li {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+    }
+
+    .navbar-links li a::after {
+        display: none;
+    }
+
+    .navbar-links li a:hover {
+        background-color: #006a40;
+        width: 100%;
+    }
+
+    .navbar-action {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .navbar-button {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+
+    .navbar-logo img {
+        height: 40px;
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar-logo img {
+        height: 35px;
+    }
+
+    .navbar-button {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-logo img {
+        height: 30px;
+    }
+
+    .navbar-button {
+        padding: 5px 10px;
+        font-size: 0.65rem;
+    }
+
+    
+}
+
+@media (max-width: 360px) {
+    .navbar-logo img {
+        height: 25px;
+    }
+
+    .navbar {
+        min-height: 60px;
     }
 }

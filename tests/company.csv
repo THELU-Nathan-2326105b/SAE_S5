@@ -1,51 +1,51 @@
-company_name,company_description,company_logo
-Tech Solutions,Développement de logiciels sur mesure,/uploads/logos/tech_sol.png
-Green Energy,Solutions énergétiques durables,/uploads/logos/green_en.png
-Alpha Logistics,Transport et logistique internationale,
-Blue Ocean,Conseil en stratégie maritime,/uploads/logos/blue_oc.png
-Red Dragon,Import-export asiatique,
-SoftWare House,Éditeur de logiciels SAAS,/uploads/logos/soft_h.png
-Data Corp,Analyse de Big Data et IA,/uploads/logos/data_c.png
-Market Leaders,Agence de marketing digital,
-Foodies Inc,Distribution alimentaire bio,/uploads/logos/foodies.png
-Construct Bat,Bâtiment et travaux publics,
-Health Plus,Matériel médical innovant,/uploads/logos/health.png
-Edu Learn,Plateforme de e-learning,
-Auto Drive,Location de véhicules professionnels,/uploads/logos/auto.png
-Finance Pro,Cabinet de conseil financier,
-Legal Team,Cabinet d'avocats d'affaires,/uploads/logos/legal.png
-Event Star,Organisation d'événements corporate,
-Design Studio,Agence de design et communication,/uploads/logos/design.png
-Clean City,Services de nettoyage industriel,
-Secure IT,Cybersécurité et audits,/uploads/logos/secure.png
-Cloud Nine,Hébergement web et cloud computing,
-Agri Future,Technologies pour l'agriculture,
-Fashion Week,Mode et textile éthique,/uploads/logos/fashion.png
-Sport Life,Équipements sportifs,
-Travel Map,Agence de voyage d'affaires,/uploads/logos/travel.png
-Media Buzz,Relations presse et médias,
-Recruit Fast,Cabinet de recrutement spécialisé,/uploads/logos/recruit.png
-Real Estate Co,Promotion immobilière,
-Insurance All,Courtier en assurances,/uploads/logos/insur.png
-Bio Lab,Recherche en biotechnologie,
-Chem Tech,Industrie chimique responsable,/uploads/logos/chem.png
-Aero Space,Pièces détachées aéronautiques,
-Marine Service,Entretien de bateaux de plaisance,/uploads/logos/marine.png
-Print Master,Imprimerie numérique grand format,
-Sound Waves,Production audio et musicale,/uploads/logos/sound.png
-Video Prod,Réalisation de films institutionnels,
-Game Studio,Création de jeux vidéo indépendants,/uploads/logos/game.png
-Robo Tech,Robotique industrielle,
-Nano Systems,Nanotechnologies appliquées,/uploads/logos/nano.png
-Solar Power,Panneaux photovoltaïques,
-Wind Force,Éoliennes et maintenance,/uploads/logos/wind.png
-Water Pure,Traitement des eaux usées,
-Recycle Bin,Gestion des déchets et recyclage,/uploads/logos/recycle.png
-Glass Works,Verrerie industrielle,
-Steel Factory,Métallurgie de précision,/uploads/logos/steel.png
-Wood Craft,Menuiserie et ébénisterie,/uploads/logos/wood.png
-Ceramic Art,Céramique technique,
-Textile Pro,Grossiste en tissus,/uploads/logos/textile.png
-Paper Mill,Papeterie écologique,
-Plastic Mold,Injection plastique,
-Rubber Soul,Caoutchouc industriel,/uploads/logos/rubber.png
+company_name;company_description;company_logo
+Tech Solutions;Développement de logiciels sur mesure;/uploads/logos/tech_sol.png
+Green Energy;Solutions énergétiques durables;/uploads/logos/green_en.png
+Alpha Logistics;Transport et logistique internationale;
+Blue Ocean;Conseil en stratégie maritime;/uploads/logos/blue_oc.png
+Red Dragon;Import-export asiatique;
+SoftWare House;Éditeur de logiciels SAAS;/uploads/logos/soft_h.png
+Data Corp;Analyse de Big Data et IA;/uploads/logos/data_c.png
+Market Leaders;Agence de marketing digital;
+Foodies Inc;Distribution alimentaire bio;/uploads/logos/foodies.png
+Construct Bat;Bâtiment et travaux publics;
+Health Plus;Matériel médical innovant;/uploads/logos/health.png
+Edu Learn;Plateforme de e-learning;
+Auto Drive;Location de véhicules professionnels;/uploads/logos/auto.png
+Finance Pro;Cabinet de conseil financier;
+Legal Team;Cabinet d'avocats d'affaires;/uploads/logos/legal.png
+Event Star;Organisation d'événements corporate;
+Design Studio;Agence de design et communication;/uploads/logos/design.png
+Clean City;Services de nettoyage industriel;
+Secure IT;Cybersécurité et audits;/uploads/logos/secure.png
+Cloud Nine;Hébergement web et cloud computing;
+Agri Future;Technologies pour l'agriculture;
+Fashion Week;Mode et textile éthique;/uploads/logos/fashion.png
+Sport Life;Équipements sportifs;
+Travel Map;Agence de voyage d'affaires;/uploads/logos/travel.png
+Media Buzz;Relations presse et médias;
+Recruit Fast;Cabinet de recrutement spécialisé;/uploads/logos/recruit.png
+Real Estate Co;Promotion immobilière;
+Insurance All;Courtier en assurances;/uploads/logos/insur.png
+Bio Lab;Recherche en biotechnologie;
+Chem Tech;Industrie chimique responsable;/uploads/logos/chem.png
+Aero Space;Pièces détachées aéronautiques;
+Marine Service;Entretien de bateaux de plaisance;/uploads/logos/marine.png
+Print Master;Imprimerie numérique grand format;
+Sound Waves;Production audio et musicale;/uploads/logos/sound.png
+Video Prod;Réalisation de films institutionnels;
+Game Studio;Création de jeux vidéo indépendants;/uploads/logos/game.png
+Robo Tech;Robotique industrielle;
+Nano Systems;Nanotechnologies appliquées;/uploads/logos/nano.png
+Solar Power;Panneaux photovoltaïques;
+Wind Force;Éoliennes et maintenance;/uploads/logos/wind.png
+Water Pure;Traitement des eaux usées;
+Recycle Bin;Gestion des déchets et recyclage;/uploads/logos/recycle.png
+Glass Works;Verrerie industrielle;
+Steel Factory;Métallurgie de précision;/uploads/logos/steel.png
+Wood Craft;Menuiserie et ébénisterie;/uploads/logos/wood.png
+Ceramic Art;Céramique technique;
+Textile Pro;Grossiste en tissus;/uploads/logos/textile.png
+Paper Mill;Papeterie écologique;
+Plastic Mold;Injection plastique;
+Rubber Soul;Caoutchouc industriel;/uploads/logos/rubber.png

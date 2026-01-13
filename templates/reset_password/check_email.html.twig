@@ -1,11 +1,24 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
+    <meta charset="UTF-8" />
+    <title>AMOS FAMES - Réinitialisation de mot de passe</title>
 
-{% block title %}Email de modification de mot de passe envoyé{% endblock %}
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <link rel="stylesheet" href="/assets/styles/reset.css">
 
-{% block body %}
-    <p>
-        Si un compte avec ce mail existe, alors un email a été envoyé qui contient le lien utilisable pour modifier votre mot de passe.
-        Ce lien va expirer dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>Si vous ne recevez pas d'email, vérifier dans vos spams ou bien <a href="{{ path('app_forgot_password_request') }}">réessayez</p>
-{% endblock %}
+</head>
+
+<body>
+    <main>
+        <div class="reset-container">
+            <p>
+                Si un compte avec ce mail existe, alors un email a été envoyé qui contient le lien utilisable pour modifier votre mot de passe.
+                Ce lien va expirer dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+            </p>
+            <p>Si vous ne recevez pas d'email, vérifier dans vos spams ou bien <a href="{{ path('app_forgot_password_request') }}">réessayez</p>
+        </div>
+    </main>
+</body>

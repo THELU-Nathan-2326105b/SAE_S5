@@ -26,7 +26,7 @@ CREATE TABLE users (
    user_firstname VARCHAR(50),
    user_lastname VARCHAR(50),
    user_level VARCHAR(2) CHECK (user_level IN ('B1', 'B2', 'B3', 'M1', 'M2')),
-   user_lastconnexion DATE NOT NULL,
+   user_lastconnexion DATE NOT NULL DEFAULT NOW(),
    user_url_cv VARCHAR(200) UNIQUE
 );
 
@@ -66,7 +66,7 @@ CREATE TABLE is_present (
    search_level VARCHAR(14) NOT NULL,
    PRIMARY KEY (forum_id, company_name),
    FOREIGN KEY (forum_id) REFERENCES forum(forum_id) ON DELETE CASCADE,
-   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE
+   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table des rendez-vous
@@ -79,7 +79,7 @@ CREATE TABLE appointment (
    PRIMARY KEY (user_id, forum_id, company_name),
    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
    FOREIGN KEY (forum_id) REFERENCES forum(forum_id) ON DELETE CASCADE,
-   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE
+   FOREIGN KEY (company_name) REFERENCES company(company_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- validation function for search_level of table is_present

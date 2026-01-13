@@ -59,8 +59,6 @@
         </section>
     {% endif %}
 
-    <hr class="separator">
-
     {# --- Section CV (visible uniquement après validation) --- #}
     {% if showCv %}
         <section class="forum-section cv-section">
@@ -89,7 +87,7 @@
                     {% endif %}
 
                     <div class="file-info" id="fileInfo">Aucun fichier sélectionné</div>
-                    <button type="submit" name="submit_cv" id="submitBtn" class="submit-button" disabled>Valider l'envoi</button>
+                    <button type="submit" name="submit_cv" id="submitBtnCv" class="submit-button" disabled>Valider l'envoi</button>
                 </div>
             </form>
         </section>
@@ -101,13 +99,13 @@
 
 <script>
     const fileInput = document.getElementById('cv');
-    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnCv = document.getElementById('submitBtnCv');
     const fileInfo = document.getElementById('fileInfo');
 
     if(fileInput) {
         fileInput.addEventListener('change', function() {
             const file = fileInput.files[0];
-            submitBtn.disabled = !file;
+            submitBtnCv.disabled = !file;
 
             if (file) {
                 fileInfo.textContent = `${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
