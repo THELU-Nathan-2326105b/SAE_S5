@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,17 +32,6 @@ final class AdminController extends AbstractController
     public function index(): Response
     {
         return $this->render('admin/admin.html.twig');
-    }
-
-    /**
-     * Affiche la page de gestion des utilisateurs
-     *
-     * @return Response Page de gestion des utilisateurs
-     */
-    #[Route('/admin/users', name: 'admin_users')]
-    public function users(): Response
-    {
-        return $this->render('admin/users.html.twig');
     }
 
     /**
