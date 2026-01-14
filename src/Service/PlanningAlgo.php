@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Service PlanningAlgo
+ * 
+ * Algorithme de planification automatique des rendez-vous.
+ * Gère l'allocation des créneaux horaires selon la capacité des entreprises
+ * et les préférences des étudiants.
+ * 
+ * @package App\Service
+ */
+
 namespace App\Service;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class PlanningAlgo
+ * 
+ * Service responsable de la génération automatique du planning des rendez-vous.
+ * Utilise un algorithme de distribution intelligente basé sur la saturation.
+ */
 class PlanningAlgo
 {
     // Constantes pour les seuils de saturation
@@ -24,9 +40,16 @@ class PlanningAlgo
     private const RATIO_MODERATE = 0.6;      // Saturation modérée
     private const RATIO_GOOD = 0.4;          // Bonne capacité
     
-    
-      //Réinitialise les rendez-vous pour un forum donné
-     
+    /**
+     * Réinitialise tous les rendez-vous d'un forum
+     * 
+     * Remet tous les rendez-vous du forum à l'état de demande (appointment_request = true)
+     * et supprime les horaires assignés (appointment_time = NULL).
+     * 
+     * @param Connection $conn Connexion à la base de données
+     * @param int $forum_id Identifiant du forum
+     * @return void
+     */
     public static function resetAppointments(Connection $conn, int $forum_id): void
     {
         $conn->executeStatement(
@@ -37,6 +60,32 @@ class PlanningAlgo
         );
     }
 
+    /**
+     * Génère automatiquement le planning des rendez-vous pour un forum
+     * 
+     * Algorithme complet de planification qui :
+     * 1. Charge les disponibilités des entreprises avec leurs critères de recherche
+     * 2. Filtre les demandes selon le rôle (stage/alternance) et le niveau des étudiants
+     * 3. Analyse la capacité de chaque entreprise
+     * 4. Calcule les durées optimales de rendez-vous (5-25 min)
+     * 5. Génère les créneaux horaires disponibles
+     * 6. Assigne les rendez-vous de manière équitable (internship prioritaires)
+     * 7. Persiste les assignations en base de données
+     * 
+     * @param Connection $conn Connexion à la base de données
+     * @param int $forum_id Identifiant du forum
+     * 
+     * @return array Résultat contenant :
+     *               - success: bool - Succès de l'opération
+     *               - status: string - SUCCESS|WARNING|CRITICAL
+     *               - message: string - Message de résultat
+     *               - count: int - Nombre de rendez-vous assignés
+     *               - appointments: array - Liste des rendez-vous créés
+     *               - capacity_analysis: array - Analyse de capacité par entreprise
+     *               - unassigned_requests: array - Demandes non satisfaites
+     *               - rejected_requests: array - Demandes rejetées (filtrage)
+     *               - stats: array - Statistiques globales
+     */
     public static function generatePlanning(Connection $conn, int $forum_id): array
 {
     try {
@@ -534,7 +583,7 @@ class PlanningAlgo
         'success' => $global_status !== 'CRITICAL',
         'status' => $global_status,
         'message' => $global_status === 'SUCCESS' ? 
-            "✅ Succès : {$success_rate}% des rendez-vous assignés" :
+            " Succès : {$success_rate}% des rendez-vous assignés" :
             "{$alert_message} | Taux de réussite : {$success_rate}%",
         'count' => count($inserted),
         'appointments' => $inserted,
@@ -568,7 +617,20 @@ class PlanningAlgo
 
     }
 
-     // Vérifie si le rôle de l'étudiant correspond au search_type de l'entreprise
+    /**
+     * Vérifie si le rôle de l'étudiant correspond au critère search_type de l'entreprise
+     * 
+     * Gère les cas suivants :
+     * - search_type = "internship" : accepte uniquement les étudiants en recherche de stage
+     * - search_type = "alternance" : accepte uniquement les étudiants en recherche d'alternance
+     * - search_type = "internship;alternance" : accepte les deux types
+     * - search_type = null : aucun match
+     * 
+     * @param string $user_role Rôle de l'étudiant ("internship" ou "alternance")
+     * @param string|null $search_type Critère de recherche de l'entreprise
+     * 
+     * @return bool True si le rôle correspond au critère, false sinon
+     */
     private static function matchesSearchType(string $user_role, ?string $search_type): bool
     {
         if ($search_type === null) {
@@ -585,7 +647,15 @@ class PlanningAlgo
     }
 
     /**
-     * Vérifie si le niveau de l'étudiant correspond au search_level de l'entreprise
+     * Vérifie si le niveau de l'étudiant correspond au critère search_level de l'entreprise
+     * 
+     * Le search_level peut contenir plusieurs niveaux séparés par des points-virgules.
+     * Exemple: "B1;B2;B3" accepte les étudiants de Bachelor 1, 2 ou 3.
+     * 
+     * @param string|null $user_level Niveau de l'étudiant (ex: "B1", "M2")
+     * @param string|null $search_level Critères de niveau de l'entreprise (ex: "B3;M1;M2")
+     * 
+     * @return bool True si le niveau de l'étudiant est dans la liste acceptée, false sinon
      */
     private static function matchesSearchLevel(?string $user_level, ?string $search_level): bool
     {
@@ -596,7 +666,16 @@ class PlanningAlgo
         return in_array($user_level, $levels);
     }
 
-     // Calcule la capacité totale en minutes pour une liste de créneaux
+    /**
+     * Calcule la capacité totale en minutes pour une liste de créneaux horaires
+     * 
+     * Additionne la durée de tous les créneaux de disponibilité d'une entreprise.
+     * Chaque créneau doit contenir les clés 'start' et 'end' au format datetime.
+     * 
+     * @param array $windows Tableau de créneaux avec ['start' => datetime, 'end' => datetime]
+     * 
+     * @return float Nombre total de minutes de disponibilité
+     */
     private static function calculateTotalCapacity(array $windows): float
     {
         $total_minutes = 0;
@@ -612,9 +691,31 @@ class PlanningAlgo
         return $total_minutes;
     }
 
-    
-     // Analyse la capacité d'une entreprise et calcule les saturations
-     
+    /**
+     * Analyse la capacité d'une entreprise et calcule les taux de saturation
+     * 
+     * Calcule combien de rendez-vous peuvent être satisfaits avec différentes durées (5, 10, 15 min)
+     * et détermine le taux de saturation pour chaque durée.
+     * 
+     * Saturation = (nombre de demandes / nombre de créneaux possibles) × 100
+     * - Saturation < 80% : Bonne capacité
+     * - Saturation 80-90% : Saturation modérée
+     * - Saturation 90-100% : Saturation élevée
+     * - Saturation > 100% : Capacité critique insuffisante
+     * 
+     * @param float $capacity_minutes Capacité totale en minutes
+     * @param int $demand Nombre de demandes de rendez-vous
+     * 
+     * @return array Analyse contenant :
+     *               - capacity_minutes: float - Capacité totale
+     *               - demand: int - Nombre de demandes
+     *               - max_5min_slots: int - Nombre max de créneaux de 5min
+     *               - max_10min_slots: int - Nombre max de créneaux de 10min
+     *               - max_15min_slots: int - Nombre max de créneaux de 15min
+     *               - saturation_5min: float - Taux de saturation avec 5min
+     *               - saturation_10min: float - Taux de saturation avec 10min
+     *               - saturation_15min: float - Taux de saturation avec 15min
+     */
     private static function analyzeCompanyCapacity(float $capacity_minutes, int $demand): array
     {
         $max_5min = max(1, floor($capacity_minutes / self::DURATION_MIN));
@@ -633,8 +734,32 @@ class PlanningAlgo
         ];
     }
 
-     // Détecte les problèmes de capacité et détermine leur sévérité
-     
+    /**
+     * Détecte les problèmes de capacité et détermine leur niveau de sévérité
+     * 
+     * Analyse les taux de saturation et identifie les alertes selon les seuils :
+     * - CRITIQUE : Durée optimale < 5min OU saturation ≥ 100% même avec créneaux de 5min
+     * - ÉLEVÉE : Saturation > 90% avec créneaux de 10min
+     * - MODÉRÉE : Saturation > 80% avec créneaux de 15min
+     * - FAIBLE : Aucun problème détecté
+     * 
+     * @param array $capacity_data Données d'analyse de capacité (retour de analyzeCompanyCapacity)
+     * @param string $company Nom de l'entreprise analysée
+     * @param float $total_capacity Capacité totale en minutes
+     * 
+     * @return array Résultat contenant :
+     *               - has_issue: bool - Présence d'un problème
+     *               - details: array - Détails du problème si has_issue=true
+     *                   - company: string - Nom de l'entreprise
+     *                   - demand: int - Nombre de demandes
+     *                   - capacity_minutes: float - Capacité totale
+     *                   - optimal_duration_raw: float - Durée optimale calculée
+     *                   - max_possible_5min: int - Créneaux max avec 5min
+     *                   - max_possible_10min: int - Créneaux max avec 10min
+     *                   - issue_reasons: array - Messages d'alerte
+     *                   - severity: string - Niveau de sévérité
+     *                   - saturations: array - Taux de saturation par durée
+     */
     private static function detectCapacityIssues(array $capacity_data, string $company, float $total_capacity): array
     {
         $has_issue = false;
@@ -653,7 +778,7 @@ class PlanningAlgo
         if ($optimal_duration_raw < self::DURATION_MIN && $demand > 0) {
             $has_issue = true;
             $severity = 'CRITIQUE';
-            $issue_reasons[] = "⚠️ ALERTE : Durée optimale calculée = " . round($optimal_duration_raw, 1) . " min (< 5 min minimum)";
+            $issue_reasons[] = " ALERTE : Durée optimale calculée = " . round($optimal_duration_raw, 1) . " min (< 5 min minimum)";
             $issue_reasons[] = "Capacité insuffisante : {$total_capacity} min pour {$demand} demandes";
         }
         // Vérification par ordre de sévérité décroissante
@@ -695,9 +820,27 @@ class PlanningAlgo
         ];
     }
 
-     // Calcule la durée optimale de rendez-vous selon la capacité et la demande
-     // Méthode : Division directe du temps disponible par le nombre de demandes
-     
+    /**
+     * Calcule la durée optimale de rendez-vous selon la capacité et la demande
+     * 
+     * Méthode :
+     * 1. Division directe : durée_optimale = capacité_totale / nombre_de_demandes
+     * 2. Arrondi à la durée standard la plus proche (5, 10, 15, 20, 25 minutes)
+     * 3. Validation : si la durée ne permet pas de satisfaire toutes les demandes,
+     *    réduction progressive jusqu'à 5 minutes minimum
+     * 
+     * Durées standards :
+     * - 25 min : durée optimale ≥ 22.5 min (capacité très confortable)
+     * - 20 min : durée optimale ≥ 17.5 min (capacité confortable)
+     * - 15 min : durée optimale ≥ 12.5 min (capacité correcte)
+     * - 10 min : durée optimale ≥ 7.5 min (capacité serrée)
+     * - 5 min : durée optimale < 7.5 min (capacité critique)
+     * 
+     * @param float $capacity_minutes Capacité totale en minutes
+     * @param int $demand Nombre de demandes de rendez-vous
+     * 
+     * @return int Durée optimale en minutes (5, 10, 15, 20 ou 25)
+     */
     private static function calculateOptimalDuration(float $capacity_minutes, int $demand): int
     {
         if ($demand === 0) {

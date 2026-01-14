@@ -7,17 +7,30 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * CompanyRepository
+ * 
+ * Repository pour gérer les requêtes sur l'entité Company.
+ * Fournit des méthodes pour rechercher les entreprises selon différents critères.
+ * 
  * @extends ServiceEntityRepository<Company>
+ * @package App\Repository
  */
 class CompanyRepository extends ServiceEntityRepository
 {
+    /**
+     * Constructeur du repository
+     * 
+     * @param ManagerRegistry $registry Registre du gestionnaire d'entités
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Company::class);
     }
 
     /**
-     * Exemple : récupérer toutes les entreprises triées par nom
+     * Récupère toutes les entreprises triées par nom
+     * 
+     * @return array Tableau de toutes les entreprises par ordre alphabétique
      */
     public function findAllOrderedByName(): array
     {
@@ -28,11 +41,16 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les entreprises pour un étudiant selon son level et le forum
-     * !!! A revoir complétement : A therme mieux vaudrait formaliser la BD pour un fonctionement complet avec doctrine
-     * @param int $forumId
-     * @param string $studentLevel
-     * @return array
+     * Récupère les entreprises correspondant au profil d'un étudiant pour un forum
+     * Filtre selon le niveau de l'étudiant et les critères de recherche des entreprises
+     * 
+     * Note : Cette méthode utilise une requête SQL brute car les critères de recherche
+     * sont stockés dans une table non mappée par Doctrine (is_present).
+     * À terme, il faudrait formaliser la base de données pour une meilleure intégration.
+     * 
+     * @param int $forumId Identifiant du forum
+     * @param string $studentLevel Niveau de l'étudiant
+     * @return array Tableau des entreprises correspondant aux critères
      */
     public function findCompaniesForStudent(int $forumId, string $studentLevel): array
     {
@@ -50,14 +68,14 @@ class CompanyRepository extends ServiceEntityRepository
             'level' => $studentLevel
         ]);
 
-        // on récup les noms d'entreprises
+        // Récupère les noms d'entreprises
         $companyNames = array_column($resultSet->fetchAllAssociative(), 'company_name');
 
         if (empty($companyNames)) {
             return [];
         }
 
-        // puis on ajoute les données pour avoir des entites doctrines
+        // Récupère les entités Doctrine complètes
         return $this->createQueryBuilder('c')
             ->where('c.company_name IN (:names)')
             ->setParameter('names', $companyNames)
@@ -65,6 +83,4 @@ class CompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 }

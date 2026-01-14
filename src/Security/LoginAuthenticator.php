@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Authentificateur de connexion personnalisé
+ * 
+ * Gère l'authentification des utilisateurs avec validation reCAPTCHA
+ * et limitation de tentatives (rate limiting)
+ * 
+ * @package App\Security
+ */
+
 namespace App\Security;
 
 use App\Repository\UsersRepository;
@@ -16,8 +25,23 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Class LoginAuthenticator
+ * 
+ * Authentificateur personnalisé pour les connexions utilisateur.
+ * Inclut la validation reCAPTCHA v3 et le rate limiting par IP.
+ */
 class LoginAuthenticator extends AbstractAuthenticator
 {
+    /**
+     * Constructeur de l'authentificateur
+     * 
+     * @param RouterInterface $router
+     * @param UsersRepository $usersRepository
+     * @param HttpClientInterface $client
+     * @param RateLimiter $limiter
+     * @param EntityManagerInterface $em
+     */
     public function __construct(
         private RouterInterface $router,
         private UsersRepository $usersRepository,
@@ -26,12 +50,26 @@ class LoginAuthenticator extends AbstractAuthenticator
         private EntityManagerInterface $em 
     ) {}
 
+    /**
+     * Vérifie si cette requête peut être authentifiée
+     * 
+     * @param Request $request
+     * @return bool|null
+     */
     public function supports(Request $request): ?bool
     {
         return $request->isMethod('POST')
             && $request->getPathInfo() === '/login-handler';
     }
 
+    /**
+     * Authentifie l'utilisateur
+     * Vérifie le rate limiting et la validation reCAPTCHA
+     * 
+     * @param Request $request
+     * @return Passport
+     * @throws AuthenticationException
+     */
     public function authenticate(Request $request): Passport
     {
         $ip = $request->getClientIp() ?? 'unknown';
@@ -78,6 +116,15 @@ class LoginAuthenticator extends AbstractAuthenticator
         );
     }
 
+    /**
+     * Traite la connexion réussie
+     * Met à jour la date de dernière connexion
+     * 
+     * @param Request $request
+     * @param TokenInterface $token
+     * @param string $firewallName
+     * @return Response|null
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // Mise à jour de la date de dernière connexion
@@ -90,6 +137,14 @@ class LoginAuthenticator extends AbstractAuthenticator
         return new RedirectResponse($this->router->generate('home'));
     }
 
+    /**
+     * Traite l'échec d'authentification
+     * Stocke le message d'erreur en session
+     * 
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return Response|null
+     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $request->getSession()->set('login_error', 'Email ou mot de passe incorrect.');

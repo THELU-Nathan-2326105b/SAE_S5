@@ -7,8 +7,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * LoginController
+ * 
+ * Contrôleur responsable de la gestion de l'authentification.
+ * Affiche le formulaire de connexion et gère la déconnexion.
+ * 
+ * @package App\Controller
+ */
 final class LoginController extends AbstractController
 {
+    /**
+     * Affiche le formulaire de connexion
+     * 
+     * @param Request $request La requête HTTP courante
+     * @return Response Page de connexion avec reCAPTCHA
+     */
     #[Route('/login', name: 'login')]
     public function index(Request $request): Response
     {
@@ -21,12 +35,24 @@ final class LoginController extends AbstractController
         ]);
     }
 
+    /**
+     * Gestionnaire de connexion (intercepté par LoginAuthenticator)
+     * Cette méthode ne doit jamais être exécutée directement
+     * 
+     * @throws \LogicException
+     */
     #[Route('/login-handler', name: 'login_handler', methods: ['POST'])]
     public function loginHandler(): never
     {
         throw new \LogicException('This method should never be reached - intercepted by LoginAuthenticator');
     }
 
+    /**
+     * Gestionnaire de déconnexion (intercepté par logout handler)
+     * Cette méthode ne doit jamais être exécutée directement
+     * 
+     * @throws \LogicException
+     */
     #[Route('/logout', name: 'logout')]
     public function logout(): never
     {

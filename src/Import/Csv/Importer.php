@@ -11,14 +11,22 @@ use InvalidArgumentException;
 use SplFileObject;
 use RuntimeException;
 
-
+/**
+ * Importer
+ *
+ * Implémentation de l'importeur CSV pour la lecture et conversion de fichiers CSV.
+ * Utilise SplFileObject pour lire le fichier et des Mappers pour convertir les lignes en entités.
+ * Gère automatiquement les en-têtes CSV, le BOM UTF-8, et l'alignement des données.
+ *
+ * @package App\Import\Csv
+ */
 class Importer implements ImporterContract
 {
     // private string $delimiter = ',';
     // private string $enclosure = '"';
     // private string $escape    = '\\';
     private MapperFactory $mapperFactory;
-    
+
     public function __construct(MapperFactory $mapperFactory ){
         $this->mapperFactory=$mapperFactory;
     }
@@ -26,44 +34,62 @@ class Importer implements ImporterContract
 
     public function import(string $filePath, string $entity): array
     {
+        //dd("begin import");
         $mapper = $this->resolveMapper($entity);
+        // dd("resolveMapper");
         $file    = $this->openFile($filePath);
+        //dd("filePath");
         $headers = $this->readHeaders($file);
+        // dd($headers);
+        //dump($headers);
         $out = [];
 
-        while (!$file->eof()){
+        while (!$file->eof()) {
             $row = $this->readRow($file);
-            if(!is_null($row)&&!$this->isEmptyRow($row)){
+            // dd("readRow");
+            if (!is_null($row)&&!$this->isEmptyRow($row)) {
                 $row= $this->alignRowToHeaders($headers, $row);
+                // dd("alignRowToHeaders");
                 $assoc= $this->combineRow($headers, $row);
-                if(!is_null($assoc)){
+                // dd("combineRow");
+                if (!is_null($assoc)) {
+                    // dd("is_not_null");
                     $assoc=$this->trimAssoc($assoc);
+                    //dd("trimAssoc");
                     $mappedEntity=$this->mapRow($assoc, $mapper);
-                    if($mappedEntity !== null){
+                    // dd("mapRow");
+                    if ($mappedEntity !== null) {
                         $out[]= $mappedEntity;
                     }
                 }else{
+                //    dd("is_null");
                     throw new RuntimeException('Erreur lors de la combinaison des entêtes et de la ligne du CSV.');
-                } 
+
+                }
             }
         }
         return $out;
     }
 
- 
+
 
     private function openFile(string $path,string $mode="r"): SplFileObject
     {
         $f =new SplFileObject($path,$mode);
-        $f->setCsvControl(';', '"','\\');
+        //$f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+        $f->setCsvControl(',', '"', '\\');
+        // $f->setFlags(SplFileObject::READ_CSV| SplFileObject::SKIP_EMPTY
+        //             | SplFileObject::DROP_NEW_LINE| SplFileObject::READ_AHEAD);
         $f->rewind();
         return $f;
     }
 
     private function readHeaders(SplFileObject $f): array
     {
-        
-        $raw = $f->fgetcsv(';','"','\\')?:[]; 
+        // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
+
+        $raw = $f->fgetcsv(';','"','\\')?:[];
+        //dd($raw);
         if($raw&&isset($raw[0])){
             $raw[0]=preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw[0]) ?? $raw[0];
         }
@@ -73,7 +99,7 @@ class Importer implements ImporterContract
             static fn($h) => $h !== ''
         ));
 
-        if($headers==[]){
+        if ($headers==[]){
             throw new \RuntimeException('Entêtes CSV invalides.');
         }
         return $headers;
@@ -82,8 +108,9 @@ class Importer implements ImporterContract
 
     private function readRow(SplFileObject $f): ?array
     {
+        // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
         $row = $f->fgetcsv();
-        if($row==false || $row==[null]){
+        if ($row==false || $row==[null]) {
             return null;
         }
         return $row;
@@ -91,8 +118,8 @@ class Importer implements ImporterContract
 
     private function isEmptyRow(array $row): bool
     {
-        foreach ($row as $v){
-            if( !is_null($v) && trim((string) $v) !== ''){
+        foreach ($row as $v) {
+            if ( !is_null($v) && trim((string) $v) !== '') {
                 return false;
             }
         }
@@ -103,17 +130,16 @@ class Importer implements ImporterContract
     {
         $cH = count($headers);
         $cR = count($row);
-        if($cR<$cH){
+        if ($cR < $cH) {
             return array_pad($row, $cH, null);
-        }
-        else{
-            if($cR>$cH){
+        }else{
+            if ($cR > $cH) {
                 return array_slice($row, 0, $cH);
             }
             return $row;
         }
-        
-        
+
+
     }
 
     private function combineRow(array $headers, array $row): ?array
@@ -121,7 +147,7 @@ class Importer implements ImporterContract
         $assoc = @array_combine($headers, $row);
         if($assoc){
             return $assoc;
-        }    
+        }
         return null;
     }
 

@@ -9,8 +9,23 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\AppointmentRepository;
 use App\Repository\UsersRepository;
 
+/**
+ * PlanningAlgoController
+ * 
+ * Contrôleur pour l'affichage du planning généré par l'algorithme.
+ * 
+ * @package App\Controller
+ */
 final class PlanningAlgoController extends AbstractController
 {
+    /**
+     * Affiche le planning de l'utilisateur connecté
+     * 
+     * @param Request $request La requête HTTP courante
+     * @param AppointmentRepository $appointmentRepository Repository pour les rendez-vous
+     * @param UsersRepository $usersRepository Repository pour les utilisateurs
+     * @return Response Page du planning avec les rendez-vous planifiés
+     */
     #[Route('/planning-algo', name: 'planning-algo')]
     public function view(Request $request, AppointmentRepository $appointmentRepository, UsersRepository $usersRepository): Response
     {

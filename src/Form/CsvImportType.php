@@ -8,29 +8,30 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
+ * UsersCsvImportType
+ * 
  * Formulaire d'import CSV des utilisateurs.
- *
- * Formulaire expose un champ :
- *  - csvFile :
- *      - type : fichier (FileType)
- *      - limité à un poids maximal (par défaut 5 Mo)
- *      - restreint à des fichiers CSV.
- * Téléverser un fichier CSV contenant une liste d'utilisateurs 
+ * Expose un champ de téléversement de fichier CSV limité en taille et type MIME.
+ * Utilisé pour l'import en masse d'utilisateurs depuis un fichier CSV.
+ * 
+ * @package App\Form
  */
 final class CsvImportType extends AbstractType
 {
-    
     /**
-     * Taille maximale autorisée pour le fichier en mégaoctets.
-    */
+     * Taille maximale autorisée pour le fichier en mégaoctets
+     * 
+     * @var int
+     */
     private int $MaxSizeMo=10;
     
 
     /**
-     * Construit le formulaire d'import CSV des utilisateurs.
+     * Construit le formulaire d'import CSV des utilisateurs
      *
-     * @param FormBuilderInterface $builder Générateur de formulaire.
-     * @param array<string, mixed> $options Options du formulaire.
+     * @param FormBuilderInterface $builder Générateur de formulaire
+     * @param array<string,mixed> $options Options du formulaire
+     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -55,8 +56,11 @@ final class CsvImportType extends AbstractType
     }
 
     /**
-     * Configure les options par défaut du formulaire.
-    */
+     * Configure les options par défaut du formulaire
+     * 
+     * @param OptionsResolver $resolver Le résolveur d'options
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([]);

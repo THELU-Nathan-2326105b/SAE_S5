@@ -1,11 +1,19 @@
-<?php 
+<?php
 namespace App\Import\Contract;
 
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use App\Import\Contract\Importer; 
+use App\Import\Contract\Importer;
 
 /**
+ * ImporterFactory
+ *
+ * Factory d'importeurs permettant d'obtenir un service Importer
+ * en fonction de l'entité à importer et du format de fichier.
+ * Utilise un service locator pour récupérer les importeurs enregistrés
+ * avec une clé de la forme "<format>.<entity>".
+ *
+ * @package App\Import\Contract
     * Factory d'importeurs.
     * Retourne un service Importer
     * en fonction :
@@ -19,11 +27,11 @@ interface ImporterFactory
     /**
      * Retourne un importeur adapté à l'entité et au format demandés.
      *
-     * @param string $entity Nom de l'entité à importer 
+     * @param string $entity Nom de l'entité à importer
      *
      * @return Importer Instance d’un service qui implémente Importer.
      *
-     * @throws InvalidArgumentException Si 
+     * @throws InvalidArgumentException Si
      *                       $entity ou $format est vide,
      *                       aucun service n’est enregistré pour la clé,
      *                       le service trouvé n’implémente pas Importer.
