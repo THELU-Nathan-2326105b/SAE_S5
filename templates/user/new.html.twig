@@ -1,18 +1,15 @@
-{% extends 'user/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Nouvel utilisateur{% endblock %}
 
-{% block user_content %}
-    <div class="admin-page-container">
-        <h1 class="page-title">Créer un utilisateur</h1>
+{% block body %}
+  <div class="container py-4">
+    <h1 class="mb-3">Créer un utilisateur</h1>
 
-        {% include 'user/_form.html.twig' with {
-            form: form,
-            button_label: 'Créer'
-        } %}
-        
-        <div class="page-actions">
-            <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour à la liste</a>
-        </div>
-    </div>
+    {% include 'user/_form.html.twig' with {
+      form: form,
+      button_label: 'Créer',
+      include_submit: true
+    } %}
+  </div>
 {% endblock %}

@@ -15,9 +15,6 @@
     <h1 class="title-entreprises">GESTION DES ENTREPRISES</h1>
 
     <section class="companies-list">
-        {% if importForm is defined %}
-            {{ include('_import_csv.html.twig', { importForm: importForm, action_route: 'app_company_import' }) }}
-        {% endif %}
         {% if companies is not empty %}
             <table class="companies-table">
                 <thead>

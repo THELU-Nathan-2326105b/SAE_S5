@@ -1,21 +1,13 @@
-{% extends 'user/base.html.twig' %}
+{# templates/user/delete.html.twig #}
+{% extends 'base.html.twig' %}
 
-{% block title %}Supprimer l’utilisateur{% endblock %}
+{% block body %}
+<h1>Supprimer l’utilisateur</h1>
+<p>Es-tu sûr(e) ?</p>
 
-{% block user_content %}
-<div class="admin-page-container">
-    <h1 class="page-title" style="color: var(--danger);">Supprimer l’utilisateur</h1>
-    
-    <div class="delete-container">
-        <p class="warning-text">Êtes-vous sûr(e) de vouloir supprimer cet utilisateur ?</p>
-        <p style="margin-bottom:2rem; font-weight:bold;">{{ user.userEmail }}</p>
-
-        <form method="post" action="{{ path('app_user_delete', { id: user.id }) }}" class="delete-actions">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-            
-            <button class="btn btn-delete">Oui, Supprimer</button>
-            <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Non, Annuler</a>
-        </form>
-    </div>
-</div>
+<form method="post" action="{{ path('app_user_delete', { id: user.userId }) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
+    <button>Oui</button>
+    <a href="{{ path('app_user_show', { id: user.userId }) }}">Non</a>
+</form>
 {% endblock %}

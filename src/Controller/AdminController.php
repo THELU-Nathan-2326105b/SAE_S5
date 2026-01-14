@@ -9,22 +9,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * AdminController
- *
+ * 
  * Contrôleur responsable de la gestion administrative du site.
  * Permet de gérer les utilisateurs, entreprises et données du système.
- *
+ * 
  * @package App\Controller
  */
-#[IsGranted('ROLE_ADMIN')]
 final class AdminController extends AbstractController
 {
     /**
      * Affiche la page d'administration principale
-     *
+     * 
      * @return Response Page d'administration
      */
     #[Route('/admin', name: 'admin')]
@@ -35,7 +33,7 @@ final class AdminController extends AbstractController
 
     /**
      * Affiche la page de gestion des utilisateurs
-     *
+     * 
      * @return Response Page de gestion des utilisateurs
      */
     #[Route('/admin/users', name: 'admin_users')]
@@ -46,7 +44,7 @@ final class AdminController extends AbstractController
 
     /**
      * Affiche la page de gestion des entreprises
-     *
+     * 
      * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
      * @return Response Page de gestion des entreprises
      */
@@ -63,7 +61,7 @@ final class AdminController extends AbstractController
     /**
      * Réinitialise les données du système (sauf les admins)
      * Supprime toutes les données des tables liées aux forums et rendez-vous
-     *
+     * 
      * @param Request $request Requête HTTP contenant le token CSRF
      * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
      * @return Response Redirection vers la page d'admin avec message flash
@@ -118,7 +116,7 @@ final class AdminController extends AbstractController
 
     /**
      * Met à jour les informations d'une entreprise
-     *
+     * 
      * @param Request $request Requête HTTP contenant les données JSON
      * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
      * @return JsonResponse Réponse JSON avec le résultat de l'opération
@@ -175,7 +173,7 @@ final class AdminController extends AbstractController
 
     /**
      * Crée une nouvelle entreprise
-     *
+     * 
      * @param Request $request Requête HTTP contenant les données JSON
      * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
      * @return JsonResponse Réponse JSON avec les données de l'entreprise créée
@@ -229,7 +227,7 @@ final class AdminController extends AbstractController
 
     /**
      * Supprime une entreprise
-     *
+     * 
      * @param string $companyName Nom de l'entreprise à supprimer
      * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
      * @return JsonResponse Réponse JSON avec le résultat de l'opération

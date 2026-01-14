@@ -1,51 +1,16 @@
-{{ form_start(form, {'attr': {'class': 'user-form'}}) }}
-    
-    {% if form_errors(form) %}
-        <div class="form-errors">
-            {{ form_errors(form) }}
-        </div>
-    {% endif %}
+{# templates/user/_form.html.twig #}
+{{ form_start(form) }}
+  {{ form_errors(form) }}
+  {{ form_row(form.user_email) }}
+  {{ form_row(form.plainPassword) }}
+  {{ form_row(form.user_role) }}
+  {{ form_row(form.user_firstname) }}
+  {{ form_row(form.user_lastname) }}
+  {{ form_row(form.user_level) }}
 
-    <div class="form-group">
-        {{ form_label(form.user_email) }}
-        {{ form_widget(form.user_email, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.user_email) }}
-    </div>
-    {% do form.plainPassword.setRendered() %}
-    {# <div class="form-group">
-        {{ form_label(form.plainPassword) }}
-        {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.plainPassword) }}
-    </div> #}
-    {# {% do form.user_role.setRendered() %} #}
-    <div class="form-group">
-        {{ form_label(form.user_role) }}
-        {{ form_widget(form.user_role, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.user_role) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.user_firstname) }}
-        {{ form_widget(form.user_firstname, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.user_firstname) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.user_lastname) }}
-        {{ form_widget(form.user_lastname, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.user_lastname) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.user_level) }}
-        {{ form_widget(form.user_level, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.user_level) }}
-    </div>
-
-    <div class="form-actions">
-        <button class="btn btn-edit" type="submit">
-            {{ button_label|default('Enregistrer') }}
-        </button>
-    </div>
-
-{{ form_end(form) }}
+  <div>
+    <button type="submit">
+      {{ button_label|default('Enregistrer') }}
+    </button>
+  </div>
+{{ form_end(form) }} 

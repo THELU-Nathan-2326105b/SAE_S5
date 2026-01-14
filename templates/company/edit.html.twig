@@ -1,19 +1,15 @@
-{# templates/company/edit.html.twig #}
-{% extends 'company/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Modifier {{ company.companyName }}{% endblock %}
 
-{% block company_content %}
-<div class="admin-page-container">
-    <h1 class="page-title">Modifier : {{ company.companyName }}</h1>
+{% block body %}
+    <h1>Modifier l’entreprise : {{ company.companyName }}</h1>
 
+    {# Inclusion du formulaire #}
     {% include 'company/_form.html.twig' with {
         form: form,
         button_label: 'Mettre à jour'
     } %}
 
-    <div class="page-actions">
-        <a class="btn btn-view" href="{{ path('app_company_index') }}">Retour à la liste</a>
-    </div>
-</div>
+    <a href="{{ path('app_company_show', { company_name: company.companyName }) }}">← Retour au détail</a>
 {% endblock %}

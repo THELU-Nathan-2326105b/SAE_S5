@@ -4,31 +4,31 @@
 namespace App\Import\Csv;
 
 use App\Import\Contract\Importer as ImporterContract;
-use App\Mapper\Contract\MapperFactory;
-use App\Mapper\Contract\Mapper;;
+use App\Mapper\Contract\Mapper as MapperContract;
 use Psr\Container\ContainerInterface;
 use InvalidArgumentException;
 use SplFileObject;
-use RuntimeException;
 
 /**
  * Importer
- *
+ * 
  * Implémentation de l'importeur CSV pour la lecture et conversion de fichiers CSV.
  * Utilise SplFileObject pour lire le fichier et des Mappers pour convertir les lignes en entités.
  * Gère automatiquement les en-têtes CSV, le BOM UTF-8, et l'alignement des données.
- *
+ * 
  * @package App\Import\Csv
  */
 class Importer implements ImporterContract
 {
-    // private string $delimiter = ',';
-    // private string $enclosure = '"';
-    // private string $escape    = '\\';
-    private MapperFactory $mapperFactory;
-
-    public function __construct(MapperFactory $mapperFactory ){
-        $this->mapperFactory=$mapperFactory;
+    /**
+     * Service locator contenant les mappers disponibles
+     * 
+     * @var ContainerInterface
+     */
+    private ContainerInterface $mapperLocator;
+    
+    public function __construct(ContainerInterface $mapperLocator ) {
+        $this->mapperLocator=$mapperLocator;
     }
 
 
@@ -53,7 +53,7 @@ class Importer implements ImporterContract
                 $assoc= $this->combineRow($headers, $row);
                 // dd("combineRow");
                 if (!is_null($assoc)) {
-                    // dd("is_not_null");
+                    // dd("is_not_null"); 
                     $assoc=$this->trimAssoc($assoc);
                     //dd("trimAssoc");
                     $mappedEntity=$this->mapRow($assoc, $mapper);
@@ -62,16 +62,14 @@ class Importer implements ImporterContract
                         $out[]= $mappedEntity;
                     }
                 }else{
-                //    dd("is_null");
-                    throw new RuntimeException('Erreur lors de la combinaison des entêtes et de la ligne du CSV.');
-
-                }
+                //    dd("is_null"); 
+                } 
             }
         }
         return $out;
     }
 
-
+ 
 
     private function openFile(string $path,string $mode="r"): SplFileObject
     {
@@ -87,10 +85,10 @@ class Importer implements ImporterContract
     private function readHeaders(SplFileObject $f): array
     {
         // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
-
-        $raw = $f->fgetcsv(';','"','\\')?:[];
+        
+        $raw = $f->fgetcsv(',', '"', '\\')?:[]; 
         //dd($raw);
-        if($raw&&isset($raw[0])){
+        if ($raw&&isset($raw[0])) {
             $raw[0]=preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw[0]) ?? $raw[0];
         }
 
@@ -138,8 +136,8 @@ class Importer implements ImporterContract
             }
             return $row;
         }
-
-
+        
+        
     }
 
     private function combineRow(array $headers, array $row): ?array
@@ -147,7 +145,7 @@ class Importer implements ImporterContract
         $assoc = @array_combine($headers, $row);
         if($assoc){
             return $assoc;
-        }
+        }    
         return null;
     }
 
@@ -157,13 +155,19 @@ class Importer implements ImporterContract
         return array_map(static fn($v) => is_string($v) ? trim($v) : $v, $assoc);
     }
 
-    private function mapRow(array $assoc, Mapper $mapper): ?object
+    private function mapRow(array $assoc, MapperContract $mapper): ?object
     {
         return $mapper->fromRow($assoc);
     }
 
-    private function resolveMapper(string $entity): Mapper
+    private function resolveMapper(string $entity): MapperContract
     {
-        return $this->mapperFactory->create($entity);
+        $key = strtolower(trim($entity)); 
+        if (!$this->mapperLocator->has($key)) {
+            throw new InvalidArgumentException("Mapper introuvable pour l’entité « {$entity} »");
+        }
+        $mapper = $this->mapperLocator->get($key);
+        assert($mapper instanceof MapperContract);
+        return $mapper;
     }
 }

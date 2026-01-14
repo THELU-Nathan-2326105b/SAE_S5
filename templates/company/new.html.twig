@@ -1,19 +1,15 @@
-{# templates/company/new.html.twig #}
-{% extends 'company/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Nouvelle entreprise{% endblock %}
 
-{% block company_content %}
-<div class="admin-page-container">
-    <h1 class="page-title">Créer une entreprise</h1>
+{% block body %}
+<div class="container py-4">
+    <h1 class="mb-3">Créer une entreprise</h1>
 
+    {# On inclut le partial _form.html.twig #}
     {% include 'company/_form.html.twig' with {
         form: form,
         button_label: 'Créer'
     } %}
-
-    <div class="page-actions">
-        <a class="btn btn-view" href="{{ path('app_company_index') }}">Retour à la liste</a>
-    </div>
 </div>
 {% endblock %}
