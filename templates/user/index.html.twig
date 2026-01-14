@@ -1,58 +1,161 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/styles/csv-import.css') }}">
+{% endblock %}
 
 {% block title %}Liste des utilisateurs{% endblock %}
 
-{% block body %}
-  <div>
-    <h1>Utilisateurs</h1>
+{% block javascripts %}
+    {{ parent() }}
+    {# On inclut le script générique #}
+    <script src="{{ asset('assets/toggle.js') }}" defer></script>
+{% endblock %}
+{% block user_content %}
+<div class="admin-page-container">
+    <h1 class="page-title">Gestion des Utilisateurs</h1>
 
-    {% if users is not empty %}
-      <table>
+    {# Messages Flash #}
+    <div class="flash-messages">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message|raw }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# ========================================== #}
+    {#       TABLEAU 1 : ADMINISTRATEURS          #}
+    {# ========================================== #}
+    <h3 class="section-title">Administrateurs</h3>
+    
+    <table class="admin-table">
         <thead>
-          <tr>
-            {# <th>ID</th> #}
-            <th>Email</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Niveau</th>
-            <th>Actions</th>
-          </tr>
+            <tr>
+                <th>Email</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Niveau</th>
+                {# <th>Actions</th> #}
+            </tr>
         </thead>
         <tbody>
-          {% for user in users %}
-            <tr>
-              {# <td>{{ user.id }}</td> #}
-              <td>{{ user.userEmail }}</td>
-              <td>{{ user.userFirstname }}</td>
-              <td>{{ user.userLastname }}</td>
-              <td>{{ user.userLevel }}</td>
-              <td>
-                <a href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
-                <a  href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
-                <form method="post"
-                      action="{{ path('app_user_delete', { id: user.id }) }}"
-                      {# style="display:inline" #}
-                      onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                  <button>Supprimer</button>
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
+            {% set has_admins = false %}
+            
+            {% for user in users %}
+                {% if user.userRole is defined and user.userRole|lower == 'admin' %}
+                    {% set has_admins = true %}
+                    <tr>
+                        <td data-label="Email" class="text-bold">{{ user.userEmail }}</td>
+                        <td data-label="Prénom">{{ user.userFirstname }}</td>
+                        <td data-label="Nom">{{ user.userLastname }}</td>
+                        <td data-label="Niveau">
+                            <span class="text-bold text-primary">ADMIN</span>
+                        </td>
+                        {# <td class="actions-cell" data-label="Actions">
+                            <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                            <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+                            
+                            <form method="post" 
+                                  action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                  class="form-inline-delete"
+                                  onsubmit="return confirm('⚠️ ATTENTION : Vous êtes sur le point de supprimer un ADMINISTRATEUR !\n\nCette action est irréversible.\n\nÊtes-vous VRAIMENT sûr de vouloir continuer ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                <button class="btn btn-link-danger">Supprimer</button>
+                            </form>
+                        </td> #}
+                        
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            
+            {% if not has_admins %}
+                <tr><td colspan="5" class="no-data">Aucun administrateur trouvé.</td></tr>
+            {% endif %}
         </tbody>
-      </table>
-    {% else %}
-      <p>Aucun utilisateur trouvé.</p>
-    {% endif %}
+    </table>
 
-    <a href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
-    {% include 'user/_import_csv.html.twig' %}
-    
+    {# ========================================== #}
+    {#       TABLEAU 2 : AUTRES UTILISATEURS      #}
+    {# ========================================== #}
+    {# ... #}
+    <h3 class="section-title">Autres Utilisateurs</h3>
 
-  </div>
-  {% for label, messages in app.flashes %}
-    {% for message in messages %}
-      <div>{{ message|raw }}</div>
-    {% endfor %}
-  {% endfor %}
+    <button class="btn-toggle-list js-toggle-btn" data-target="users-list-container">
+        <span>Voir la liste des étudiants </span>
+        <span class="arrow-icon">▼</span>
+    </button>
+
+    <div id="users-list-container" class="table-scroll-container">
+        <table class="admin-table" style="margin:0; box-shadow:none; border-radius:0;">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Niveau</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set has_users = false %}
+                
+                {% for user in users %}
+                    {% if user.userRole is defined and user.userRole|lower != 'admin' %}
+                        {% set has_users = true %}
+                        <tr>
+                            <td data-label="Email">{{ user.userEmail }}</td>
+                            <td data-label="Prénom">{{ user.userFirstname }}</td>
+                            <td data-label="Nom">{{ user.userLastname }}</td>
+                            <td data-label="Niveau">
+                                <span class="text-bold">{{ user.userLevel }}</span>
+                            </td>
+                            <td class="actions-cell" data-label="Actions">
+                                <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
+                                <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
+
+                                <form method="post" 
+                                    action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                    class="form-inline-delete"
+                                    onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                    <button class="btn btn-link-danger">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+                {% if not has_users %}
+                    <tr><td colspan="5" class="no-data">Aucun autre utilisateur trouvé.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {# ========================================== #}
+    <div class="page-actions">
+        <a class="btn btn-edit" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
+        
+        {% if users is not empty %}
+            <form method="post" action="{{ path('app_user_delete_non_admins') }}" 
+                  onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les étudiants.\n\nCette action est irréversible.\n\nConfirmer ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
+                <button type="submit" class="btn btn-delete">Supprimer tous les étudiants</button>
+            </form>
+        {% endif %}
+    </div>
+
+    {# Bloc Import #}
+    <div class="import-box">
+        <h3 class="import-title">Import CSV Utilisateurs</h3>
+        {{ include('_import_csv.html.twig', {
+            'importForm': importForm,
+            'csvHeader': 'user_email;user_firstname;user_lastname;user_role;user_level',
+            'csvExample': 'jean.dupont@email.com;Jean;Dupont;user;3',
+            'csvImage': 'assets/images/exemple_csv_users.png'  
+        }) }}
+    </div>
+</div>
 {% endblock %}

@@ -1,18 +1,18 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
 
 {% block title %}Modifier l’utilisateur{% endblock %}
 
-{% block body %}
-  <div class="container py-4">
-    <h1 class="mb-3">Modifier l’utilisateur</h1>
+{% block user_content %}
+    <div class="admin-page-container">
+        <h1 class="page-title">Modifier l’utilisateur</h1>
 
-    {% include 'user/_form.html.twig' with {
-      form: form,
-      button_label: 'Modifier',
-      include_submit: true
-    } %}
-    <div class="mt-4">
-      <a href="{{ path('app_user_index', {id: user.userId}) }}">Retour</a>
+        {% include 'user/_form.html.twig' with {
+            form: form,
+            button_label: 'Modifier'
+        } %}
+
+        <div class="page-actions">
+            <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour à la liste</a>
+        </div>
     </div>
-  </div>
 {% endblock %}

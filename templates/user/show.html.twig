@@ -1,29 +1,51 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
 
 {% block title %}Utilisateur{% endblock %}
 
-{% block body %}
-<h1>Utilisateur</h1>
+{% block user_content %}
+<div class="admin-page-container">
+    <h1 class="page-title">Détails Utilisateur</h1>
 
-{# <p>ID : {{ user.userId }}</p> #}
-<p>Email : {{ user.userEmail|default('') }}</p>
-{# <p>Mot de passe (hash) : {{ user.userPwd }}</p> #}
-{# <p>Token reset : {{ user.userTokenResetpwd|default('') }}</p> #}
-<p>Rôle : {{ user.userRole }}</p>
-<p>Première connexion : {{ user.userFirstconnexion ? 'oui' : 'non' }}</p>
-<p>Prénom : {{ user.userFirstname|default('') }}</p>
-<p>Nom : {{ user.userLastname|default('') }}</p>
-<p>Niveau : {{ user.userLevel|default('') }}</p>
-{# <p>Dernière connexion : {{ user.userLastconnexion ? user.userLastconnexion|date('Y-m-d H:i:s') : '' }}</p> #}
+    <div class="user-details-card">
+        <div class="detail-row">
+            <span class="detail-label">Email :</span>
+            <span class="detail-value">{{ user.userEmail }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Prénom :</span>
+            <span class="detail-value">{{ user.userFirstname }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Nom :</span>
+            <span class="detail-value">{{ user.userLastname }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Niveau :</span>
+            <span class="detail-value">{{ user.userLevel }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Rôle :</span>
+            <span class="detail-value">{{ user.userRole }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Première connexion :</span>
+            <span class="detail-value">
+                {% if user.userFirstconnexion %}
+                    <span style="color:green;">Oui</span>
+                {% else %}
+                    <span style="color:gray;">Non</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
 
-<p>
-  <a href="{{ path('app_user_edit', {id: user.userId}) }}">Éditer</a>
-  <a href="{{ path('app_user_index', { id: user.userId }) }}">Retour</a>
-  <a href="{{ path('app_user_delete', { id: user.userId }) }}">Supprimer</a>
-</p>
-
-{# <form method="post" action="{{ path('app_user_delete', {id: user.userId}) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.userId) }}">
-  <button>Supprimer</button>
-</form> #}
+    <div class="page-actions">
+        <a class="btn btn-view" href="{{ path('app_user_index') }}">Retour</a>
+        
+        {# {% if is_granted('ROLE_ADMIN') %} #}
+            <a class="btn btn-edit" href="{{ path('app_user_edit', {id: user.id}) }}">Modifier</a>
+            <a class="btn btn-delete" href="{{ path('app_user_delete', { id: user.id }) }}">Supprimer</a>
+        {# {% endif %} #}
+    </div>
+</div>
 {% endblock %}

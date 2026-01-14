@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * 
  * @package App\Form
  */
-final class UsersCsvImportType extends AbstractType
+final class CsvImportType extends AbstractType
 {
     /**
      * Taille maximale autorisée pour le fichier en mégaoctets

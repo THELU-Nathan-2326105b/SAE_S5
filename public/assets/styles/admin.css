@@ -1,5 +1,12 @@
 /*==================== PAGE ADMIN ==================== */
-.admin-buttons{
+:root {
+    --primary: #008b57;
+    --primary-dark: #006b47;
+    --danger: #B0413E;
+    --bg-light: #f9fbf9;
+    --text-main: #222;
+}
+.admin-buttons {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -12,7 +19,7 @@
 
 .etudiant-box,
 .forum-box,
-.entreprise-box{
+.entreprise-box {
     background: #008b57;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -29,23 +36,22 @@
 
 .etudiant-box img,
 .forum-box img,
-.entreprise-box img{
+.entreprise-box img {
     width: 100px;
     height: 100px;
     object-fit: contain;
     margin-bottom: 1rem;
 }
 
-/* Texte */
 .etudiant-box p,
 .forum-box p,
-.entreprise-box p{
+.entreprise-box p {
     font-size: 1.2rem;
     font-weight: 600;
     color: white;
 }
 
-/* Effet hover */
+/* Hover */
 .etudiant-box:hover,
 .forum-box:hover,
 .entreprise-box:hover {
@@ -53,20 +59,23 @@
     box-shadow: 0 0 20px #00a34a;
 }
 
-a{
+.adminpage a {
     text-decoration: none;
 }
 
-.title-admin{
+.title-admin {
     color: #008b57;
     text-align: center;
     margin-top: 5%;
     font-size: 2.5rem;
 }
 
-/*========== Page gestion des entreprises ==========*/
 
-.title-entreprises{
+/*========== Page Gestion des entreprises ==========*/
+
+
+
+.title-entreprises {
     color: #008b57;
     text-align: center;
     font-size: 2.5rem;
@@ -77,7 +86,7 @@ a{
     padding: 2rem;
 }
 
-/* ======== Tableau des entreprises ======== */
+/* ======== Tableau ======== */
 
 .companies-table {
     width: 90%;
@@ -122,7 +131,7 @@ a{
     gap: 0.6rem;
 }
 
-.btn{
+.btn {
     border-radius: 5px;
     color: white;
     border: none;
@@ -132,19 +141,19 @@ a{
     cursor: pointer;
 }
 
-.btn-edit{
+.btn-edit {
     background-color: #008b57;
 }
 
-.btn-edit:hover{
+.btn-edit:hover {
     background-color: #006b47;
 }
 
-.btn-delete{
+.btn-delete {
     background-color: #B0413E;
 }
 
-.btn-delete:hover{
+.btn-delete:hover {
     background-color: #8e3532;
 }
 
@@ -230,7 +239,7 @@ a{
 /* ===================== MODAL POPUP ===================== */
 
 .modal-overlay {
-    display: none; /* masqué par défaut */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -298,24 +307,6 @@ a{
     transition: background 0.3s ease;
 }
 
-.btn-edit {
-    background: #008b57;
-    color: #fff;
-}
-
-.btn-edit:hover {
-    background: #007149;
-}
-
-.btn-delete {
-    background: #c0392b;
-    color: #fff;
-}
-
-.btn-delete:hover {
-    background: #9f3836;
-}
-
 .modal-close {
     background: #B0413E;
     color: #fff;
@@ -325,21 +316,19 @@ a{
     background: #9f3836;
 }
 
-/* Animation d’apparition */
+/* Animation */
 @keyframes fadeIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 
+.title-forum {
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
 /* ======== Responsive ======== */
-
+}
 @media (max-width: 1024px) {
     .admin-buttons {
         width: 90%;
@@ -538,4 +527,344 @@ a{
 
 .reset-button:hover {
     background-color: #e60000;
+}
+
+
+/* ===================== RESPONSIVE ===================== */
+
+/* --- Tablettes --- */
+@media (max-width: 1100px) {
+    .admin-buttons {
+        width: 90%;
+        gap: 2.5rem;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+/* --- Tablettes / smartphones horizontaux --- */
+@media (max-width: 900px) {
+    .admin-buttons {
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 220px;
+        height: 220px;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 2.2rem;
+    }
+}
+
+/* --- Smartphones --- */
+@media (max-width: 600px) {
+    .admin-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 180px;
+        height: 180px;
+    }
+
+    .etudiant-box p,
+    .forum-box p,
+    .entreprise-box p {
+        font-size: 1rem;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 1.8rem;
+    }
+
+    /* Tableau mobile */
+    .companies-table {
+        font-size: 0.85rem;
+    }
+
+    .companies-table th,
+    .companies-table td {
+        padding: 0.7rem 1rem;
+    }
+
+    .company-actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* --- Très petits mobiles --- */
+@media (max-width: 400px) {
+    .etudiant-box,
+    .forum-box,
+    .entreprise-box {
+        width: 160px;
+        height: 160px;
+    }
+
+    .etudiant-box img,
+    .forum-box img,
+    .entreprise-box img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .title-admin,
+    .title-forum,
+    .title-entreprises {
+        font-size: 1.6rem;
+    }
+}
+/*==================== GESTION UTILISATEURS ADMIN ==================== */
+
+.admin-page-container {
+    text-align: center;
+    padding: 2rem;
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: #008b57;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Oswald', sans-serif;
+}
+
+.admin-table {
+    width: 100%;
+    margin: 2rem auto;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: middle;
+}
+
+.admin-table th {
+    background-color: #008b57;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.admin-table tr:hover {
+    background-color: #f9fbf9;
+}
+
+
+.table-img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+.table-img.circle {
+    border-radius: 50%; 
+}
+
+
+.actions-cell {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-view {
+    background-color: #64748b;
+}
+.btn-view:hover {
+    background-color: #475569;
+}
+
+/* Lien de suppression discret (dans les formulaires) */
+.btn-link-danger {
+    background: transparent;
+    color: #B0413E;
+    border: 1px solid rgba(176, 65, 62, 0.3);
+    padding: 6px 10px;
+}
+.btn-link-danger:hover {
+    background: #fff5f5;
+}
+
+/* --- Messages Flash (Alertes) --- */
+.flash-messages {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.flash {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 500;
+}
+.flash-success { background-color: #008b57; }
+.flash-error, .flash-danger { background-color: #B0413E; }
+.flash-info { background-color: #64748b; }
+
+/* --- Responsive pour le nouveau tableau .admin-table --- */
+@media (max-width: 900px) {
+    .admin-table thead { display: none; }
+    .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+        display: block;
+        width: 100%;
+    }
+    .admin-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid #eee;
+    }
+    .admin-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: #008b57;
+    }
+    .actions-cell {
+        justify-content: flex-end;
+    }
+}
+/* Pour les textes spécifiques dans les tableaux */
+.text-bold {
+    font-weight: 600;
+    color: #444;
+}
+
+.text-muted {
+    color: #999;
+    font-style: italic;
+}
+
+/* Pour aligner le formulaire de suppression à côté du bouton modifier */
+.form-inline-delete {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Conteneur des boutons en bas de page */
+.page-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+
+
+/* Centrage simple */
+.center-text {
+    text-align: center;
+}
+
+
+/* Ajoutez ceci avec les autres boutons à la fin pour sécuriser le style */
+.btn-edit {
+    background-color: var(--primary);
+    color: white;
+}
+.btn-edit:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-delete {
+    background-color: var(--danger);
+    color: white;
+}
+.btn-delete:hover {
+    background-color: #8e3532;
+}
+
+/* --- Zone de tableau défilante (Scrollable) --- */
+.table-scroll-container {
+    max-height: 500px; /* Hauteur max avant de scroller (environ 10 lignes) */
+    overflow-y: auto;  /* Active le scroll vertical */
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+    margin-bottom: 2rem;
+    display: none; /* Caché par défaut pour l'effet "liste déroulante" */
+}
+
+/* Garder l'en-tête fixe en haut quand on scrolle */
+.table-scroll-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Le bouton pour déplier la liste */
+.btn-toggle-list {
+    background-color: #f3f5f8;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.btn-toggle-list:hover {
+    background-color: #e6fcf5;
+}
+
+.btn-toggle-list.active .arrow-icon {
+    transform: rotate(180deg);
+}
+.arrow-icon {
+    transition: transform 0.3s ease;
+    display: inline-block; 
+}
+
+
+.js-toggle-btn.active .arrow-icon {
+    transform: rotate(180deg);
 }

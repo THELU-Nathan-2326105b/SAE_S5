@@ -1,0 +1,130 @@
+/* assets/styles/company.css */
+
+/* --- Formulaires (New / Edit) --- */
+.company-form {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #008b57;
+    box-shadow: 0 0 0 3px rgba(0, 139, 87, 0.1);
+}
+
+.form-actions {
+    margin-top: 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.form-errors ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+    color: #B0413E;
+    background: #fff2f2;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+}
+
+/* --- Page Show (Détails) --- */
+.company-details-card {
+    background: #fff;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center; /* Centré pour le logo */
+}
+
+.company-logo-show {
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+}
+
+.company-description-box {
+    text-align: left;
+    background: #f9fbf9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    color: #444;
+    line-height: 1.6;
+    border: 1px solid #eee;
+}
+
+/* --- Page Delete --- */
+.delete-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.warning-text {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #444;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+.page-title-danger {
+    color: var(--danger); 
+}
+
+
+.description-title {
+    margin-top: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+
+.text-center {
+    text-align: center;
+}

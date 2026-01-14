@@ -21,7 +21,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
 
-    # 1) Mappers taggés (clé "users"/"company")
+    # 1 Mappers concrets 
     App\Mapper\Users\Mapper:
         tags:
             - { name: 'app.csv_mapper', key: 'users' }
@@ -30,27 +30,38 @@ services:
         tags:
             - { name: 'app.csv_mapper', key: 'company' }
 
-    # 2) Importer CSV reçoit le locator des mappers (ARGUMENT POSITIONNEL)
+    # 2 Importer CSV reçoit le locator des mappers
     App\Import\Csv\Importer:
         arguments:
             - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
 
-    # 3) Importers "nommés" pour la Factory (clé = csv.users / csv.company)
+    # 3 Importers "nommés" pour la factory
     app.importer.csv.users:
         class: App\Import\Csv\Importer
         arguments:
-            - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
+            - '@App\Mapper\Contract\MapperFactory'   # <-- injecte la factory de mappers
         tags:
             - { name: 'app.importer', key: 'csv.users' }
 
     app.importer.csv.company:
         class: App\Import\Csv\Importer
         arguments:
-            - !tagged_locator { tag: 'app.csv_mapper', index_by: 'key' }
+            - '@App\Mapper\Contract\MapperFactory'   # <-- injecte la factory de mappers
         tags:
             - { name: 'app.importer', key: 'csv.company' }
 
-    # 4) Factory concrète : reçoit le locator des importers (ARGUMENT POSITIONNEL)
-    App\Import\Contract\ImporterFactory:
+    # 4 ImporterFactory 
+    App\Import\Csv\ImporterFactory:
         arguments:
             - !tagged_locator { tag: 'app.importer', index_by: 'key' }
+
+    # 5 Service concret pour la MapperFactory 
+    App\Mapper\EntityMapper\MapperFactory:
+        arguments:
+            $locator: !service_locator
+                users: '@App\Mapper\Users\Mapper'
+                company: '@App\Mapper\Company\Mapper'
+
+    # Alias pour l'interface de la MapperFactory 
+    App\Mapper\Contract\MapperFactory:
+        alias: App\Mapper\EntityMapper\MapperFactory

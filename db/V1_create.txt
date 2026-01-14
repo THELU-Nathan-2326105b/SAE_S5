@@ -52,7 +52,7 @@ CREATE TABLE forum (
 CREATE TABLE company (
    company_name VARCHAR(100) PRIMARY KEY,
    company_description VARCHAR(300),
-   company_logo VARCHAR(100)
+   company_logo TEXT
 );
 
 -- Table de présence des entreprises aux forums
