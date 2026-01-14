@@ -7,7 +7,7 @@ Cette documentation décrit la structure des tables et des fonctions associées 
 ----------
 ## **Diagramme entité association**
 
-![Diag_entité_assoc]("./Diag_entite_assoc.png")
+![Diag_entité_assoc](./Diag_entite_assoc.png)
 
 ----------
 
