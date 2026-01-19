@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Import\Contract\ImporterFactory;
 use App\Service\CsvImportService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -27,8 +28,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin/users', name: 'app_user_')]
 class UsersController extends AbstractController
 {
-
-    
     /**
      * Liste tous les utilisateurs.
      *
@@ -43,14 +42,14 @@ class UsersController extends AbstractController
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
         $importForm = $this->createForm(CsvImportType::class, null, [
-            'action' => $this->generateUrl('app_user_import'), 
+            'action' => $this->generateUrl('app_user_import'),
             'method' => 'POST',
         ]);
 
         return $this->render('user/index.html.twig', [
             'users'      => $users,
             'user'       => $sessionUser,
-            'importForm' => $importForm->createView(),  
+            'importForm' => $importForm->createView(),
         ]);
 
     }
@@ -102,7 +101,7 @@ class UsersController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        // if($request->isMethod('POST')){ 
+        // if($request->isMethod('POST')){
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string|null $plainPassword */
             // dd($user);
@@ -145,46 +144,39 @@ class UsersController extends AbstractController
      * Route: GET|POST /user/{id}/edit (name: app_user_edit)
      */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Users $user, EntityManagerInterface $em): Response{
-        $sessionUser = $request->getSession()->get('user');
-        if ($sessionUser === null) {
-            return $this->redirect('/login');
+    public function edit(Request $request, Users $user, EntityManagerInterface $em): Response
+    {
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            return $this->redirectToRoute('app_login');
         }
-        else{
-            if ($user->getUserRole() === 'admin' && $user->getId() !== $sessionUser['id']) {
-                $this->addFlash('error', 'Vous ne pouvez pas modifier un autre administrateur.');
-                return $this->redirectToRoute('app_user_index');
-            }
-            else{
-                $form = $this->createForm(UsersType::class, $user, [
-                    'require_password' => false, 
-                ]);
-                $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
-                    $plainPassword = $form->get('plainPassword')->getData();
-                    if ($plainPassword) {
-                        $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
-                    }
 
-                    $em->flush();
-
-                    $this->addFlash('success', 'Utilisateur mis à jour.');
-
-                    // Redirige vers la fiche de l’utilisateur édité
-                    return $this->redirectToRoute(
-                            'app_user_show',
-                            ['id' => $user->getId()],
-                            Response::HTTP_SEE_OTHER
-                        );
-                }
-                // Affichage du formulaire
-                return $this->render('user/edit.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
+        if ($user->getUserRole() === 'admin' && $user->getId() !== $currentUser->getId()) {
+            $this->addFlash('error', 'Vous ne pouvez pas modifier un autre administrateur.');
+            return $this->redirectToRoute('app_user_index');
         }
+
+        $form = $this->createForm(UsersType::class, $user, [
+            'require_password' => false,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('plainPassword')->getData();
+            if ($plainPassword) {
+                $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
+            }
+            $em->flush();
+            $this->addFlash('success', 'Utilisateur mis à jour.');
+            return $this->redirectToRoute('app_user_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
+        }
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
     }
+
 
 
     /**
@@ -244,9 +236,9 @@ class UsersController extends AbstractController
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(
-        Request $request, EntityManagerInterface $em, 
+        Request $request, EntityManagerInterface $em,
         ImporterFactory $importerFactory, CsvImportService $csvImportService): Response {
-        
+
         $sessionUser = $request->getSession()->get('user');
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
@@ -277,16 +269,16 @@ class UsersController extends AbstractController
     public function deleteAllNonAdmins(Request $request, EntityManagerInterface $em, UsersRepository $usersRepository): Response
     {
         $sessionUser = $request->getSession()->get('user');
-        
+
         // 2. Vérification CSRF pour éviter les suppressions accidentelles via des liens malveillants
         if ($this->isCsrfTokenValid('delete_all_non_admins', $request->request->get('_token'))) {
-            
+
             // Appel de la méthode privée pour effectuer la suppression
             $deletedCount = $this->removeNonAdminUsers($em, $usersRepository);
 
             if ($deletedCount > 0) {
                 $this->addFlash('success', "$deletedCount étudiants ont été supprimés.");
-            } 
+            }
             else {
                 $this->addFlash('info', "Aucun étudiant à supprimer.");
             }
