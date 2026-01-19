@@ -77,7 +77,7 @@ class Importer implements ImporterContract
     {
         $f =new SplFileObject($path,$mode);
         //$f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
-        $f->setCsvControl(',', '"', '\\');
+        $f->setCsvControl(';', '"', '\\');
         // $f->setFlags(SplFileObject::READ_CSV| SplFileObject::SKIP_EMPTY
         //             | SplFileObject::DROP_NEW_LINE| SplFileObject::READ_AHEAD);
         $f->rewind();

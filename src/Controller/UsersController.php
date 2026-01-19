@@ -42,7 +42,6 @@ class UsersController extends AbstractController
     {
         $users = $UsersRepository->findAll();
         $sessionUser = $request->getSession()->get('user');
-
         $importForm = $this->createForm(CsvImportType::class, null, [
             'action' => $this->generateUrl('app_user_import'), 
             'method' => 'POST',
