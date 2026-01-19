@@ -15,14 +15,14 @@
         INTERFACE ADMIN
     </h1>
     <div class="admin-buttons">
-        <a href="/admin/users">
+        <a href="{{ path('app_user_index') }}">
             <section class="etudiant-box">
                 <img src="/assets/images/etudiant-couleur.png" alt="etudiants-icone">
                 <p>Gestion des étudiants</p>
             </section>
         </a>
 
-        <a href="/admin/company">
+        <a href="{{ path('app_company_index') }}">
             <section class="entreprise-box">
                 <img src="/assets/images/entreprise-couleur.png" alt="entreprise-icone">
                 <p>Gestion des entreprises</p>
@@ -37,7 +37,7 @@
         </a>
 
     </div>
-    
+
     <div class="admin-danger-zone">
     <form id="reset-form" method="post" action="{{ path('admin_reset_data') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('reset_data') }}">
@@ -66,4 +66,3 @@
         }
     }
 </script>
-
