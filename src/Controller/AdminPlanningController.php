@@ -133,11 +133,7 @@ final class AdminPlanningController extends AbstractController
 
     #[Route('/admin/creerplanning/export', name: 'admin_creerplanning_export', methods: ['GET'])]
     /**
-     * Exporte le planning en fichier CSV
-     *
-     * @param Request $request Requête HTTP contenant l'ID du forum et le nom de l'entreprise optionnel
-     * @param Connection $conn Connexion à la base de données
-     * @return Response Fichier CSV à télécharger
+     * Exporte le planning en fichier CSV avec la durée des rendez-vous
      */
     public function exportPlanning(Request $request, Connection $conn): Response
     {
@@ -149,17 +145,19 @@ final class AdminPlanningController extends AbstractController
             return $this->redirectToRoute('admin_creerplanning');
         }
 
-        $filename = 'planning_forum_' . $forumId . ($company ? '_'.preg_replace('/[^a-zA-Z0-9_-]/', '_', $company) : '_toutes') . '.csv';
+        $filename = 'planning_forum_' . $forumId
+            . ($company ? '_'.preg_replace('/[^a-zA-Z0-9_-]/', '_', $company) : '_toutes')
+            . '.csv';
 
         $response = new StreamedResponse(function() use ($conn, $forumId, $company) {
             $handle = fopen('php://output', 'w');
-            // En-têtes
-            fputcsv($handle, ['Étudiant', 'Entreprise', 'Créneau']);
+            // En-têtes avec durée
+            fputcsv($handle, ['Étudiant', 'Entreprise', 'Créneau', 'Durée (min)']);
 
-            $sql = 'SELECT u.user_firstname, u.user_lastname, a.company_name, a.appointment_time
-                    FROM appointment a
-                    LEFT JOIN users u ON u.user_id = a.user_id
-                    WHERE a.forum_id = :forumId';
+            $sql = 'SELECT u.user_firstname, u.user_lastname, a.company_name, a.appointment_time, a.duration
+                FROM appointment a
+                LEFT JOIN users u ON u.user_id = a.user_id
+                WHERE a.forum_id = :forumId';
             $params = ['forumId' => $forumId];
             if ($company !== '') {
                 $sql .= ' AND a.company_name = :company';
@@ -172,7 +170,8 @@ final class AdminPlanningController extends AbstractController
             foreach ($rows as $row) {
                 $fullname = trim(($row['user_firstname'] ?? '') . ' ' . ($row['user_lastname'] ?? ''));
                 $slot = $row['appointment_time'] ?? 'Non affecté';
-                fputcsv($handle, [$fullname, $row['company_name'], $slot]);
+                $duration = $row['duration'] ?? '-';
+                fputcsv($handle, [$fullname, $row['company_name'], $slot, $duration]);
             }
 
             fclose($handle);
