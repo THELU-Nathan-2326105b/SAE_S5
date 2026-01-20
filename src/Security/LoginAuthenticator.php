@@ -127,9 +127,17 @@ class LoginAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Mise à jour de la date de dernière connexion
         $user = $token->getUser();
+        
         if ($user instanceof \App\Entity\Users) {
+            if ($user->isUserFirstconnexion()) {
+                $request->getSession()->getFlashBag()->add(
+                    'warning', 
+                    'Première connexion : veuillez réinitialiser votre mot de passe.'
+                );
+                return new RedirectResponse($this->router->generate('app_forgot_password_request'));
+            }
+            
             $user->setUserLastconnexion(new \DateTimeImmutable('today'));
             $this->em->flush();
         }
