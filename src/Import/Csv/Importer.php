@@ -22,9 +22,9 @@ use RuntimeException;
  */
 class Importer implements ImporterContract
 {
-    // private string $delimiter = ',';
-    // private string $enclosure = '"';
-    // private string $escape    = '\\';
+    private string $delimiter = ';';
+    private string $enclosure = '"';
+    private string $escape    = '\\';
     private MapperFactory $mapperFactory;
 
     public function __construct(MapperFactory $mapperFactory ){
@@ -76,8 +76,7 @@ class Importer implements ImporterContract
     private function openFile(string $path,string $mode="r"): SplFileObject
     {
         $f =new SplFileObject($path,$mode);
-        //$f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
-        $f->setCsvControl(';', '"', '\\');
+        $f->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         // $f->setFlags(SplFileObject::READ_CSV| SplFileObject::SKIP_EMPTY
         //             | SplFileObject::DROP_NEW_LINE| SplFileObject::READ_AHEAD);
         $f->rewind();
@@ -86,9 +85,7 @@ class Importer implements ImporterContract
 
     private function readHeaders(SplFileObject $f): array
     {
-        // $raw =$f->fgetcsv($this->delimiter,$this->enclosure,$this->escape) ?: [];
-
-        $raw = $f->fgetcsv(';','"','\\')?:[];
+        $raw = $f->fgetcsv($this->delimiter, $this->enclosure, $this->escape)?:[];
         //dd($raw);
         if($raw&&isset($raw[0])){
             $raw[0]=preg_replace('/^\xEF\xBB\xBF/', '', (string) $raw[0]) ?? $raw[0];
