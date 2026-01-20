@@ -14,6 +14,8 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use App\Form\CsvImportType;
 use App\Import\Contract\ImporterFactory;
 use App\Service\CsvImportService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Contrôleur de gestion des entreprises (Company).
@@ -63,20 +65,28 @@ class CompanyController extends AbstractController
      * Route: GET|POST /company/new (name: app_company_new)
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response{
-        // $this->accessControl();
+    public function new(Request $request, EntityManagerInterface $em, CompanyRepository $repo): Response{
         $company = new Company();
 
         $form = $this->createForm(CompanyType::class, $company);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($company);
-            $em->flush();
+            // Vérifier que l'entreprise n'existe pas déjà
+            if ($repo->find($company->getCompanyName())) {
+                $this->addFlash('error', 'Cette entreprise existe déjà.');
+                return $this->redirectToRoute('app_company_index');
+            }
 
-            $this->addFlash('success', 'Entreprise créée avec succès.');
-
-            return $this->redirectToRoute('app_company_index');
+            try {
+                $em->persist($company);
+                $em->flush();
+                $this->addFlash('success', 'Entreprise créée avec succès.');
+                return $this->redirectToRoute('app_company_index');
+            } catch (UniqueConstraintViolationException $e) {
+                $this->addFlash('error', 'Cette entreprise existe déjà.');
+                return $this->redirectToRoute('app_company_index');
+            }
         }
 
         return $this->render('company/new.html.twig', [
@@ -195,4 +205,5 @@ class CompanyController extends AbstractController
 
         return $this->redirectToRoute('app_company_index');
     }
+
 }

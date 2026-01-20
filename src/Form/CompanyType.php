@@ -30,14 +30,20 @@ class CompanyType extends AbstractType
         $builder
             ->add('company_name', TextType::class, [
                 'label' => 'Nom de l’entreprise',
+                'attr' => ['maxlength' => 100],
+                'trim' => true,
             ])
             ->add('company_description', TextType::class, [
                 'label' => 'Description',
-                'required' => false,
+                'required' => true,
+                'attr' => ['maxlength' => 300, 'pattern' => '.*\S.*'],
+                'trim' => true,
             ])
             ->add('company_logo', TextType::class, [
                 'label' => 'Logo (chemin ou URL)',
-                'required' => false,
+                'required' => true,
+                'attr' => ['maxlength' => 100, 'pattern' => '.*\S.*'],
+                'trim' => true,
             ]);
     }
 

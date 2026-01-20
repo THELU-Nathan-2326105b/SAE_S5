@@ -36,13 +36,16 @@ class UsersType extends AbstractType
 
         $builder
             ->add('user_email', EmailType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Email',
+                'attr' => ['maxlength' => 320, 'pattern' => '.*\S.*'],
+                'trim' => true,
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'required' => $requirePassword,
                 'label' => 'Mot de passe',
+                'attr' => ['maxlength' => 64],
             ])
             ->add('user_role', ChoiceType::class, [
                 'label' => 'Rôle',
@@ -56,21 +59,22 @@ class UsersType extends AbstractType
             //     'label' => 'Première connexion',
             //     'required' => false,
             // ])
+            ->add('user_level', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Niveau',
+                'choices' => ['B1'=>'B1','B2'=>'B2','B3'=>'B3','M1'=>'M1','M2'=>'M2'],
+            ])
             ->add('user_firstname', TextType::class, [
                 'required' => false,
                 'label' => 'Prénom',
+                'attr' => ['maxlength' => 50, 'pattern' => '.*\S.*'],
+                'trim' => true,
             ])
             ->add('user_lastname', TextType::class, [
                 'required' => false,
                 'label' => 'Nom',
-            ])
-            ->add('user_level', ChoiceType::class, [
-                'required' => false,
-                'label' => 'Niveau',
-                'choices' => [
-                    'B1' => 'B1', 'B2' => 'B2', 'B3' => 'B3',
-                    'M1' => 'M1', 'M2' => 'M2',
-                ],
+                'attr' => ['maxlength' => 50, 'pattern' => '.*\S.*'],
+                'trim' => true,
             ])
             // ->add('user_lastconnexion', DateType::class, [
             //     'label' => 'Dernière connexion',

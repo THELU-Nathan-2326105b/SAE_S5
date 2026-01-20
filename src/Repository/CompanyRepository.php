@@ -83,4 +83,15 @@ class CompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    // Dans votre CompanyRepository
+    public function existsByName(string $name): bool
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.company_name)')
+            ->where('c.company_name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
 }

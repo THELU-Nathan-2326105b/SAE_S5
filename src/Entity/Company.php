@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Company Entity
@@ -21,20 +22,23 @@ class Company
      * @var string Nom unique de l'entreprise (clé primaire, max 100 caractères)
      */
     #[ORM\Id]
-    #[ORM\Column(name: 'company_name', type: 'string', length: 100)]
-    private string $company_name;
+    #[ORM\Column(name: 'company_name', type: 'string', length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Le nom est requis.')]
+    #[Assert\Length(min: 2, max: 100, minMessage: '2 caractères min.', maxMessage: '100 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'Le nom doit contenir au moins un caractère non blanc.')]
+    private string $company_name = '';
 
-    /**
-     * @var ?string Description de l'entreprise (max 300 caractères)
-     */
-    #[ORM\Column(name: 'company_description', type: 'string', length: 300, nullable: true)]
-    private ?string $company_description = null;
+    #[ORM\Column(name: 'company_description', type: 'string', length: 300)]
+    #[Assert\NotBlank(message: 'La description est requise.')]
+    #[Assert\Length(min: 2, max: 300, minMessage: '2 caractères min.', maxMessage: '300 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'La description ne peut pas être uniquement des espaces.')]
+    private string $company_description = '';
 
-    /**
-     * @var ?string URL du logo de l'entreprise (max 100 caractères)
-     */
-    #[ORM\Column(name: 'company_logo', type: 'string', length: 100, nullable: true)]
-    private ?string $company_logo = null;
+    #[ORM\Column(name: 'company_logo', type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'Le logo est requis.')]
+    #[Assert\Length(min: 2, max: 100, minMessage: '2 caractères min.', maxMessage: '100 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'Le logo ne peut pas être uniquement des espaces.')]
+    private string $company_logo = '';
 
     // --------------------
     // Getters & Setters
@@ -56,18 +60,22 @@ class Company
      * @param string $company_name Nom unique de l'entreprise
      * @return self Instance courante pour le chaînage
      */
-    public function setCompanyName(string $company_name): self
+    public function setCompanyName(?string $company_name): self
     {
-        $this->company_name = $company_name;
+        if ($company_name === null) {
+            $this->company_name = '';
+        } else {
+            $this->company_name = trim($company_name);
+        }
         return $this;
     }
 
     /**
      * Récupère la description de l'entreprise
      * 
-     * @return ?string Description de l'entreprise
+     * @return string Description de l'entreprise
      */
-    public function getCompanyDescription(): ?string
+    public function getCompanyDescription(): string
     {
         return $this->company_description;
     }
@@ -80,6 +88,14 @@ class Company
      */
     public function setCompanyDescription(?string $company_description): self
     {
+        if ($company_description === null) {
+            $this->company_description = '';
+        } else {
+            $company_description = trim($company_description);
+            if ($company_description === '') {
+                $company_description = '';
+            }
+        }
         $this->company_description = $company_description;
         return $this;
     }
@@ -87,9 +103,9 @@ class Company
     /**
      * Récupère l'URL du logo de l'entreprise
      * 
-     * @return ?string URL du logo
+     * @return string URL du logo
      */
-    public function getCompanyLogo(): ?string
+    public function getCompanyLogo(): string
     {
         return $this->company_logo;
     }
@@ -102,6 +118,14 @@ class Company
      */
     public function setCompanyLogo(?string $company_logo): self
     {
+        if ($company_logo === null) {
+            $this->company_logo = '';
+        } else {
+            $company_logo = trim($company_logo);
+            if ($company_logo === '') {
+                $company_logo = '';
+            }
+        }
         $this->company_logo = $company_logo;
         return $this;
     }
