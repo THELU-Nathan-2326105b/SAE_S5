@@ -60,123 +60,142 @@ INSERT INTO is_present (forum_id, company_name, start_time, end_time, search_typ
 
 -- Rendez-vous pour tous les étudiants (timestamps à NULL)
 INSERT INTO appointment (user_id, forum_id, company_name, appointment_request, appointment_time) VALUES
-(1, 1, 'RacletteCorp', TRUE, NULL),
-(1, 1, 'GreenEnergy', TRUE, NULL),
+-- Alice (B1, alternance)
+(1, 1, 'TechNova', TRUE, NULL),
 (1, 1, 'Foodix', TRUE, NULL),
+(1, 1, 'RacletteCorp', TRUE, NULL),
 
-(2, 1, 'TechNova', TRUE, NULL),
+-- Bob (B2, internship)
 (2, 1, 'GreenEnergy', TRUE, NULL),
 (2, 1, 'EduConnect', TRUE, NULL),
 
-(3, 1, 'RacletteCorp', TRUE, NULL),
-(3, 1, 'DesignPlus', TRUE, NULL),
-(3, 1, 'SecureIT', TRUE, NULL),
+-- Charlie (M1, alternance)
+(3, 1, 'TechNova', TRUE, NULL),
+(3, 1, 'BuildPro', TRUE, NULL),
+(3, 1, 'AeroSpaceX', TRUE, NULL),
 
-(4, 1, 'AeroSpaceX', TRUE, NULL),
-(4, 1, 'TechNova', TRUE, NULL),
+-- Diane (M1, internship)
 (4, 1, 'GreenEnergy', TRUE, NULL),
+(4, 1, 'MediHealth', TRUE, NULL),
+(4, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Eric (M2, alternance)
+(5, 1, 'TechNova', TRUE, NULL),
 (5, 1, 'SecureIT', TRUE, NULL),
-(5, 1, 'MediHealth', TRUE, NULL),
 (5, 1, 'AeroSpaceX', TRUE, NULL),
 
-(6, 1, 'EduConnect', TRUE, NULL),
-(6, 1, 'RacletteCorp', TRUE, NULL),
-(6, 1, 'DesignPlus', TRUE, NULL),
+-- Fiona (M2, internship)
+(6, 1, 'MediHealth', TRUE, NULL),
+(6, 1, 'AeroSpaceX', TRUE, NULL),
 
-(7, 1, 'SecureIT', TRUE, NULL),
-(7, 1, 'EduConnect', TRUE, NULL),
+-- George (B2, alternance)
 (7, 1, 'TechNova', TRUE, NULL),
+(7, 1, 'SecureIT', TRUE, NULL),
+(7, 1, 'RacletteCorp', TRUE, NULL),
 
+-- Hannah (B3, internship)
 (8, 1, 'GreenEnergy', TRUE, NULL),
-(8, 1, 'TechNova', TRUE, NULL),
 (8, 1, 'DesignPlus', TRUE, NULL),
 
+-- Ivan (M1, alternance)
 (9, 1, 'BuildPro', TRUE, NULL),
-(9, 1, 'MediHealth', TRUE, NULL),
 (9, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Julia (M2, internship)
+(10, 1, 'MediHealth', TRUE, NULL),
 (10, 1, 'AeroSpaceX', TRUE, NULL),
-(10, 1, 'SecureIT', TRUE, NULL),
-(10, 1, 'TechNova', TRUE, NULL),
 
+-- Léo (B1, alternance)
 (11, 1, 'TechNova', TRUE, NULL),
-(11, 1, 'DesignPlus', TRUE, NULL),
 (11, 1, 'Foodix', TRUE, NULL),
+(11, 1, 'RacletteCorp', TRUE, NULL),
 
-(12, 1, 'TechNova', TRUE, NULL),
-(12, 1, 'DesignPlus', TRUE, NULL),
+-- Manon (B1, internship)
 (12, 1, 'EduConnect', TRUE, NULL),
+(12, 1, 'DesignPlus', TRUE, NULL),
+(12, 1, 'RacletteCorp', TRUE, NULL),
 
-(13, 1, 'RacletteCorp', TRUE, NULL),
-(13, 1, 'Foodix', TRUE, NULL),
-(13, 1, 'SecureIT', TRUE, NULL),
+-- Nathan (M1, alternance)
+(13, 1, 'BuildPro', TRUE, NULL),
+(13, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Emma (B2, internship)
+(14, 1, 'GreenEnergy', TRUE, NULL),
 (14, 1, 'EduConnect', TRUE, NULL),
 (14, 1, 'TechNova', TRUE, NULL),
-(14, 1, 'GreenEnergy', TRUE, NULL),
 
-(15, 1, 'RacletteCorp', TRUE, NULL),
-(15, 1, 'GreenEnergy', TRUE, NULL),
+-- Lucas (B3, alternance)
 (15, 1, 'BuildPro', TRUE, NULL),
+(15, 1, 'RacletteCorp', TRUE, NULL),
+(15, 1, 'SecureIT', TRUE, NULL),
 
-(16, 1, 'DesignPlus', TRUE, NULL),
-(16, 1, 'RacletteCorp', TRUE, NULL),
-(16, 1, 'GreenEnergy', TRUE, NULL),
+-- Chloé (M1, internship)
+(16, 1, 'MediHealth', TRUE, NULL),
+(16, 1, 'AeroSpaceX', TRUE, NULL),
 
-(17, 1, 'AeroSpaceX', TRUE, NULL),
-(17, 1, 'GreenEnergy', TRUE, NULL),
+-- Thomas (M1, alternance)
+(17, 1, 'BuildPro', TRUE, NULL),
 (17, 1, 'TechNova', TRUE, NULL),
+(17, 1, 'AeroSpaceX', TRUE, NULL),
 
-(18, 1, 'GreenEnergy', TRUE, NULL),
-(18, 1, 'BuildPro', TRUE, NULL),
+-- Sarah (M1, internship)
 (18, 1, 'MediHealth', TRUE, NULL),
+(18, 1, 'GreenEnergy', TRUE, NULL),
+(18, 1, 'AeroSpaceX', TRUE, NULL),
 
-(19, 1, 'MediHealth', TRUE, NULL),
-(19, 1, 'AeroSpaceX', TRUE, NULL),
+-- Maxime (M2, alternance)
+(19, 1, 'TechNova', TRUE, NULL),
 (19, 1, 'SecureIT', TRUE, NULL),
+(19, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Camille (M2, internship)
+(20, 1, 'MediHealth', TRUE, NULL),
 (20, 1, 'AeroSpaceX', TRUE, NULL),
-(20, 1, 'SecureIT', TRUE, NULL),
-(20, 1, 'TechNova', TRUE, NULL),
 
+-- Julien (B1, alternance)
 (21, 1, 'TechNova', TRUE, NULL),
-(21, 1, 'RacletteCorp', TRUE, NULL),
 (21, 1, 'Foodix', TRUE, NULL),
+(21, 1, 'RacletteCorp', TRUE, NULL),
 
+-- Léa (B3, internship)
+(22, 1, 'GreenEnergy', TRUE, NULL),
 (22, 1, 'DesignPlus', TRUE, NULL),
 (22, 1, 'RacletteCorp', TRUE, NULL),
-(22, 1, 'EduConnect', TRUE, NULL),
 
-(23, 1, 'RacletteCorp', TRUE, NULL),
-(23, 1, 'EduConnect', TRUE, NULL),
+-- Paul (M2, alternance)
+(23, 1, 'TechNova', TRUE, NULL),
 (23, 1, 'SecureIT', TRUE, NULL),
+(23, 1, 'AeroSpaceX', TRUE, NULL),
 
-(24, 1, 'TechNova', TRUE, NULL),
+-- Clara (B2, internship)
 (24, 1, 'GreenEnergy', TRUE, NULL),
-(24, 1, 'Foodix', TRUE, NULL),
+(24, 1, 'EduConnect', TRUE, NULL),
+(24, 1, 'TechNova', TRUE, NULL),
 
+-- Quentin (B3, alternance)
+(25, 1, 'BuildPro', TRUE, NULL),
+(25, 1, 'SecureIT', TRUE, NULL),
 (25, 1, 'RacletteCorp', TRUE, NULL),
-(25, 1, 'GreenEnergy', TRUE, NULL),
-(25, 1, 'DesignPlus', TRUE, NULL),
 
-(26, 1, 'TechNova', TRUE, NULL),
+-- Inès (M2, internship)
 (26, 1, 'MediHealth', TRUE, NULL),
-(26, 1, 'SecureIT', TRUE, NULL),
+(26, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Adrien (M1, alternance)
 (27, 1, 'BuildPro', TRUE, NULL),
 (27, 1, 'AeroSpaceX', TRUE, NULL),
 (27, 1, 'TechNova', TRUE, NULL),
 
+-- Maéva (M1, internship)
 (28, 1, 'GreenEnergy', TRUE, NULL),
 (28, 1, 'MediHealth', TRUE, NULL),
 (28, 1, 'AeroSpaceX', TRUE, NULL),
 
+-- Arthur (M2, alternance)
+(29, 1, 'TechNova', TRUE, NULL),
 (29, 1, 'SecureIT', TRUE, NULL),
 (29, 1, 'AeroSpaceX', TRUE, NULL),
-(29, 1, 'TechNova', TRUE, NULL),
 
-(30, 1, 'AeroSpaceX', TRUE, NULL),
-(30, 1, 'SecureIT', TRUE, NULL),
-(30, 1, 'MediHealth', TRUE, NULL);
-
+-- Lucie (M2, internship)
+(30, 1, 'MediHealth', TRUE, NULL),
+(30, 1, 'AeroSpaceX', TRUE, NULL)

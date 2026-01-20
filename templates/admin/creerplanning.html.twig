@@ -20,13 +20,11 @@
         {% for message in app.flashes('success') %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
 
@@ -145,6 +143,7 @@
                                 <th>Étudiant</th>
                                 <th>Entreprise</th>
                                 <th>Horaire</th>
+                                <th>Durée</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -152,8 +151,20 @@
                             <tr>
                                 <td>{{ row.firstname ?? '' }} {{ row.lastname ?? '' }}</td>
                                 <td>{{ row.company_name ?? row.companyName }}</td>
-                                <td>{{ row.appointment_time ?? row.appointmentTime }}</td>
-                            </tr>
+                                <td>
+                                    {% if row.appointment_time is defined and row.appointment_time %}
+                                        {{ row.appointment_time|date('H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">Non planifié</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.duration is defined and row.duration %}
+                                        {{ row.duration }} min
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>
