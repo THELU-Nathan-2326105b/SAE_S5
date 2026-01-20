@@ -41,4 +41,20 @@ class UsersRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Vérifie si un email existe déjà
+     * 
+     * @param string $email Email à vérifier
+     * @return bool true si l'email existe, false sinon
+     */
+    public function existsByEmail(string $email): bool
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.user_email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
 }
