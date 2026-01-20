@@ -12,17 +12,17 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * AdminPlanningController
- * 
+ *
  * Contrôleur responsable de la gestion du planning des rendez-vous en admin.
  * Permet de créer, réinitialiser et exporter le planning.
- * 
+ *
  * @package App\Controller
  */
 final class AdminPlanningController extends AbstractController
 {
     /**
      * Affiche la page de création du planning
-     * 
+     *
      * @param Connection $conn Connexion à la base de données
      * @return Response Page de gestion du planning
      */
@@ -33,7 +33,12 @@ final class AdminPlanningController extends AbstractController
         $selectedForumId = (int)($forums[0]['forum_id'] ?? 0);
 
         $undistributed = $this->fetchUndistributed($conn, $selectedForumId);
+
+        usort($undistributed, fn($a,$b) => strcmp($a['company_name'] ?? '', $b['company_name'] ?? ''));
+
         $companies = $this->fetchCompaniesForForum($conn, $selectedForumId);
+
+        $blockedCompanies = [];
 
         return $this->render('admin/creerplanning.html.twig', [
             'forums' => $forums,
@@ -41,13 +46,14 @@ final class AdminPlanningController extends AbstractController
             'undistributed' => $undistributed,
             'undistributed_count' => count($undistributed),
             'companies' => $companies,
+            'blocked_companies' => $blockedCompanies
         ]);
     }
 
     #[Route('/admin/creerplanning/run', name: 'admin_creerplanning_run', methods: ['GET'])]
     /**
      * Exécute l'algorithme de génération du planning
-     * 
+     *
      * @param Request $request Requête HTTP contenant l'ID du forum
      * @param Connection $conn Connexion à la base de données
      * @return Response Page avec le résultat du planning généré
@@ -58,9 +64,14 @@ final class AdminPlanningController extends AbstractController
 
         $result = PlanningAlgo::generatePlanning($conn, $forumId);
 
+        $blockedCompanies = $result['blocked_companies'] ?? [];
+
         $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
 
         $undistributed = $this->fetchUndistributed($conn, $forumId);
+
+        usort($undistributed, fn($a,$b) => strcmp($a['company_name'] ?? '', $b['company_name'] ?? ''));
+
         $companies = $this->fetchCompaniesForForum($conn, $forumId);
 
         return $this->render('admin/creerplanning.html.twig', [
@@ -72,6 +83,7 @@ final class AdminPlanningController extends AbstractController
             'undistributed' => $undistributed,
             'undistributed_count' => count($undistributed),
             'companies' => $companies,
+            'blocked_companies' => $blockedCompanies
         ]);
     }
 
@@ -79,7 +91,7 @@ final class AdminPlanningController extends AbstractController
     /**
      * Réinitialise les rendez-vous d'un forum
      * Remet tous les rendez-vous à null et les marque comme demandes
-     * 
+     *
      * @param Request $request Requête HTTP contenant l'ID du forum
      * @param Connection $conn Connexion à la base de données
      * @return Response Page de gestion avec confirmation
@@ -87,6 +99,8 @@ final class AdminPlanningController extends AbstractController
     public function resetPlanning(Request $request, Connection $conn): Response
     {
         $forumId = $request->query->getInt('forum_id');
+
+        $blockedCompanies = [];
 
         if ($forumId > 0) {
             try {
@@ -102,6 +116,9 @@ final class AdminPlanningController extends AbstractController
         $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
 
         $undistributed = $this->fetchUndistributed($conn, $forumId);
+
+        usort($undistributed, fn($a,$b) => strcmp($a['company_name'] ?? '', $b['company_name'] ?? ''));
+
         $companies = $this->fetchCompaniesForForum($conn, $forumId);
 
         return $this->render('admin/creerplanning.html.twig', [
@@ -110,13 +127,14 @@ final class AdminPlanningController extends AbstractController
             'undistributed' => $undistributed,
             'undistributed_count' => count($undistributed),
             'companies' => $companies,
+            'blocked_companies' => $blockedCompanies,
         ]);
     }
 
     #[Route('/admin/creerplanning/export', name: 'admin_creerplanning_export', methods: ['GET'])]
     /**
      * Exporte le planning en fichier CSV
-     * 
+     *
      * @param Request $request Requête HTTP contenant l'ID du forum et le nom de l'entreprise optionnel
      * @param Connection $conn Connexion à la base de données
      * @return Response Fichier CSV à télécharger
@@ -168,7 +186,7 @@ final class AdminPlanningController extends AbstractController
 
     /**
      * Récupère les rendez-vous sans créneau affecté pour un forum
-     * 
+     *
      * @param Connection $conn Connexion à la base de données
      * @param int $forumId Identifiant du forum
      * @return array Liste des rendez-vous non distribuês
@@ -189,7 +207,7 @@ final class AdminPlanningController extends AbstractController
 
     /**
      * Récupère les noms des entreprises pour un forum
-     * 
+     *
      * @param Connection $conn Connexion à la base de données
      * @param int $forumId Identifiant du forum
      * @return array Liste des noms d'entreprises uniques
