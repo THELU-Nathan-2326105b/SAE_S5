@@ -86,8 +86,8 @@
              <h3 class="import-title">Import CSV Entreprises</h3>
             {{ include('admin/_import_csv.html.twig', {
                 'importForm': importForm,
-                'csvHeader': 'company_name,company_description,company_logo',
-                'csvExample': 'Tech Solutions,Développement...,/uploads/logos/tech.png',
+                'csvHeader': 'company_name;company_description;company_logo',
+                'csvExample': 'Blue Ocean;Description Blue Ocean;/uploads/logos/blue_oc.png',
                 'csvImage': 'assets/images/exemple_csv_company.png',
                 'action_route': 'app_company_import'
             }) }}
