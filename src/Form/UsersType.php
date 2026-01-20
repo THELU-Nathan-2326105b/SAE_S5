@@ -60,18 +60,18 @@ class UsersType extends AbstractType
             //     'required' => false,
             // ])
             ->add('user_level', ChoiceType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Niveau',
                 'choices' => ['B1'=>'B1','B2'=>'B2','B3'=>'B3','M1'=>'M1','M2'=>'M2'],
             ])
             ->add('user_firstname', TextType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Prénom',
                 'attr' => ['maxlength' => 50, 'pattern' => '.*\S.*'],
                 'trim' => true,
             ])
             ->add('user_lastname', TextType::class, [
-                'required' => false,
+                'required' => true,
                 'label' => 'Nom',
                 'attr' => ['maxlength' => 50, 'pattern' => '.*\S.*'],
                 'trim' => true,
