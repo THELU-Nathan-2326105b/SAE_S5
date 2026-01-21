@@ -76,7 +76,7 @@
     {% if importForm is defined %}
         <div class="import-box">
              <h3 class="import-title">Import CSV Entreprises</h3>
-            {{ include('_import_csv.html.twig', {
+            {{ include('admin/_import_csv.html.twig', {
                 'importForm': importForm,
                 'csvHeader': 'company_name,company_description,company_logo',
                 'csvExample': 'Tech Solutions,Développement...,/uploads/logos/tech.png',
