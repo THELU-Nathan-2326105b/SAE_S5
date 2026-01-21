@@ -1,0 +1,28 @@
+{# templates/admin/planning/_form_export_cvs.html.twig #}
+
+<div class="export-section">
+    <h3 class="export-section-title">
+        <i class="fas fa-file-archive"></i> Export des CVs par Entreprise
+    </h3>
+
+    <form action="{{ path('admin_export_cvs') }}" method="get" class="export-form">
+        
+        {# Input caché pour l'ID du forum #}
+        <input type="hidden" name="forum_id" value="{{ selected_forum_id }}">
+
+        <div class="export-form-group">
+            <label for="company-export-select" class="export-label">Sélectionner une entreprise :</label>
+            <select name="company" id="company-export-select" class="export-select" required>
+                <option value="" disabled selected>-- Choisir dans la liste --</option>
+                {% for companyName in companies %}
+                    <option value="{{ companyName }}">{{ companyName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {# Bouton utilisant vos classes admin.css existantes #}
+        <button type="submit" class="btn btn-edit">
+            <i class="fas fa-download"></i> Télécharger le ZIP
+        </button>
+    </form>
+</div>
