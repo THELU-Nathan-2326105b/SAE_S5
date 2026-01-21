@@ -141,8 +141,12 @@ class ResetPasswordController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // Encode (hash) le mot de passe en clair et le définir
+            // Encode (hash) le mot de passe en clair et le définit
             $user->setUserPwd($passwordHasher->hashPassword($user, $plainPassword));
+            
+            // Marquer que ce n'est plus la première connexion
+            $user->setUserFirstconnexion(false);
+            
             $this->entityManager->flush();
 
             // La session est nettoyée après le changement de mot de passe
