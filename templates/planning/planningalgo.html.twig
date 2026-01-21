@@ -35,6 +35,7 @@
                         <tr>
                             <th>Date et Heure</th>
                             <th>Entreprise</th>
+                            <th>Durée</th>
                             <th>Forum</th>
                         </tr>
                     </thead>
@@ -49,11 +50,19 @@
                                 <strong>{{ appointment.companyName }}</strong>
                             </td>
                             <td>
+                                {% if appointment.duration is defined and appointment.duration %}
+                                    {{ appointment.duration }} min
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
                                 {{ appointment.forum.name ?? 'Forum #' ~ appointment.forum.id }}
                             </td>
                         </tr>
                     {% endfor %}
                     </tbody>
+
                 </table>
             </div>
 
