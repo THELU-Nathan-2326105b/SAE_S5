@@ -11,6 +11,16 @@ INSERT INTO company (company_name, company_description, company_logo) VALUES ('R
 INSERT INTO company (company_name, company_description, company_logo) VALUES ('AeroSpaceX', 'Concepteur de drones et systèmes aérospatiaux.', 'aerospacex.png');
 INSERT INTO company (company_name, company_description, company_logo) VALUES ('SecureIT', 'Solutions de cybersécurité pour PME.', 'secureit.png');
 INSERT INTO company (company_name, company_description, company_logo) VALUES ('DesignPlus', 'Agence de design et communication digitale.', 'designplus.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('SmartHomes', 'Solutions domotiques et maisons intelligentes.', 'smarthomes.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('BioFarm', 'Agriculture durable et technologies biologiques.', 'biofarm.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('FinTechPro', 'Innovations financières et paiement en ligne.', 'fintechpro.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('TravelMate', 'Plateforme de voyages et séjours personnalisés.', 'travelmate.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('RoboWorks', 'Développement de robots industriels et automatisation.', 'roboworks.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('EcoTransport', 'Solutions de mobilité écologique et transports verts.', 'ecotransport.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('HealthTrack', 'Applications et objets connectés pour la santé.', 'healthtrack.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('Eventify', 'Organisation et gestion d’événements numériques.', 'eventify.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('CodeCrafters', 'Entreprise spécialisée dans le développement logiciel sur-mesure.', 'codecrafters.png');
+INSERT INTO company (company_name, company_description, company_logo) VALUES ('AquaPure', 'Solutions innovantes de traitement et purification de l’eau.', 'aquapure.png');
 
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('alice.b1@example.com', '$2y$10$LZU/yZbKUE/13M4h8i.aUeZt5Y6CGYTZbfx3iio7BTkTrQ4t6pZP6', 'alternance', TRUE, 'Alice', 'Martin', 'B1', '2025-09-01', NULL); -- pwdAlice1
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('bob.b2@example.com', '$2y$10$w3mJYL.9Au60MZZUhq0jp./s4BORP.2Bnl421t0ZTec4xqkTQppPK', 'internship', TRUE, 'Bob', 'Durand', 'B2', '2025-09-02', NULL); --pwdBob2
@@ -42,159 +52,717 @@ INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_fi
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('maeva.m1@example.com', '$2y$10$b5mQP99nrFMe3c7uXjUTleYJqVKvBjUAxTZfXPhHSXwNFJ2WDG41m', 'internship', TRUE, 'Maéva', 'Renard', 'M1', '2025-09-29', NULL); -- pwdMaeva28
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('arthur.m2@example.com', '$2y$10$tZ8u7k.87hg9pmEcQ956Lu0.zl2xzFJb7SEPkGRzdybYM0V4JxbZ2', 'alternance', TRUE, 'Arthur', 'Blanchard', 'M2', '2025-09-30', NULL); -- pwdArthur29
 INSERT INTO users (user_email, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('lucie.m2@example.com', 'internship', TRUE, 'Lucie', 'Lemoine', 'M2', '2025-10-01', NULL);
-INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv)
-VALUES ('admin@example.com', '$2y$10$hSh.yY.vxzjUAeGkbwV8KeTS5PI.yOh3ozV.arrcX.sZ9Ao16EZMi', 'admin', FALSE, 'Super', 'Admin', NULL, '2025-09-11', NULL); -- admin123
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('admin@example.com', '$2y$10$hSh.yY.vxzjUAeGkbwV8KeTS5PI.yOh3ozV.arrcX.sZ9Ao16EZMi', 'admin', FALSE, 'Super', 'Admin', 'B1', '2025-09-11', NULL); -- admin123
+
+-- jeu de users test connexion impossible total : 120
+
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student1@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom1', 'Nom1', 'B2', '2026-01-20', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student2@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom2', 'Nom2', 'B3', '2026-01-19', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student3@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom3', 'Nom3', 'M1', '2026-01-18', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student4@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom4', 'Nom4', 'M2', '2026-01-17', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student5@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom5', 'Nom5', 'B1', '2026-01-16', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student6@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom6', 'Nom6', 'B2', '2026-01-15', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student7@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom7', 'Nom7', 'B3', '2026-01-14', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student8@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom8', 'Nom8', 'M1', '2026-01-13', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student9@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom9', 'Nom9', 'M2', '2026-01-12', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student10@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom10', 'Nom10', 'B1', '2026-01-11', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student11@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom11', 'Nom11', 'B2', '2026-01-10', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student12@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom12', 'Nom12', 'B3', '2026-01-09', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student13@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom13', 'Nom13', 'M1', '2026-01-08', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student14@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom14', 'Nom14', 'M2', '2026-01-07', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student15@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom15', 'Nom15', 'B1', '2026-01-06', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student16@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom16', 'Nom16', 'B2', '2026-01-05', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student17@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom17', 'Nom17', 'B3', '2026-01-04', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student18@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom18', 'Nom18', 'M1', '2026-01-03', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student19@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom19', 'Nom19', 'M2', '2026-01-02', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student20@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom20', 'Nom20', 'B1', '2026-01-01', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student21@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom21', 'Nom21', 'B2', '2025-12-31', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student22@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom22', 'Nom22', 'B3', '2025-12-30', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student23@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom23', 'Nom23', 'M1', '2025-12-29', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student24@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom24', 'Nom24', 'M2', '2025-12-28', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student25@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom25', 'Nom25', 'B1', '2025-12-27', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student26@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom26', 'Nom26', 'B2', '2025-12-26', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student27@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom27', 'Nom27', 'B3', '2025-12-25', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student28@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom28', 'Nom28', 'M1', '2025-12-24', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student29@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom29', 'Nom29', 'M2', '2025-12-23', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student30@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom30', 'Nom30', 'B1', '2026-01-21', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student31@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom31', 'Nom31', 'B2', '2026-01-20', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student32@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom32', 'Nom32', 'B3', '2026-01-19', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student33@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom33', 'Nom33', 'M1', '2026-01-18', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student34@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom34', 'Nom34', 'M2', '2026-01-17', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student35@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom35', 'Nom35', 'B1', '2026-01-16', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student36@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom36', 'Nom36', 'B2', '2026-01-15', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student37@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom37', 'Nom37', 'B3', '2026-01-14', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student38@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom38', 'Nom38', 'M1', '2026-01-13', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student39@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom39', 'Nom39', 'M2', '2026-01-12', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student40@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom40', 'Nom40', 'B1', '2026-01-11', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student41@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom41', 'Nom41', 'B2', '2026-01-10', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student42@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom42', 'Nom42', 'B3', '2026-01-09', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student43@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom43', 'Nom43', 'M1', '2026-01-08', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student44@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom44', 'Nom44', 'M2', '2026-01-07', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student45@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom45', 'Nom45', 'B1', '2026-01-06', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student46@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom46', 'Nom46', 'B2', '2026-01-05', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student47@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom47', 'Nom47', 'B3', '2026-01-04', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student48@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom48', 'Nom48', 'M1', '2026-01-03', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student49@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom49', 'Nom49', 'M2', '2026-01-02', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student50@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom50', 'Nom50', 'B1', '2026-01-01', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student51@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom51', 'Nom51', 'B2', '2025-12-31', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student52@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom52', 'Nom52', 'B3', '2025-12-30', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student53@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom53', 'Nom53', 'M1', '2025-12-29', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student54@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom54', 'Nom54', 'M2', '2025-12-28', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student55@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom55', 'Nom55', 'B1', '2025-12-27', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student56@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom56', 'Nom56', 'B2', '2025-12-26', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student57@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom57', 'Nom57', 'B3', '2025-12-25', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student58@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom58', 'Nom58', 'M1', '2025-12-24', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student59@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom59', 'Nom59', 'M2', '2025-12-23', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student60@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom60', 'Nom60', 'B1', '2026-01-21', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student61@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom61', 'Nom61', 'B2', '2026-01-20', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student62@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom62', 'Nom62', 'B3', '2026-01-19', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student63@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom63', 'Nom63', 'M1', '2026-01-18', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student64@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom64', 'Nom64', 'M2', '2026-01-17', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student65@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom65', 'Nom65', 'B1', '2026-01-16', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student66@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom66', 'Nom66', 'B2', '2026-01-15', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student67@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom67', 'Nom67', 'B3', '2026-01-14', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student68@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom68', 'Nom68', 'M1', '2026-01-13', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student69@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom69', 'Nom69', 'M2', '2026-01-12', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student70@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom70', 'Nom70', 'B1', '2026-01-11', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student71@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom71', 'Nom71', 'B2', '2026-01-10', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student72@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom72', 'Nom72', 'B3', '2026-01-09', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student73@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom73', 'Nom73', 'M1', '2026-01-08', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student74@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom74', 'Nom74', 'M2', '2026-01-07', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student75@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom75', 'Nom75', 'B1', '2026-01-06', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student76@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom76', 'Nom76', 'B2', '2026-01-05', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student77@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom77', 'Nom77', 'B3', '2026-01-04', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student78@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom78', 'Nom78', 'M1', '2026-01-03', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student79@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom79', 'Nom79', 'M2', '2026-01-02', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student80@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom80', 'Nom80', 'B1', '2026-01-01', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student81@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom81', 'Nom81', 'B2', '2025-12-31', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student82@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom82', 'Nom82', 'B3', '2025-12-30', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student83@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom83', 'Nom83', 'M1', '2025-12-29', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student84@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom84', 'Nom84', 'M2', '2025-12-28', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student85@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom85', 'Nom85', 'B1', '2025-12-27', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student86@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom86', 'Nom86', 'B2', '2025-12-26', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student87@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom87', 'Nom87', 'B3', '2025-12-25', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student88@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom88', 'Nom88', 'M1', '2025-12-24', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student89@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom89', 'Nom89', 'M2', '2025-12-23', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student90@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom90', 'Nom90', 'B1', '2026-01-21', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student91@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom91', 'Nom91', 'B2', '2026-01-20', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student92@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom92', 'Nom92', 'B3', '2026-01-19', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student93@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom93', 'Nom93', 'M1', '2026-01-18', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student94@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom94', 'Nom94', 'M2', '2026-01-17', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student95@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom95', 'Nom95', 'B1', '2026-01-16', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student96@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom96', 'Nom96', 'B2', '2026-01-15', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student97@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom97', 'Nom97', 'B3', '2026-01-14', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student98@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom98', 'Nom98', 'M1', '2026-01-13', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student99@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom99', 'Nom99', 'M2', '2026-01-12', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student100@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom100', 'Nom100', 'B1', '2026-01-11', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student101@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom101', 'Nom101', 'B2', '2026-01-10', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student102@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom102', 'Nom102', 'B3', '2026-01-09', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student103@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom103', 'Nom103', 'M1', '2026-01-08', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student104@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom104', 'Nom104', 'M2', '2026-01-07', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student105@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom105', 'Nom105', 'B1', '2026-01-06', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student106@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom106', 'Nom106', 'B2', '2026-01-05', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student107@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom107', 'Nom107', 'B3', '2026-01-04', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student108@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom108', 'Nom108', 'M1', '2026-01-03', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student109@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom109', 'Nom109', 'M2', '2026-01-02', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student110@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom110', 'Nom110', 'B1', '2026-01-01', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student111@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom111', 'Nom111', 'B2', '2025-12-31', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student112@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom112', 'Nom112', 'B3', '2025-12-30', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student113@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom113', 'Nom113', 'M1', '2025-12-29', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student114@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom114', 'Nom114', 'M2', '2025-12-28', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student115@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom115', 'Nom115', 'B1', '2025-12-27', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student116@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom116', 'Nom116', 'B2', '2025-12-26', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student117@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom117', 'Nom117', 'B3', '2025-12-25', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student118@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom118', 'Nom118', 'M1', '2025-12-24', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student119@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'internship', true, 'Prenom119', 'Nom119', 'M2', '2025-12-23', NULL);
+INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('student120@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'alternance', true, 'Prenom120', 'Nom120', 'B1', '2026-01-21', NULL);
 
 INSERT INTO is_present (forum_id, company_name, start_time, end_time, search_type, search_level) VALUES
-(1, 'TechNova',     '2025-10-15 09:00', '2025-10-15 12:00', 'internship;alternance', 'B1;B2;B3;M1;M2'),
-(1, 'GreenEnergy',  '2025-10-15 09:00', '2025-10-15 11:00', 'internship',             'B2;B3;M1'),
-(1, 'Foodix',       '2025-10-15 10:00', '2025-10-15 13:00', 'alternance',             'B1;B2'),
-(1, 'MediHealth',   '2025-10-15 14:00', '2025-10-15 17:00', 'internship',             'M1;M2'),
-(1, 'BuildPro',     '2025-10-15 13:00', '2025-10-15 16:00', 'internship;alternance', 'B3;M1'),
-(1, 'SecureIT',     '2025-10-15 09:30', '2025-10-15 12:30', 'alternance',            'B2;B3;M2'),
-(1, 'RacletteCorp', '2025-10-15 11:00', '2025-10-15 15:00', 'internship;alternance', 'B1;B2;B3'),
-(1, 'EduConnect',   '2025-10-15 10:30', '2025-10-15 13:30', 'internship',             'B1;B2'),
-(1, 'AeroSpaceX',   '2025-10-15 14:00', '2025-10-15 18:00', 'internship;alternance', 'M1;M2'),
-(1, 'DesignPlus',   '2025-10-15 09:00', '2025-10-15 10:30', 'internship',             'B1;B3');
+(1, 'TechNova',     '2025-10-15 08:00', '2025-10-15 21:00', 'internship;alternance', 'B1;B2;B3;M1;M2'),
+(1, 'GreenEnergy',  '2025-10-15 08:00', '2025-10-15 17:00', 'internship',             'B2;B3;M1'),
+(1, 'Foodix',       '2025-10-15 08:00', '2025-10-15 17:00', 'alternance',             'B1;B2'),
+(1, 'MediHealth',   '2025-10-15 08:00', '2025-10-15 17:00', 'internship',             'M1;M2'),
+(1, 'BuildPro',     '2025-10-15 08:00', '2025-10-15 17:00', 'internship;alternance', 'B3;M1'),
+(1, 'SecureIT',     '2025-10-15 08:00', '2025-10-15 17:30', 'alternance',            'B2;B3;M2'),
+(1, 'RacletteCorp', '2025-10-15 08:00', '2025-10-15 17:00', 'internship;alternance', 'B1;B2;B3'),
+(1, 'EduConnect',   '2025-10-15 08:00', '2025-10-15 17:30', 'internship',             'B1;B2'),
+(1, 'AeroSpaceX',   '2025-10-15 08:00', '2025-10-15 17:00', 'internship;alternance', 'M1;M2'),
+(1, 'DesignPlus',   '2025-10-15 09:00', '2025-10-15 10:30', 'internship',             'B1;B3'),
+(1, 'SmartHomes',   '2025-10-15 09:00', '2025-10-15 17:00', 'internship',             'B1;B2;B3'),
+(1, 'BioFarm',      '2025-10-15 09:00', '2025-10-15 17:00', 'alternance',             'B2;B3;M1'),
+(1, 'FinTechPro',   '2025-10-15 09:00', '2025-10-15 17:00', 'internship',             'B1;M1;M2'),
+(1, 'TravelMate',   '2025-10-15 09:00', '2025-10-15 17:00', 'alternance',             'B1;B2'),
+(1, 'RoboWorks',    '2025-10-15 09:00', '2025-10-15 17:00', 'internship',             'B3;M1;M2'),
+(1, 'EcoTransport', '2025-10-15 09:00', '2025-10-15 17:00', 'alternance',             'B2;B3'),
+(1, 'HealthTrack',  '2025-10-15 09:00', '2025-10-15 17:00', 'internship',             'M1;M2'),
+(1, 'Eventify',     '2025-10-15 09:00', '2025-10-15 17:00', 'alternance',             'B1;B3'),
+(1, 'CodeCrafters', '2025-10-15 09:00', '2025-10-15 17:00', 'internship',             'B1;B2;M1'),
+(1, 'AquaPure',     '2025-10-15 09:00', '2025-10-15 17:00', 'alternance',             'B2;M2');
 
--- Rendez-vous pour tous les étudiants (timestamps à NULL)
+-- Rendez-vous pour tous les étudiants (timestamps à NULL) total : 565
 INSERT INTO appointment (user_id, forum_id, company_name, appointment_request, appointment_time) VALUES
--- Alice (B1, alternance)
-(1, 1, 'TechNova', TRUE, NULL),
 (1, 1, 'Foodix', TRUE, NULL),
 (1, 1, 'RacletteCorp', TRUE, NULL),
-
--- Bob (B2, internship)
-(2, 1, 'GreenEnergy', TRUE, NULL),
+(1, 1, 'TechNova', TRUE, NULL),
 (2, 1, 'EduConnect', TRUE, NULL),
-
--- Charlie (M1, alternance)
-(3, 1, 'TechNova', TRUE, NULL),
-(3, 1, 'BuildPro', TRUE, NULL),
+(2, 1, 'GreenEnergy', TRUE, NULL),
+(2, 1, 'RacletteCorp', TRUE, NULL),
+(2, 1, 'TechNova', TRUE, NULL),
 (3, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Diane (M1, internship)
+(3, 1, 'BuildPro', TRUE, NULL),
+(3, 1, 'TechNova', TRUE, NULL),
+(4, 1, 'AeroSpaceX', TRUE, NULL),
+(4, 1, 'BuildPro', TRUE, NULL),
 (4, 1, 'GreenEnergy', TRUE, NULL),
 (4, 1, 'MediHealth', TRUE, NULL),
-(4, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Eric (M2, alternance)
-(5, 1, 'TechNova', TRUE, NULL),
-(5, 1, 'SecureIT', TRUE, NULL),
+(4, 1, 'TechNova', TRUE, NULL),
 (5, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Fiona (M2, internship)
-(6, 1, 'MediHealth', TRUE, NULL),
+(5, 1, 'SecureIT', TRUE, NULL),
+(5, 1, 'TechNova', TRUE, NULL),
 (6, 1, 'AeroSpaceX', TRUE, NULL),
-
--- George (B2, alternance)
-(7, 1, 'TechNova', TRUE, NULL),
-(7, 1, 'SecureIT', TRUE, NULL),
+(6, 1, 'MediHealth', TRUE, NULL),
+(6, 1, 'TechNova', TRUE, NULL),
+(7, 1, 'Foodix', TRUE, NULL),
 (7, 1, 'RacletteCorp', TRUE, NULL),
-
--- Hannah (B3, internship)
-(8, 1, 'GreenEnergy', TRUE, NULL),
+(7, 1, 'SecureIT', TRUE, NULL),
+(7, 1, 'TechNova', TRUE, NULL),
+(8, 1, 'BuildPro', TRUE, NULL),
 (8, 1, 'DesignPlus', TRUE, NULL),
-
--- Ivan (M1, alternance)
-(9, 1, 'BuildPro', TRUE, NULL),
+(8, 1, 'GreenEnergy', TRUE, NULL),
+(8, 1, 'RacletteCorp', TRUE, NULL),
+(8, 1, 'TechNova', TRUE, NULL),
 (9, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Julia (M2, internship)
-(10, 1, 'MediHealth', TRUE, NULL),
+(9, 1, 'BuildPro', TRUE, NULL),
+(9, 1, 'TechNova', TRUE, NULL),
 (10, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Léo (B1, alternance)
-(11, 1, 'TechNova', TRUE, NULL),
+(10, 1, 'MediHealth', TRUE, NULL),
+(10, 1, 'TechNova', TRUE, NULL),
 (11, 1, 'Foodix', TRUE, NULL),
 (11, 1, 'RacletteCorp', TRUE, NULL),
-
--- Manon (B1, internship)
-(12, 1, 'EduConnect', TRUE, NULL),
+(11, 1, 'TechNova', TRUE, NULL),
 (12, 1, 'DesignPlus', TRUE, NULL),
+(12, 1, 'EduConnect', TRUE, NULL),
 (12, 1, 'RacletteCorp', TRUE, NULL),
-
--- Nathan (M1, alternance)
-(13, 1, 'BuildPro', TRUE, NULL),
+(12, 1, 'TechNova', TRUE, NULL),
 (13, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Emma (B2, internship)
-(14, 1, 'GreenEnergy', TRUE, NULL),
+(13, 1, 'BuildPro', TRUE, NULL),
+(13, 1, 'TechNova', TRUE, NULL),
 (14, 1, 'EduConnect', TRUE, NULL),
+(14, 1, 'GreenEnergy', TRUE, NULL),
+(14, 1, 'RacletteCorp', TRUE, NULL),
 (14, 1, 'TechNova', TRUE, NULL),
-
--- Lucas (B3, alternance)
 (15, 1, 'BuildPro', TRUE, NULL),
 (15, 1, 'RacletteCorp', TRUE, NULL),
 (15, 1, 'SecureIT', TRUE, NULL),
-
--- Chloé (M1, internship)
-(16, 1, 'MediHealth', TRUE, NULL),
+(15, 1, 'TechNova', TRUE, NULL),
 (16, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Thomas (M1, alternance)
+(16, 1, 'BuildPro', TRUE, NULL),
+(16, 1, 'GreenEnergy', TRUE, NULL),
+(16, 1, 'MediHealth', TRUE, NULL),
+(16, 1, 'TechNova', TRUE, NULL),
+(17, 1, 'AeroSpaceX', TRUE, NULL),
 (17, 1, 'BuildPro', TRUE, NULL),
 (17, 1, 'TechNova', TRUE, NULL),
-(17, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Sarah (M1, internship)
-(18, 1, 'MediHealth', TRUE, NULL),
-(18, 1, 'GreenEnergy', TRUE, NULL),
 (18, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Maxime (M2, alternance)
-(19, 1, 'TechNova', TRUE, NULL),
-(19, 1, 'SecureIT', TRUE, NULL),
+(18, 1, 'BuildPro', TRUE, NULL),
+(18, 1, 'GreenEnergy', TRUE, NULL),
+(18, 1, 'MediHealth', TRUE, NULL),
+(18, 1, 'TechNova', TRUE, NULL),
 (19, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Camille (M2, internship)
-(20, 1, 'MediHealth', TRUE, NULL),
+(19, 1, 'SecureIT', TRUE, NULL),
+(19, 1, 'TechNova', TRUE, NULL),
 (20, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Julien (B1, alternance)
-(21, 1, 'TechNova', TRUE, NULL),
+(20, 1, 'MediHealth', TRUE, NULL),
+(20, 1, 'TechNova', TRUE, NULL),
 (21, 1, 'Foodix', TRUE, NULL),
 (21, 1, 'RacletteCorp', TRUE, NULL),
-
--- Léa (B3, internship)
-(22, 1, 'GreenEnergy', TRUE, NULL),
+(21, 1, 'TechNova', TRUE, NULL),
+(22, 1, 'BuildPro', TRUE, NULL),
 (22, 1, 'DesignPlus', TRUE, NULL),
+(22, 1, 'GreenEnergy', TRUE, NULL),
 (22, 1, 'RacletteCorp', TRUE, NULL),
-
--- Paul (M2, alternance)
-(23, 1, 'TechNova', TRUE, NULL),
-(23, 1, 'SecureIT', TRUE, NULL),
+(22, 1, 'TechNova', TRUE, NULL),
 (23, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Clara (B2, internship)
-(24, 1, 'GreenEnergy', TRUE, NULL),
+(23, 1, 'SecureIT', TRUE, NULL),
+(23, 1, 'TechNova', TRUE, NULL),
 (24, 1, 'EduConnect', TRUE, NULL),
+(24, 1, 'GreenEnergy', TRUE, NULL),
+(24, 1, 'RacletteCorp', TRUE, NULL),
 (24, 1, 'TechNova', TRUE, NULL),
-
--- Quentin (B3, alternance)
 (25, 1, 'BuildPro', TRUE, NULL),
-(25, 1, 'SecureIT', TRUE, NULL),
 (25, 1, 'RacletteCorp', TRUE, NULL),
-
--- Inès (M2, internship)
-(26, 1, 'MediHealth', TRUE, NULL),
+(25, 1, 'SecureIT', TRUE, NULL),
+(25, 1, 'TechNova', TRUE, NULL),
 (26, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Adrien (M1, alternance)
-(27, 1, 'BuildPro', TRUE, NULL),
+(26, 1, 'MediHealth', TRUE, NULL),
+(26, 1, 'TechNova', TRUE, NULL),
 (27, 1, 'AeroSpaceX', TRUE, NULL),
+(27, 1, 'BuildPro', TRUE, NULL),
 (27, 1, 'TechNova', TRUE, NULL),
-
--- Maéva (M1, internship)
+(28, 1, 'AeroSpaceX', TRUE, NULL),
+(28, 1, 'BuildPro', TRUE, NULL),
 (28, 1, 'GreenEnergy', TRUE, NULL),
 (28, 1, 'MediHealth', TRUE, NULL),
-(28, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Arthur (M2, alternance)
-(29, 1, 'TechNova', TRUE, NULL),
-(29, 1, 'SecureIT', TRUE, NULL),
+(28, 1, 'TechNova', TRUE, NULL),
 (29, 1, 'AeroSpaceX', TRUE, NULL),
-
--- Lucie (M2, internship)
+(29, 1, 'SecureIT', TRUE, NULL),
+(29, 1, 'TechNova', TRUE, NULL),
+(30, 1, 'AeroSpaceX', TRUE, NULL),
 (30, 1, 'MediHealth', TRUE, NULL),
-(30, 1, 'AeroSpaceX', TRUE, NULL)
+(30, 1, 'TechNova', TRUE, NULL),
+(32, 1, 'EduConnect', TRUE, NULL),
+(32, 1, 'GreenEnergy', TRUE, NULL),
+(32, 1, 'RacletteCorp', TRUE, NULL),
+(32, 1, 'TechNova', TRUE, NULL),
+(33, 1, 'BuildPro', TRUE, NULL),
+(33, 1, 'RacletteCorp', TRUE, NULL),
+(33, 1, 'SecureIT', TRUE, NULL),
+(33, 1, 'TechNova', TRUE, NULL),
+(34, 1, 'AeroSpaceX', TRUE, NULL),
+(34, 1, 'BuildPro', TRUE, NULL),
+(34, 1, 'GreenEnergy', TRUE, NULL),
+(34, 1, 'MediHealth', TRUE, NULL),
+(34, 1, 'TechNova', TRUE, NULL),
+(35, 1, 'AeroSpaceX', TRUE, NULL),
+(35, 1, 'SecureIT', TRUE, NULL),
+(35, 1, 'TechNova', TRUE, NULL),
+(36, 1, 'DesignPlus', TRUE, NULL),
+(36, 1, 'EduConnect', TRUE, NULL),
+(36, 1, 'RacletteCorp', TRUE, NULL),
+(36, 1, 'TechNova', TRUE, NULL),
+(37, 1, 'Foodix', TRUE, NULL),
+(37, 1, 'RacletteCorp', TRUE, NULL),
+(37, 1, 'SecureIT', TRUE, NULL),
+(37, 1, 'TechNova', TRUE, NULL),
+(38, 1, 'BuildPro', TRUE, NULL),
+(38, 1, 'DesignPlus', TRUE, NULL),
+(38, 1, 'GreenEnergy', TRUE, NULL),
+(38, 1, 'RacletteCorp', TRUE, NULL),
+(38, 1, 'TechNova', TRUE, NULL),
+(39, 1, 'AeroSpaceX', TRUE, NULL),
+(39, 1, 'BuildPro', TRUE, NULL),
+(39, 1, 'TechNova', TRUE, NULL),
+(40, 1, 'AeroSpaceX', TRUE, NULL),
+(40, 1, 'MediHealth', TRUE, NULL),
+(40, 1, 'TechNova', TRUE, NULL),
+(41, 1, 'Foodix', TRUE, NULL),
+(41, 1, 'RacletteCorp', TRUE, NULL),
+(41, 1, 'TechNova', TRUE, NULL),
+(42, 1, 'EduConnect', TRUE, NULL),
+(42, 1, 'GreenEnergy', TRUE, NULL),
+(42, 1, 'RacletteCorp', TRUE, NULL),
+(42, 1, 'TechNova', TRUE, NULL),
+(43, 1, 'BuildPro', TRUE, NULL),
+(43, 1, 'RacletteCorp', TRUE, NULL),
+(43, 1, 'SecureIT', TRUE, NULL),
+(43, 1, 'TechNova', TRUE, NULL),
+(44, 1, 'AeroSpaceX', TRUE, NULL),
+(44, 1, 'BuildPro', TRUE, NULL),
+(44, 1, 'GreenEnergy', TRUE, NULL),
+(44, 1, 'MediHealth', TRUE, NULL),
+(44, 1, 'TechNova', TRUE, NULL),
+(45, 1, 'AeroSpaceX', TRUE, NULL),
+(45, 1, 'SecureIT', TRUE, NULL),
+(45, 1, 'TechNova', TRUE, NULL),
+(46, 1, 'DesignPlus', TRUE, NULL),
+(46, 1, 'EduConnect', TRUE, NULL),
+(46, 1, 'RacletteCorp', TRUE, NULL),
+(46, 1, 'TechNova', TRUE, NULL),
+(47, 1, 'Foodix', TRUE, NULL),
+(47, 1, 'RacletteCorp', TRUE, NULL),
+(47, 1, 'SecureIT', TRUE, NULL),
+(47, 1, 'TechNova', TRUE, NULL),
+(48, 1, 'BuildPro', TRUE, NULL),
+(48, 1, 'DesignPlus', TRUE, NULL),
+(48, 1, 'GreenEnergy', TRUE, NULL),
+(48, 1, 'RacletteCorp', TRUE, NULL),
+(48, 1, 'TechNova', TRUE, NULL),
+(49, 1, 'AeroSpaceX', TRUE, NULL),
+(49, 1, 'BuildPro', TRUE, NULL),
+(49, 1, 'TechNova', TRUE, NULL),
+(50, 1, 'AeroSpaceX', TRUE, NULL),
+(50, 1, 'MediHealth', TRUE, NULL),
+(50, 1, 'TechNova', TRUE, NULL),
+(51, 1, 'Foodix', TRUE, NULL),
+(51, 1, 'RacletteCorp', TRUE, NULL),
+(51, 1, 'TechNova', TRUE, NULL),
+(52, 1, 'EduConnect', TRUE, NULL),
+(52, 1, 'GreenEnergy', TRUE, NULL),
+(52, 1, 'RacletteCorp', TRUE, NULL),
+(52, 1, 'TechNova', TRUE, NULL),
+(53, 1, 'BuildPro', TRUE, NULL),
+(53, 1, 'RacletteCorp', TRUE, NULL),
+(53, 1, 'SecureIT', TRUE, NULL),
+(53, 1, 'TechNova', TRUE, NULL),
+(54, 1, 'AeroSpaceX', TRUE, NULL),
+(54, 1, 'BuildPro', TRUE, NULL),
+(54, 1, 'GreenEnergy', TRUE, NULL),
+(54, 1, 'MediHealth', TRUE, NULL),
+(54, 1, 'TechNova', TRUE, NULL),
+(55, 1, 'AeroSpaceX', TRUE, NULL),
+(55, 1, 'SecureIT', TRUE, NULL),
+(55, 1, 'TechNova', TRUE, NULL),
+(56, 1, 'DesignPlus', TRUE, NULL),
+(56, 1, 'EduConnect', TRUE, NULL),
+(56, 1, 'RacletteCorp', TRUE, NULL),
+(56, 1, 'TechNova', TRUE, NULL),
+(57, 1, 'Foodix', TRUE, NULL),
+(57, 1, 'RacletteCorp', TRUE, NULL),
+(57, 1, 'SecureIT', TRUE, NULL),
+(57, 1, 'TechNova', TRUE, NULL),
+(58, 1, 'BuildPro', TRUE, NULL),
+(58, 1, 'DesignPlus', TRUE, NULL),
+(58, 1, 'GreenEnergy', TRUE, NULL),
+(58, 1, 'RacletteCorp', TRUE, NULL),
+(58, 1, 'TechNova', TRUE, NULL),
+(59, 1, 'AeroSpaceX', TRUE, NULL),
+(59, 1, 'BuildPro', TRUE, NULL),
+(59, 1, 'TechNova', TRUE, NULL),
+(60, 1, 'AeroSpaceX', TRUE, NULL),
+(60, 1, 'MediHealth', TRUE, NULL),
+(60, 1, 'TechNova', TRUE, NULL),
+(61, 1, 'Foodix', TRUE, NULL),
+(61, 1, 'RacletteCorp', TRUE, NULL),
+(61, 1, 'TechNova', TRUE, NULL),
+(62, 1, 'EduConnect', TRUE, NULL),
+(62, 1, 'GreenEnergy', TRUE, NULL),
+(62, 1, 'RacletteCorp', TRUE, NULL),
+(62, 1, 'TechNova', TRUE, NULL),
+(63, 1, 'BuildPro', TRUE, NULL),
+(63, 1, 'RacletteCorp', TRUE, NULL),
+(63, 1, 'SecureIT', TRUE, NULL),
+(63, 1, 'TechNova', TRUE, NULL),
+(64, 1, 'AeroSpaceX', TRUE, NULL),
+(64, 1, 'BuildPro', TRUE, NULL),
+(64, 1, 'GreenEnergy', TRUE, NULL),
+(64, 1, 'MediHealth', TRUE, NULL),
+(64, 1, 'TechNova', TRUE, NULL),
+(65, 1, 'AeroSpaceX', TRUE, NULL),
+(65, 1, 'SecureIT', TRUE, NULL),
+(65, 1, 'TechNova', TRUE, NULL),
+(66, 1, 'DesignPlus', TRUE, NULL),
+(66, 1, 'EduConnect', TRUE, NULL),
+(66, 1, 'RacletteCorp', TRUE, NULL),
+(66, 1, 'TechNova', TRUE, NULL),
+(67, 1, 'Foodix', TRUE, NULL),
+(67, 1, 'RacletteCorp', TRUE, NULL),
+(67, 1, 'SecureIT', TRUE, NULL),
+(67, 1, 'TechNova', TRUE, NULL),
+(68, 1, 'BuildPro', TRUE, NULL),
+(68, 1, 'DesignPlus', TRUE, NULL),
+(68, 1, 'GreenEnergy', TRUE, NULL),
+(68, 1, 'RacletteCorp', TRUE, NULL),
+(68, 1, 'TechNova', TRUE, NULL),
+(69, 1, 'AeroSpaceX', TRUE, NULL),
+(69, 1, 'BuildPro', TRUE, NULL),
+(69, 1, 'TechNova', TRUE, NULL),
+(70, 1, 'AeroSpaceX', TRUE, NULL),
+(70, 1, 'MediHealth', TRUE, NULL),
+(70, 1, 'TechNova', TRUE, NULL),
+(71, 1, 'Foodix', TRUE, NULL),
+(71, 1, 'RacletteCorp', TRUE, NULL),
+(71, 1, 'TechNova', TRUE, NULL),
+(72, 1, 'EduConnect', TRUE, NULL),
+(72, 1, 'GreenEnergy', TRUE, NULL),
+(72, 1, 'RacletteCorp', TRUE, NULL),
+(72, 1, 'TechNova', TRUE, NULL),
+(73, 1, 'BuildPro', TRUE, NULL),
+(73, 1, 'RacletteCorp', TRUE, NULL),
+(73, 1, 'SecureIT', TRUE, NULL),
+(73, 1, 'TechNova', TRUE, NULL),
+(74, 1, 'AeroSpaceX', TRUE, NULL),
+(74, 1, 'BuildPro', TRUE, NULL),
+(74, 1, 'GreenEnergy', TRUE, NULL),
+(74, 1, 'MediHealth', TRUE, NULL),
+(74, 1, 'TechNova', TRUE, NULL),
+(75, 1, 'AeroSpaceX', TRUE, NULL),
+(75, 1, 'SecureIT', TRUE, NULL),
+(75, 1, 'TechNova', TRUE, NULL),
+(76, 1, 'DesignPlus', TRUE, NULL),
+(76, 1, 'EduConnect', TRUE, NULL),
+(76, 1, 'RacletteCorp', TRUE, NULL),
+(76, 1, 'TechNova', TRUE, NULL),
+(77, 1, 'Foodix', TRUE, NULL),
+(77, 1, 'RacletteCorp', TRUE, NULL),
+(77, 1, 'SecureIT', TRUE, NULL),
+(77, 1, 'TechNova', TRUE, NULL),
+(78, 1, 'BuildPro', TRUE, NULL),
+(78, 1, 'DesignPlus', TRUE, NULL),
+(78, 1, 'GreenEnergy', TRUE, NULL),
+(78, 1, 'RacletteCorp', TRUE, NULL),
+(78, 1, 'TechNova', TRUE, NULL),
+(79, 1, 'AeroSpaceX', TRUE, NULL),
+(79, 1, 'BuildPro', TRUE, NULL),
+(79, 1, 'TechNova', TRUE, NULL),
+(80, 1, 'AeroSpaceX', TRUE, NULL),
+(80, 1, 'MediHealth', TRUE, NULL),
+(80, 1, 'TechNova', TRUE, NULL),
+(81, 1, 'Foodix', TRUE, NULL),
+(81, 1, 'RacletteCorp', TRUE, NULL),
+(81, 1, 'TechNova', TRUE, NULL),
+(82, 1, 'EduConnect', TRUE, NULL),
+(82, 1, 'GreenEnergy', TRUE, NULL),
+(82, 1, 'RacletteCorp', TRUE, NULL),
+(82, 1, 'TechNova', TRUE, NULL),
+(83, 1, 'BuildPro', TRUE, NULL),
+(83, 1, 'RacletteCorp', TRUE, NULL),
+(83, 1, 'SecureIT', TRUE, NULL),
+(83, 1, 'TechNova', TRUE, NULL),
+(84, 1, 'AeroSpaceX', TRUE, NULL),
+(84, 1, 'BuildPro', TRUE, NULL),
+(84, 1, 'GreenEnergy', TRUE, NULL),
+(84, 1, 'MediHealth', TRUE, NULL),
+(84, 1, 'TechNova', TRUE, NULL),
+(85, 1, 'AeroSpaceX', TRUE, NULL),
+(85, 1, 'SecureIT', TRUE, NULL),
+(85, 1, 'TechNova', TRUE, NULL),
+(86, 1, 'DesignPlus', TRUE, NULL),
+(86, 1, 'EduConnect', TRUE, NULL),
+(86, 1, 'RacletteCorp', TRUE, NULL),
+(86, 1, 'TechNova', TRUE, NULL),
+(87, 1, 'Foodix', TRUE, NULL),
+(87, 1, 'RacletteCorp', TRUE, NULL),
+(87, 1, 'SecureIT', TRUE, NULL),
+(87, 1, 'TechNova', TRUE, NULL),
+(88, 1, 'BuildPro', TRUE, NULL),
+(88, 1, 'DesignPlus', TRUE, NULL),
+(88, 1, 'GreenEnergy', TRUE, NULL),
+(88, 1, 'RacletteCorp', TRUE, NULL),
+(88, 1, 'TechNova', TRUE, NULL),
+(89, 1, 'AeroSpaceX', TRUE, NULL),
+(89, 1, 'BuildPro', TRUE, NULL),
+(89, 1, 'TechNova', TRUE, NULL),
+(90, 1, 'AeroSpaceX', TRUE, NULL),
+(90, 1, 'MediHealth', TRUE, NULL),
+(90, 1, 'TechNova', TRUE, NULL),
+(91, 1, 'Foodix', TRUE, NULL),
+(91, 1, 'RacletteCorp', TRUE, NULL),
+(91, 1, 'TechNova', TRUE, NULL),
+(92, 1, 'EduConnect', TRUE, NULL),
+(92, 1, 'GreenEnergy', TRUE, NULL),
+(92, 1, 'RacletteCorp', TRUE, NULL),
+(92, 1, 'TechNova', TRUE, NULL),
+(93, 1, 'BuildPro', TRUE, NULL),
+(93, 1, 'RacletteCorp', TRUE, NULL),
+(93, 1, 'SecureIT', TRUE, NULL),
+(93, 1, 'TechNova', TRUE, NULL),
+(94, 1, 'AeroSpaceX', TRUE, NULL),
+(94, 1, 'BuildPro', TRUE, NULL),
+(94, 1, 'GreenEnergy', TRUE, NULL),
+(94, 1, 'MediHealth', TRUE, NULL),
+(94, 1, 'TechNova', TRUE, NULL),
+(95, 1, 'AeroSpaceX', TRUE, NULL),
+(95, 1, 'SecureIT', TRUE, NULL),
+(95, 1, 'TechNova', TRUE, NULL),
+(96, 1, 'DesignPlus', TRUE, NULL),
+(96, 1, 'EduConnect', TRUE, NULL),
+(96, 1, 'RacletteCorp', TRUE, NULL),
+(96, 1, 'TechNova', TRUE, NULL),
+(97, 1, 'Foodix', TRUE, NULL),
+(97, 1, 'RacletteCorp', TRUE, NULL),
+(97, 1, 'SecureIT', TRUE, NULL),
+(97, 1, 'TechNova', TRUE, NULL),
+(98, 1, 'BuildPro', TRUE, NULL),
+(98, 1, 'DesignPlus', TRUE, NULL),
+(98, 1, 'GreenEnergy', TRUE, NULL),
+(98, 1, 'RacletteCorp', TRUE, NULL),
+(98, 1, 'TechNova', TRUE, NULL),
+(99, 1, 'AeroSpaceX', TRUE, NULL),
+(99, 1, 'BuildPro', TRUE, NULL),
+(99, 1, 'TechNova', TRUE, NULL),
+(100, 1, 'AeroSpaceX', TRUE, NULL),
+(100, 1, 'MediHealth', TRUE, NULL),
+(100, 1, 'TechNova', TRUE, NULL),
+(101, 1, 'Foodix', TRUE, NULL),
+(101, 1, 'RacletteCorp', TRUE, NULL),
+(101, 1, 'TechNova', TRUE, NULL),
+(102, 1, 'EduConnect', TRUE, NULL),
+(102, 1, 'GreenEnergy', TRUE, NULL),
+(102, 1, 'RacletteCorp', TRUE, NULL),
+(102, 1, 'TechNova', TRUE, NULL),
+(103, 1, 'BuildPro', TRUE, NULL),
+(103, 1, 'RacletteCorp', TRUE, NULL),
+(103, 1, 'SecureIT', TRUE, NULL),
+(103, 1, 'TechNova', TRUE, NULL),
+(104, 1, 'AeroSpaceX', TRUE, NULL),
+(104, 1, 'BuildPro', TRUE, NULL),
+(104, 1, 'GreenEnergy', TRUE, NULL),
+(104, 1, 'MediHealth', TRUE, NULL),
+(104, 1, 'TechNova', TRUE, NULL),
+(105, 1, 'AeroSpaceX', TRUE, NULL),
+(105, 1, 'SecureIT', TRUE, NULL),
+(105, 1, 'TechNova', TRUE, NULL),
+(106, 1, 'DesignPlus', TRUE, NULL),
+(106, 1, 'EduConnect', TRUE, NULL),
+(106, 1, 'RacletteCorp', TRUE, NULL),
+(106, 1, 'TechNova', TRUE, NULL),
+(107, 1, 'Foodix', TRUE, NULL),
+(107, 1, 'RacletteCorp', TRUE, NULL),
+(107, 1, 'SecureIT', TRUE, NULL),
+(107, 1, 'TechNova', TRUE, NULL),
+(108, 1, 'BuildPro', TRUE, NULL),
+(108, 1, 'DesignPlus', TRUE, NULL),
+(108, 1, 'GreenEnergy', TRUE, NULL),
+(108, 1, 'RacletteCorp', TRUE, NULL),
+(108, 1, 'TechNova', TRUE, NULL),
+(109, 1, 'AeroSpaceX', TRUE, NULL),
+(109, 1, 'BuildPro', TRUE, NULL),
+(109, 1, 'TechNova', TRUE, NULL),
+(110, 1, 'AeroSpaceX', TRUE, NULL),
+(110, 1, 'MediHealth', TRUE, NULL),
+(110, 1, 'TechNova', TRUE, NULL),
+(111, 1, 'Foodix', TRUE, NULL),
+(111, 1, 'RacletteCorp', TRUE, NULL),
+(111, 1, 'TechNova', TRUE, NULL),
+(112, 1, 'EduConnect', TRUE, NULL),
+(112, 1, 'GreenEnergy', TRUE, NULL),
+(112, 1, 'RacletteCorp', TRUE, NULL),
+(112, 1, 'TechNova', TRUE, NULL),
+(113, 1, 'BuildPro', TRUE, NULL),
+(113, 1, 'RacletteCorp', TRUE, NULL),
+(113, 1, 'SecureIT', TRUE, NULL),
+(113, 1, 'TechNova', TRUE, NULL),
+(114, 1, 'AeroSpaceX', TRUE, NULL),
+(114, 1, 'BuildPro', TRUE, NULL),
+(114, 1, 'GreenEnergy', TRUE, NULL),
+(114, 1, 'MediHealth', TRUE, NULL),
+(114, 1, 'TechNova', TRUE, NULL),
+(115, 1, 'AeroSpaceX', TRUE, NULL),
+(115, 1, 'SecureIT', TRUE, NULL),
+(115, 1, 'TechNova', TRUE, NULL),
+(116, 1, 'DesignPlus', TRUE, NULL),
+(116, 1, 'EduConnect', TRUE, NULL),
+(116, 1, 'RacletteCorp', TRUE, NULL),
+(116, 1, 'TechNova', TRUE, NULL),
+(117, 1, 'Foodix', TRUE, NULL),
+(117, 1, 'RacletteCorp', TRUE, NULL),
+(117, 1, 'SecureIT', TRUE, NULL),
+(117, 1, 'TechNova', TRUE, NULL),
+(118, 1, 'BuildPro', TRUE, NULL),
+(118, 1, 'DesignPlus', TRUE, NULL),
+(118, 1, 'GreenEnergy', TRUE, NULL),
+(118, 1, 'RacletteCorp', TRUE, NULL),
+(118, 1, 'TechNova', TRUE, NULL),
+(119, 1, 'AeroSpaceX', TRUE, NULL),
+(119, 1, 'BuildPro', TRUE, NULL),
+(119, 1, 'TechNova', TRUE, NULL),
+(120, 1, 'AeroSpaceX', TRUE, NULL),
+(120, 1, 'MediHealth', TRUE, NULL),
+(120, 1, 'TechNova', TRUE, NULL),
+(121, 1, 'Foodix', TRUE, NULL),
+(121, 1, 'RacletteCorp', TRUE, NULL),
+(121, 1, 'TechNova', TRUE, NULL),
+(122, 1, 'EduConnect', TRUE, NULL),
+(122, 1, 'GreenEnergy', TRUE, NULL),
+(122, 1, 'RacletteCorp', TRUE, NULL),
+(122, 1, 'TechNova', TRUE, NULL),
+(123, 1, 'BuildPro', TRUE, NULL),
+(123, 1, 'RacletteCorp', TRUE, NULL),
+(123, 1, 'SecureIT', TRUE, NULL),
+(123, 1, 'TechNova', TRUE, NULL),
+(124, 1, 'AeroSpaceX', TRUE, NULL),
+(124, 1, 'BuildPro', TRUE, NULL),
+(124, 1, 'GreenEnergy', TRUE, NULL),
+(124, 1, 'MediHealth', TRUE, NULL),
+(124, 1, 'TechNova', TRUE, NULL),
+(125, 1, 'AeroSpaceX', TRUE, NULL),
+(125, 1, 'SecureIT', TRUE, NULL),
+(125, 1, 'TechNova', TRUE, NULL),
+(126, 1, 'DesignPlus', TRUE, NULL),
+(126, 1, 'EduConnect', TRUE, NULL),
+(126, 1, 'RacletteCorp', TRUE, NULL),
+(126, 1, 'TechNova', TRUE, NULL),
+(127, 1, 'Foodix', TRUE, NULL),
+(127, 1, 'RacletteCorp', TRUE, NULL),
+(127, 1, 'SecureIT', TRUE, NULL),
+(127, 1, 'TechNova', TRUE, NULL),
+(128, 1, 'BuildPro', TRUE, NULL),
+(128, 1, 'DesignPlus', TRUE, NULL),
+(128, 1, 'GreenEnergy', TRUE, NULL),
+(128, 1, 'RacletteCorp', TRUE, NULL),
+(128, 1, 'TechNova', TRUE, NULL),
+(129, 1, 'AeroSpaceX', TRUE, NULL),
+(129, 1, 'BuildPro', TRUE, NULL),
+(129, 1, 'TechNova', TRUE, NULL),
+(130, 1, 'AeroSpaceX', TRUE, NULL),
+(130, 1, 'MediHealth', TRUE, NULL),
+(130, 1, 'TechNova', TRUE, NULL),
+(131, 1, 'Foodix', TRUE, NULL),
+(131, 1, 'RacletteCorp', TRUE, NULL),
+(131, 1, 'TechNova', TRUE, NULL),
+(132, 1, 'EduConnect', TRUE, NULL),
+(132, 1, 'GreenEnergy', TRUE, NULL),
+(132, 1, 'RacletteCorp', TRUE, NULL),
+(132, 1, 'TechNova', TRUE, NULL),
+(133, 1, 'BuildPro', TRUE, NULL),
+(133, 1, 'RacletteCorp', TRUE, NULL),
+(133, 1, 'SecureIT', TRUE, NULL),
+(133, 1, 'TechNova', TRUE, NULL),
+(134, 1, 'AeroSpaceX', TRUE, NULL),
+(134, 1, 'BuildPro', TRUE, NULL),
+(134, 1, 'GreenEnergy', TRUE, NULL),
+(134, 1, 'MediHealth', TRUE, NULL),
+(134, 1, 'TechNova', TRUE, NULL),
+(135, 1, 'AeroSpaceX', TRUE, NULL),
+(135, 1, 'SecureIT', TRUE, NULL),
+(135, 1, 'TechNova', TRUE, NULL),
+(136, 1, 'DesignPlus', TRUE, NULL),
+(136, 1, 'EduConnect', TRUE, NULL),
+(136, 1, 'RacletteCorp', TRUE, NULL),
+(136, 1, 'TechNova', TRUE, NULL),
+(137, 1, 'Foodix', TRUE, NULL),
+(137, 1, 'RacletteCorp', TRUE, NULL),
+(137, 1, 'SecureIT', TRUE, NULL),
+(137, 1, 'TechNova', TRUE, NULL),
+(138, 1, 'BuildPro', TRUE, NULL),
+(138, 1, 'DesignPlus', TRUE, NULL),
+(138, 1, 'GreenEnergy', TRUE, NULL),
+(138, 1, 'RacletteCorp', TRUE, NULL),
+(138, 1, 'TechNova', TRUE, NULL),
+(139, 1, 'AeroSpaceX', TRUE, NULL),
+(139, 1, 'BuildPro', TRUE, NULL),
+(139, 1, 'TechNova', TRUE, NULL),
+(140, 1, 'AeroSpaceX', TRUE, NULL),
+(140, 1, 'MediHealth', TRUE, NULL),
+(140, 1, 'TechNova', TRUE, NULL),
+(141, 1, 'Foodix', TRUE, NULL),
+(141, 1, 'RacletteCorp', TRUE, NULL),
+(141, 1, 'TechNova', TRUE, NULL),
+(142, 1, 'EduConnect', TRUE, NULL),
+(142, 1, 'GreenEnergy', TRUE, NULL),
+(142, 1, 'RacletteCorp', TRUE, NULL),
+(142, 1, 'TechNova', TRUE, NULL),
+(143, 1, 'BuildPro', TRUE, NULL),
+(143, 1, 'RacletteCorp', TRUE, NULL),
+(143, 1, 'SecureIT', TRUE, NULL),
+(143, 1, 'TechNova', TRUE, NULL),
+(144, 1, 'AeroSpaceX', TRUE, NULL),
+(144, 1, 'BuildPro', TRUE, NULL),
+(144, 1, 'GreenEnergy', TRUE, NULL),
+(144, 1, 'MediHealth', TRUE, NULL),
+(144, 1, 'TechNova', TRUE, NULL),
+(145, 1, 'AeroSpaceX', TRUE, NULL),
+(145, 1, 'SecureIT', TRUE, NULL),
+(145, 1, 'TechNova', TRUE, NULL),
+(146, 1, 'DesignPlus', TRUE, NULL),
+(146, 1, 'EduConnect', TRUE, NULL),
+(146, 1, 'RacletteCorp', TRUE, NULL),
+(146, 1, 'TechNova', TRUE, NULL),
+(147, 1, 'Foodix', TRUE, NULL),
+(147, 1, 'RacletteCorp', TRUE, NULL),
+(147, 1, 'SecureIT', TRUE, NULL),
+(147, 1, 'TechNova', TRUE, NULL),
+(148, 1, 'BuildPro', TRUE, NULL),
+(148, 1, 'DesignPlus', TRUE, NULL),
+(148, 1, 'GreenEnergy', TRUE, NULL),
+(148, 1, 'RacletteCorp', TRUE, NULL),
+(148, 1, 'TechNova', TRUE, NULL),
+(149, 1, 'AeroSpaceX', TRUE, NULL),
+(149, 1, 'BuildPro', TRUE, NULL),
+(149, 1, 'TechNova', TRUE, NULL),
+(150, 1, 'AeroSpaceX', TRUE, NULL),
+(150, 1, 'MediHealth', TRUE, NULL),
+(150, 1, 'TechNova', TRUE, NULL),
+(151, 1, 'Foodix', TRUE, NULL),
+(151, 1, 'RacletteCorp', TRUE, NULL),
+(151, 1, 'TechNova', TRUE, NULL);
