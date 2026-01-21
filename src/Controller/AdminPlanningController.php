@@ -6,10 +6,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\DBAL\Connection;
-use App\Service\PlanningAlgo;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Service\PlanningAlgo;
+use App\Service\CvArchiver;
+use App\Entity\Company;
+use App\Entity\Forum;
 
+
+
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 /**
  * AdminPlanningController
  * 
@@ -20,6 +28,75 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 final class AdminPlanningController extends AbstractController
 {
+    
+    #[Route('/admin/planning/export-cvs', name: 'admin_export_cvs', methods: ['GET'])]
+    /**
+     * Exporte les CVs via le service CvArchiver qui attend des entités Company et Forum.
+     * * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param CvArchiver $cvArchiver
+     * @return Response
+     */
+    public function exportCompanyCvs(
+        Request $request,
+        EntityManagerInterface $em,
+        CvArchiver $cvArchiver
+    ): Response {
+        // Initialisation de la réponse par défaut
+        $response = null;
+
+        // 1. Récupération des paramètres scalaires
+        $forumId = $request->query->getInt('forum_id');
+        $companyName = trim((string)$request->query->get('company', ''));
+
+        if ($forumId > 0 && !empty($companyName)) {
+            
+            // 2. Récupération des ENTITÉS 
+            $forumEntity = $em->getRepository(Forum::class)->find($forumId);
+            $companyEntity = $em->getRepository(Company::class)->find($companyName);
+
+            if ($forumEntity instanceof Forum && $companyEntity instanceof Company) {
+                // 3. Appel au service avec les bons objets
+                try {
+                    $zipFilePath = $cvArchiver->generateCompanyZip($companyEntity, $forumEntity);
+
+                    if ($zipFilePath && file_exists($zipFilePath)) {
+                        // 4. Préparation du téléchargement
+                        $response = new BinaryFileResponse($zipFilePath);
+
+                        $response->setContentDisposition(
+                            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                            basename($zipFilePath)
+                        );
+
+                        // Supprime le fichier temporaire après l'envoi
+                        $response->deleteFileAfterSend(true);
+
+                    } else {
+                        // Pas de CV trouvés ou erreur de création
+                        $this->addFlash('warning', 'Aucun CV disponible ou erreur lors de la création de l\'archive pour ' . $companyName);
+                        $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
+                    }
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur technique : ' . $e->getMessage());
+                    $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
+                }
+            } else {
+                // Entités introuvables
+                $this->addFlash('error', 'Forum ou Entreprise introuvable en base de données.');
+                $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
+            }
+
+        } else {
+            // Paramètres URL manquants
+            $this->addFlash('error', 'Paramètres manquants (Forum ou Entreprise).');
+            $response = $this->redirectToRoute('admin_creerplanning');
+        }
+
+        return $response;
+    }
+
+
     /**
      * Affiche la page de création du planning
      * 
