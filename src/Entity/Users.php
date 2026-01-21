@@ -43,7 +43,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string Mot de passe hashé (max 60 caractères)
      */
     #[ORM\Column(name: 'user_pwd', length: 60)]
-    private string $user_pwd;
+    private string $user_pwd='';
 
     /**
      * @var string Rôle de l'utilisateur (max 10 caractères, ex: 'student', 'admin')
