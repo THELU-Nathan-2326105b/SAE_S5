@@ -317,6 +317,31 @@ class PlanningAlgo
         }
 
         foreach ($requests_by_company as $company => $requests) {
+
+            usort($requests, function ($a, $b) {
+                $rolePriority = [
+                    'alternance' => 1,
+                    'internship' => 2,
+                ];
+                $levelPriority = [
+                    'M2' => 1,
+                    'M1' => 2,
+                    'B3' => 3,
+                    'B2' => 4,
+                    'B1' => 5,
+                ];
+                $roleA  = $a['student']['role']  ?? '';
+                $roleB  = $b['student']['role']  ?? '';
+                $levelA = $a['student']['level'] ?? '';
+                $levelB = $b['student']['level'] ?? '';
+                $cmpRole = ($rolePriority[$roleA] ?? 99) <=> ($rolePriority[$roleB] ?? 99);
+                if ($cmpRole !== 0) {
+                    return $cmpRole;
+                }
+                return ($levelPriority[$levelA] ?? 99) <=> ($levelPriority[$levelB] ?? 99);
+            });
+
+
             if (isset($blockedCompanies[$company])) {
                 foreach ($requests as $req) {
                     $student = $req['student'];
@@ -356,7 +381,8 @@ class PlanningAlgo
                         'firstname' => $student['firstname'],
                         'lastname' => $student['lastname'],
                         'duration' => $slot['duration'],
-                        'role' => $student['role']
+                        'role' => $student['role'],
+                        'level' => $student['level']
                     ];
                     $slot['used'] = true;
                     $assigned = true;
@@ -370,6 +396,7 @@ class PlanningAlgo
                         'firstname' => $student['firstname'],
                         'lastname' => $student['lastname'],
                         'role' => $student['role'],
+                        'level' => $student['level'],
                         'reason' => 'Plus de créneaux disponibles'
                     ];
                 }

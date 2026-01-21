@@ -41,8 +41,7 @@ INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_fi
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('adrien.m1@example.com', '$2y$10$GMxKt7be1nW8iicb2jE9FOmFvemKMnNkq3lzXMqElX9xAYrResXj.', 'alternance', TRUE, 'Adrien', 'Perrin', 'M1', '2025-09-28', NULL); -- pwdAdrien27
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('maeva.m1@example.com', '$2y$10$b5mQP99nrFMe3c7uXjUTleYJqVKvBjUAxTZfXPhHSXwNFJ2WDG41m', 'internship', TRUE, 'Maéva', 'Renard', 'M1', '2025-09-29', NULL); -- pwdMaeva28
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('arthur.m2@example.com', '$2y$10$tZ8u7k.87hg9pmEcQ956Lu0.zl2xzFJb7SEPkGRzdybYM0V4JxbZ2', 'alternance', TRUE, 'Arthur', 'Blanchard', 'M2', '2025-09-30', NULL); -- pwdArthur29
-INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('lucie.m2@example.com', '$2y$10$dIztDc4vxRLII0CHQqc5De.RmHb2Zm3vxYH1ipPmFPkBHieo9criq', 'internship', TRUE, 'Lucie', 'Lemoine', 'M2', '2025-10-01', NULL); -- pwdLucie30
-
+INSERT INTO users (user_email, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv) VALUES ('lucie.m2@example.com', 'internship', TRUE, 'Lucie', 'Lemoine', 'M2', '2025-10-01', NULL);
 INSERT INTO users (user_email, user_pwd, user_role, user_firstconnexion, user_firstname, user_lastname, user_level, user_lastconnexion, user_url_cv)
 VALUES ('admin@example.com', '$2y$10$hSh.yY.vxzjUAeGkbwV8KeTS5PI.yOh3ozV.arrcX.sZ9Ao16EZMi', 'admin', FALSE, 'Super', 'Admin', NULL, '2025-09-11', NULL); -- admin123
 

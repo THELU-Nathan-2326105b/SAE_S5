@@ -141,6 +141,8 @@
                         <thead>
                             <tr>
                                 <th>Étudiant</th>
+                                <th>Rôle</th>
+                                <th>Niveau</th>
                                 <th>Entreprise</th>
                                 <th>Horaire</th>
                                 <th>Durée</th>
@@ -149,22 +151,19 @@
                         <tbody>
                         {% for row in appointments %}
                             <tr>
-                                <td>{{ row.firstname ?? '' }} {{ row.lastname ?? '' }}</td>
+                                <td>{{ row.firstname }} {{ row.lastname }}</td>
+                                <td>{{ row.role ?? '-' }}</td>
+                                <td>{{ row.level ?? '-' }}</td>
                                 <td>{{ row.company_name ?? row.companyName }}</td>
                                 <td>
-                                    {% if row.appointment_time is defined and row.appointment_time %}
+                                    {% if row.appointment_time %}
                                         {{ row.appointment_time|date('H:i') }}
                                     {% else %}
                                         <span class="text-muted">Non planifié</span>
                                     {% endif %}
                                 </td>
-                                <td>
-                                    {% if row.duration is defined and row.duration %}
-                                        {{ row.duration }} min
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>                            </tr>
+                                <td>{{ row.duration ?? '-' }} min</td>
+                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>

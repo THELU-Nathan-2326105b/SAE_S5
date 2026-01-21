@@ -151,13 +151,29 @@ final class AdminPlanningController extends AbstractController
 
         $response = new StreamedResponse(function() use ($conn, $forumId, $company) {
             $handle = fopen('php://output', 'w');
-            // En-têtes avec durée
-            fputcsv($handle, ['Étudiant', 'Entreprise', 'Créneau', 'Durée (min)']);
 
-            $sql = 'SELECT u.user_firstname, u.user_lastname, a.company_name, a.appointment_time, a.duration
+            fputcsv($handle, [
+                'Étudiant',
+                'Rôle',
+                'Niveau',
+                'Entreprise',
+                'Créneau',
+                'Durée (min)'
+            ]);
+
+            $sql = '
+                SELECT
+                u.user_firstname,
+                u.user_lastname,
+                u.user_role,
+                u.user_level,
+                a.company_name,
+                a.appointment_time,
+                a.duration
                 FROM appointment a
                 LEFT JOIN users u ON u.user_id = a.user_id
                 WHERE a.forum_id = :forumId';
+
             $params = ['forumId' => $forumId];
             if ($company !== '') {
                 $sql .= ' AND a.company_name = :company';
@@ -171,7 +187,14 @@ final class AdminPlanningController extends AbstractController
                 $fullname = trim(($row['user_firstname'] ?? '') . ' ' . ($row['user_lastname'] ?? ''));
                 $slot = $row['appointment_time'] ?? 'Non affecté';
                 $duration = $row['duration'] ?? '-';
-                fputcsv($handle, [$fullname, $row['company_name'], $slot, $duration]);
+                fputcsv($handle, [
+                    $fullname,
+                    $row['user_role']  ?? '',
+                    $row['user_level'] ?? '',
+                    $row['company_name'],
+                    $slot,
+                    $duration
+                ]);
             }
 
             fclose($handle);
