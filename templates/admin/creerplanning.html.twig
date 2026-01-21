@@ -20,13 +20,11 @@
         {% for message in app.flashes('success') %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
 
@@ -44,7 +42,7 @@
                 <input type="hidden" name="forum_id" id="generate_forum_id" value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
                 <button type="submit" name="execute" value="1" class="btn btn-primary" style="background:#008b57; border:none; padding:10px 16px; border-radius:10px; color:white;">Générer le planning</button>
             </form>
-            
+
             <form method="get" action="{{ path('admin_creerplanning_reset') }}" id="resetForm">
                 <input type="hidden" name="forum_id" id="reset_forum_id" value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
                 <button type="submit" class="btn btn-warning" style="background:#ffb347; border:none; padding:10px 16px; border-radius:10px; color:white;">Réinitialiser</button>
@@ -71,6 +69,21 @@
         {# ========================================== #}
 
         {# Rendez-vous non distribués #}
+
+        {% if blocked_companies is not empty %}
+            <div class="alert alert-warning mt-4">
+                <h4>Entreprises bloquées</h4>
+                <ul>
+                    {% for company, info in blocked_companies %}
+                        <li>
+                            <strong>{{ company }}</strong> : {{ info.reason }}
+                            (capacité : {{ info.capacity }}, demandes : {{ info.demand }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         {% if undistributed is defined %}
             <hr>
             <h3>Rendez-vous non distribués</h3>
@@ -133,16 +146,28 @@
                         <thead>
                             <tr>
                                 <th>Étudiant</th>
+                                <th>Rôle</th>
+                                <th>Niveau</th>
                                 <th>Entreprise</th>
                                 <th>Horaire</th>
+                                <th>Durée</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for row in appointments %}
                             <tr>
-                                <td>{{ row.user_firstname ?? row.userFirstname ?? '' }} {{ row.user_lastname ?? row.userLastname ?? '' }}</td>
+                                <td>{{ row.firstname }} {{ row.lastname }}</td>
+                                <td>{{ row.role ?? '-' }}</td>
+                                <td>{{ row.level ?? '-' }}</td>
                                 <td>{{ row.company_name ?? row.companyName }}</td>
-                                <td>{{ row.appointment_time ?? row.appointmentTime }}</td>
+                                <td>
+                                    {% if row.appointment_time %}
+                                        {{ row.appointment_time|date('H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">Non planifié</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.duration ?? '-' }} min</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -165,7 +190,7 @@
         const resetForumInput = document.getElementById('reset_forum_id');
         const exportForumInput = document.getElementById('export_forum_id');
         const resetForm = document.getElementById('resetForm');
-        
+
         if (forumSelect) {
             forumSelect.addEventListener('change', function() {
                 const forumId = this.value;
@@ -174,7 +199,7 @@
                     if (exportForumInput) exportForumInput.value = forumId;
             });
         }
-        
+
         if (resetForm) {
             resetForm.addEventListener('submit', function(e) {
                 if (!confirm('Êtes-vous sûr de vouloir réinitialiser tous les rendez-vous de ce forum ?')) {
