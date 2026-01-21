@@ -76,6 +76,7 @@ CREATE TABLE appointment (
    company_name VARCHAR(100),
    appointment_request BOOLEAN,
    appointment_time TIMESTAMP,
+   duration INT NOT NULL DEFAULT 0,
    PRIMARY KEY (user_id, forum_id, company_name),
    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
    FOREIGN KEY (forum_id) REFERENCES forum(forum_id) ON DELETE CASCADE,
