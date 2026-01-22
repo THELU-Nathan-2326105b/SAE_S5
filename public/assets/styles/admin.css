@@ -691,7 +691,7 @@
     border: 1px solid #eee;
 }
 .table-img.circle {
-    border-radius: 50%; 
+    border-radius: 50%;
 }
 
 
@@ -861,88 +861,9 @@
 }
 .arrow-icon {
     transition: transform 0.3s ease;
-    display: inline-block; 
+    display: inline-block;
 }
-
 
 .js-toggle-btn.active .arrow-icon {
     transform: rotate(180deg);
-}
-/* ===================== SECTION EXPORT ZIP (Nouveau) ===================== */
-
-/* Conteneur principal - Style inspiré de .add-company-section mais largeur flexible */
-.export-section {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 0 5px rgb(71, 71, 71);
-    font-family: 'Poppins', sans-serif;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    border-left: 5px solid #008b57; 
-}
-
-/* Titre de la section */
-.export-section-title {
-    font-size: 1.3rem;
-    color: #008b57;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Mise en page du formulaire (Flexbox) */
-.export-form {
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-end; 
-    flex-wrap: wrap;
-}
-
-/* Groupe pour le label et le select */
-.export-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex-grow: 1; /* Prend l'espace disponible */
-    min-width: 250px;
-}
-
-.export-label {
-    font-weight: 500;
-    color: #333;
-    font-size: 0.95rem;
-}
-
-/* Style du select pour matcher vos textarea existants */
-.export-select {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    background-color: white;
-    cursor: pointer;
-    width: 100%;
-    transition: border-color 0.3s ease;
-}
-
-.export-select:focus {
-    outline: none;
-    border-color: #008b57;
-    box-shadow: 0 0 5px rgba(71, 71, 71);
-}
-
-/* Responsive : Empilement sur mobile */
-@media (max-width: 600px) {
-    .export-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .export-form .btn {
-        width: 100%;
-        margin-top: 0.5rem;
-    }
 }

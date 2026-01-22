@@ -28,74 +28,124 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  */
 final class AdminPlanningController extends AbstractController
 {
-    
-    #[Route('/admin/planning/export-cvs', name: 'admin_export_cvs', methods: ['GET'])]
     /**
-     * Exporte les CVs via le service CvArchiver qui attend des entités Company et Forum.
-     * * @param Request $request
-     * @param EntityManagerInterface $em
-     * @param CvArchiver $cvArchiver
-     * @return Response
+     * Exporte les CV des utilisateurs d'un forum pour une entreprise spécifique
+     * ou pour toutes les entreprises si aucun nom n'est fourni.
+     *
+     * @param Request $request Requête HTTP contenant les paramètres forum_id et company
+     * @param EntityManagerInterface $em Gestionnaire d'entités pour accéder à la base de données
+     * @param CvArchiver $cvArchiver Service pour la génération des archives ZIP des CV
+     * @return Response Fichier ZIP contenant les CV ou message d'erreur
      */
+    #[Route('/admin/planning/export-cv', name: 'admin_export_cv', methods: ['GET'])]
     public function exportCompanyCvs(
         Request $request,
         EntityManagerInterface $em,
         CvArchiver $cvArchiver
     ): Response {
-        // Initialisation de la réponse par défaut
-        $response = null;
-
-        // 1. Récupération des paramètres scalaires
         $forumId = $request->query->getInt('forum_id');
-        $companyName = trim((string)$request->query->get('company', ''));
+        $companyName = trim((string) $request->query->get('company', ''));
 
-        if ($forumId > 0 && !empty($companyName)) {
-            
-            // 2. Récupération des ENTITÉS 
-            $forumEntity = $em->getRepository(Forum::class)->find($forumId);
-            $companyEntity = $em->getRepository(Company::class)->find($companyName);
-
-            if ($forumEntity instanceof Forum && $companyEntity instanceof Company) {
-                // 3. Appel au service avec les bons objets
-                try {
-                    $zipFilePath = $cvArchiver->generateCompanyZip($companyEntity, $forumEntity);
-
-                    if ($zipFilePath && file_exists($zipFilePath)) {
-                        // 4. Préparation du téléchargement
-                        $response = new BinaryFileResponse($zipFilePath);
-
-                        $response->setContentDisposition(
-                            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                            basename($zipFilePath)
-                        );
-
-                        // Supprime le fichier temporaire après l'envoi
-                        $response->deleteFileAfterSend(true);
-
-                    } else {
-                        // Pas de CV trouvés ou erreur de création
-                        $this->addFlash('warning', 'Aucun CV disponible ou erreur lors de la création de l\'archive pour ' . $companyName);
-                        $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
-                    }
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur technique : ' . $e->getMessage());
-                    $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
-                }
-            } else {
-                // Entités introuvables
-                $this->addFlash('error', 'Forum ou Entreprise introuvable en base de données.');
-                $response = $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
-            }
-
-        } else {
-            // Paramètres URL manquants
-            $this->addFlash('error', 'Paramètres manquants (Forum ou Entreprise).');
-            $response = $this->redirectToRoute('admin_creerplanning');
+        if ($forumId <= 0) {
+            $this->addFlash('error', 'Paramètres invalides.');
+            return $this->redirectToRoute('admin_creerplanning');
         }
 
-        return $response;
-    }
+        $forumEntity = $em->getRepository(Forum::class)->find($forumId);
+        if (!$forumEntity instanceof Forum) {
+            $this->addFlash('error', 'Forum introuvable.');
+            return $this->redirectToRoute('admin_creerplanning');
+        }
 
+        $usersWithCv = [];
+        $missingCvUsers = [];
+        $fileMissingUsers = [];
+
+        try {
+            $appointments = $cvArchiver->getForumAppointments($forumEntity);
+
+            // Filtrer par entreprise si nécessaire
+            if ($companyName !== '') {
+                $companyEntity = $em->getRepository(Company::class)->findOneBy([
+                    'company_name' => $companyName
+                ]);
+                if (!$companyEntity) {
+                    throw new \RuntimeException('Entreprise introuvable.');
+                }
+
+                $appointments = array_filter($appointments, fn($appointment) =>
+                    $appointment->getCompanyName() === $companyName
+                );
+
+                $zipFileName = 'forum_' . $forumId . '_' . preg_replace('/[^A-Za-z0-9_]/', '_', $companyName) . '.zip';
+            } else {
+                $zipFileName = 'forum_' . $forumId . '_all_cv.zip';
+            }
+
+            $appointments = array_filter($appointments, function($appointment) {
+                $duration = (int) $appointment->getDuration(); // cast en int pour être sûr
+                return $duration >= 5;
+            });
+
+
+
+            // Classer les utilisateurs selon CV existant ou manquant
+            foreach ($appointments as $appointment) {
+                $user = $appointment->getUser();
+                if ($user instanceof \App\Entity\Users) {
+                    $fullname = trim(($user->getUserFirstname() ?? '-') . ' ' . ($user->getUserLastname() ?? '-'));
+                    $cvPath = $cvArchiver->getPhysicalPath($user);
+
+                    if ($user->getUserUrlCv() === null) {
+                        $missingCvUsers[] = $fullname;
+                    } elseif (!$cvPath || !file_exists($cvPath)) {
+                        $fileMissingUsers[] = $fullname;
+                    } else {
+                        $usersWithCv[] = $user;
+                    }
+                } else {
+                    $missingCvUsers[] = 'Utilisateur inconnu';
+                }
+            }
+
+            // --- Génération du ZIP avec README si nécessaire --- //
+            if (!empty($usersWithCv)) {
+                if ($companyName !== '') {
+                    $zipFilePath = $cvArchiver->generateCompanyZip(
+                        $companyEntity,
+                        $forumEntity,
+                        $usersWithCv,
+                        $missingCvUsers,
+                        $fileMissingUsers
+                    );
+                } else {
+                    $zipFilePath = $cvArchiver->generateForumZip(
+                        $forumEntity,
+                        $usersWithCv,
+                        $missingCvUsers,
+                        $fileMissingUsers
+                    );
+                }
+            } else {
+                $zipFilePath = null; // Aucun CV à exporter
+            }
+
+            if (!$zipFilePath || !file_exists($zipFilePath)) {
+                $this->addFlash('error', 'Aucun CV n’a pu être exporté.');
+                return $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
+            }
+
+            $response = new BinaryFileResponse($zipFilePath);
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $zipFileName);
+            $response->deleteFileAfterSend(true);
+
+            return $response;
+
+        } catch (\Throwable $e) {
+            $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+            return $this->redirectToRoute('admin_creerplanning', ['forum_id' => $forumId]);
+        }
+    }
 
     /**
      * Affiche la page de création du planning
@@ -126,6 +176,7 @@ final class AdminPlanningController extends AbstractController
             'blocked_companies' => $blockedCompanies
         ]);
     }
+
 
     #[Route('/admin/creerplanning/run', name: 'admin_creerplanning_run', methods: ['GET'])]
     /**

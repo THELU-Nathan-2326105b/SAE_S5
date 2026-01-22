@@ -17,16 +17,14 @@
         <h1>Générer le planning forum</h1>
 
         {# Messages flash #}
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-            </div>
+        {% for type in ['success', 'error', 'warning'] %}
+            {% for message in app.flashes(type) %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endfor %}
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
+
 
         <div class="forum-select" style="max-width:420px; margin-bottom:20px;">
             <label for="forum" class="form-label" style="font-weight:600; color:#008b57;">Choisir un forum :</label>
@@ -48,21 +46,61 @@
                 <button type="submit" class="btn btn-warning" style="background:#ffb347; border:none; padding:10px 16px; border-radius:10px; color:white;">Réinitialiser</button>
             </form>
 
-            {# Export CSV #}
-            <form method="get" action="{{ path('admin_creerplanning_export') }}" id="exportForm" style="display:flex; gap:8px; align-items:center;">
-                <input type="hidden" name="forum_id" id="export_forum_id" value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
-                <select name="company" id="company_filter" class="form-select" style="padding:8px 10px; border-radius:10px; border:1px solid #ccc; min-width:160px;">
-                    <option value="">Toutes les entreprises</option>
-                    {% if companies is defined %}
-                        {% for company in companies %}
-                            <option value="{{ company }}">{{ company }}</option>
-                        {% endfor %}
-                    {% endif %}
+            {# === EXPORT CSV === #}
+            <form method="get"
+                  action="{{ path('admin_creerplanning_export') }}"
+                  id="exportCsvForm"
+                  style="display:flex; gap:8px; align-items:center;">
+
+                <input type="hidden" name="forum_id" id="export_forum_id"
+                       value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
+
+                <select name="company"
+                        class="form-select"
+                        style="padding:8px 10px; border-radius:10px; border:1px solid #ccc; min-width:180px;">
+                    <option value="">Tout les CV</option>
+                    {% for company in companies %}
+                        <option value="{{ company }}">{{ company }}</option>
+                    {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-secondary" style="background:#4a5568; border:none; padding:10px 14px; border-radius:10px; color:white;">Exporter CSV</button>
+
+                <button type="submit"
+                        class="btn btn-secondary"
+                        style="background:#4a5568; border:none; padding:10px 14px; border-radius:10px; color:white;">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </button>
             </form>
+
+            {# === EXPORT ZIP (CVs) === #}
+            <form method="get"
+                  action="{{ path('admin_export_cv') }}"
+                  id="exportZipForm"
+                  style="display:flex; gap:8px; align-items:center;">
+
+                <input type="hidden" name="forum_id"
+                       value="{{ selected_forum_id ?? forums[0].forum_id ?? '' }}">
+
+                <select name="company"
+                        class="form-select"
+                        style="padding:8px 10px; border-radius:10px; border:1px solid #ccc; min-width:180px;">
+
+                    <option value="">Toutes les entreprises</option>
+
+                    {% for company in companies %}
+                        <option value="{{ company }}">{{ company }}</option>
+                    {% endfor %}
+                </select>
+
+
+                <button type="submit"
+                        class="btn btn-secondary"
+                        style="background:#008b57; border:none; padding:10px 14px; border-radius:10px; color:white;">
+                    <i class="fas fa-file-archive"></i> Export CV (ZIP)
+                </button>
+            </form>
+
         </div>
-        
+
 
         {# Rendez-vous non distribués #}
 
@@ -172,14 +210,8 @@
             {% else %}
                 <p>Aucun rendez-vous inséré en base.</p>
             {% endif %}
-
         {% endif %}
     </div>
-    {# === INSERTION DU FORMULAIRE EXPORT ZIP === #}
-    {% if selected_forum_id is defined and selected_forum_id %}
-        {% include 'admin/_form_export_cvs.html.twig' %}
-    {% endif %}
-    {# ========================================== #}
 </main>
 
 {% include 'footer.html.twig' %}
