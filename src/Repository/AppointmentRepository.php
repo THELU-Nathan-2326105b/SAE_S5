@@ -10,10 +10,10 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * AppointmentRepository
- * 
+ *
  * Repository pour gérer les requêtes sur l'entité Appointment.
  * Fournit des méthodes pour rechercher, ajouter et supprimer des rendez-vous.
- * 
+ *
  * @extends ServiceEntityRepository<Appointment>
  * @package App\Repository
  *
@@ -26,7 +26,7 @@ class AppointmentRepository extends ServiceEntityRepository
 {
     /**
      * Constructeur du repository
-     * 
+     *
      * @param ManagerRegistry $registry Registre du gestionnaire d'entités
      */
     public function __construct(ManagerRegistry $registry)
@@ -36,7 +36,7 @@ class AppointmentRepository extends ServiceEntityRepository
 
     /**
      * Ajoute un rendez-vous en base de données
-     * 
+     *
      * @param Appointment $appointment Le rendez-vous à ajouter
      * @param bool $flush Si true, flush immédiatement les modifications
      * @return void
@@ -51,7 +51,7 @@ class AppointmentRepository extends ServiceEntityRepository
 
     /**
      * Supprime un rendez-vous de la base de données
-     * 
+     *
      * @param Appointment $appointment Le rendez-vous à supprimer
      * @param bool $flush Si true, flush immédiatement les modifications
      * @return void
@@ -65,7 +65,7 @@ class AppointmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère les rendez-vous sélectionnés (appointment_request = TRUE)
+     * Récupère les rendez-vous sélectionnés (appointment_request = TRUE ou duration >= 5)
      * pour un utilisateur et un forum donné
      *
      * @param Users $user L'utilisateur
@@ -77,7 +77,7 @@ class AppointmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.user = :user')
             ->andWhere('a.forum = :forum')
-            ->andWhere('a.appointmentRequest = true')
+            ->andWhere('a.appointmentRequest = true OR a.duration >= 5')
             ->setParameter('user', $user)
             ->setParameter('forum', $forum)
             ->getQuery()
@@ -87,7 +87,7 @@ class AppointmentRepository extends ServiceEntityRepository
     /**
      * Supprime tous les rendez-vous d'un utilisateur pour un forum donné
      * Utile pour réinitialiser la sélection
-     * 
+     *
      * @param Users $user L'utilisateur
      * @param Forum $forum Le forum
      * @return void

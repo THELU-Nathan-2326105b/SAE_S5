@@ -242,11 +242,8 @@ final class AdminPlanningController extends AbstractController
         }
 
         $forums = $conn->fetchAllAssociative('SELECT * FROM forum ORDER BY forum_id');
-
         $undistributed = $this->fetchUndistributed($conn, $forumId);
-
         usort($undistributed, fn($a,$b) => strcmp($a['company_name'] ?? '', $b['company_name'] ?? ''));
-
         $companies = $this->fetchCompaniesForForum($conn, $forumId);
 
         return $this->render('admin/creerplanning.html.twig', [

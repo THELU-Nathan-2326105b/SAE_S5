@@ -2,10 +2,10 @@
 
 /**
  * ForumController
- * 
+ *
  * Gère l'affichage et l'interaction avec le forum de recrutement.
  * Permet aux étudiants de sélectionner des entreprises et d'uploader leur CV.
- * 
+ *
  * @package App\Controller
  */
 
@@ -25,7 +25,7 @@ use App\Repository\UsersRepository;
 
 /**
  * Class ForumController
- * 
+ *
  * Contrôleur pour la gestion du forum de recrutement.
  * Gère la sélection des entreprises et l'upload du CV par les étudiants.
  */
@@ -34,10 +34,10 @@ class ForumController extends AbstractController
     /**
      * Affiche la page du forum de recrutement
      * Gère la sélection des entreprises et l'upload du CV en deux étapes
-     * 
+     *
      * Step 1: Sélection des entreprises filtrées selon le niveau de l'étudiant
      * Step 2: Upload du CV en PDF/DOC/DOCX
-     * 
+     *
      * @param Request $request Requête HTTP
      * @param CompanyRepository $companyRepository Repository des entreprises
      * @param AppointmentRepository $appointmentRepository Repository des rendez-vous
@@ -94,21 +94,19 @@ class ForumController extends AbstractController
 
                 if ($existing) {
                     $existing->setAppointmentRequest(true);
-                    $existing->setAppointmentTime(new \DateTime());
                 } else {
                     $appointment = new \App\Entity\Appointment();
                     $appointment->setUser($user);
                     $appointment->setForum($forum);
                     $appointment->setCompanyName($companyName);
                     $appointment->setAppointmentRequest(true);
-                    $appointment->setAppointmentTime(new \DateTime());
                     $em->persist($appointment);
                 }
             }
 
             foreach ($existingAppointments as $app) {
                 if (!in_array($app->getCompanyName(), $selectedFromForm, true)) {
-                    $app->setAppointmentRequest(false);
+                    $em->remove($app);
                 }
             }
 
