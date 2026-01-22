@@ -27,9 +27,11 @@ final class Mapper implements MapperContract
         $company = new Company();
 
         // Les entêtes sont normalisées en minuscules par l'importeur
-        if (isset($row['company_name'])) {
-            $company->setCompanyName((string) $row['company_name']);
+        $name = isset($row['company_name']) ? trim((string) $row['company_name']) : '';
+        if ($name === '') {
+            throw new \RuntimeException("Le nom d'une des entreprises est vide.");
         }
+        $company->setCompanyName($name);
 
         $company->setCompanyDescription($row['company_description'] ?? null);
         $company->setCompanyLogo($row['company_logo'] ?? null);

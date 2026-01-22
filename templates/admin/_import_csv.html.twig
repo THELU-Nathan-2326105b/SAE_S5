@@ -3,7 +3,6 @@
 
   {{ form_start(importForm, {
     attr: { enctype: 'multipart/form-data', id: 'import-csv-form', class: 'import-csv-form' },
-    action: path(action_route|default('app_user_import')),
     method: 'POST'
   }) }}
 
