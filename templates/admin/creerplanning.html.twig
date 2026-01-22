@@ -62,11 +62,7 @@
                 <button type="submit" class="btn btn-secondary" style="background:#4a5568; border:none; padding:10px 14px; border-radius:10px; color:white;">Exporter CSV</button>
             </form>
         </div>
-        {# === INSERTION DU FORMULAIRE EXPORT ZIP === #}
-        {% if selected_forum_id is defined and selected_forum_id %}
-            {% include 'admin/_form_export_cvs.html.twig' %}
-        {% endif %}
-        {# ========================================== #}
+        
 
         {# Rendez-vous non distribués #}
 
@@ -179,6 +175,11 @@
 
         {% endif %}
     </div>
+    {# === INSERTION DU FORMULAIRE EXPORT ZIP === #}
+    {% if selected_forum_id is defined and selected_forum_id %}
+        {% include 'admin/_form_export_cvs.html.twig' %}
+    {% endif %}
+    {# ========================================== #}
 </main>
 
 {% include 'footer.html.twig' %}
