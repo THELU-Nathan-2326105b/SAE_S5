@@ -63,7 +63,6 @@ final class AdminController extends AbstractController
                 TRUNCATE TABLE
                     appointment,
                     is_present,
-                    forum,
                     company,
                     reset_password_request
                 CASCADE
@@ -76,7 +75,7 @@ final class AdminController extends AbstractController
                 WHERE user_role NOT LIKE 'admin'
             ");
 
-            // 3️⃣ Réinitialiser la séquence users
+            // 3 Réinitialiser la séquence users
             $conn->executeStatement("
                 SELECT setval('users_user_id_seq', COALESCE(MAX(user_id), 1))
                 FROM users
