@@ -16,6 +16,7 @@ use App\Import\Contract\ImporterFactory;
 use App\Service\CsvImportService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use App\Service\IsPresentImportService;
 
 /**
  * Contrôleur de gestion des entreprises (Company).
@@ -211,61 +212,105 @@ class CompanyController extends AbstractController
 
         return $this->redirectToRoute('app_company_index');
     }
-
     /**
      * Importe des entreprises depuis un fichier CSV uploadé.
      *
      * Route: POST /company/import (name: app_company_import)
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
-    public function import(Request $request, EntityManagerInterface $em, ImporterFactory $importerFactory, CsvImportService $csvImportService): Response
+    public function import(
+        Request $request, 
+        EntityManagerInterface $em, 
+        ImporterFactory $importerFactory, 
+        CsvImportService $csvImportService,
+        IsPresentImportService $isPresentService
+    ): Response
     {
-        // $this->accessControl();
         $form = $this->createForm(CsvImportType::class);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted() || !$form->isValid()) {
-            $this->addFlash('warning', 'Le fichier fourni n’est pas valide.');
+            $this->addFlash('warning', 'Le fichier fourni n\'est pas valide.');
             return $this->redirectToRoute('app_company_index');
         }
 
-        try {
+       try {
             $uploaded = $form->get('csvFile')->getData();
             $path = $csvImportService->moveUploadedCsvAndGetPath($uploaded, 'company_import_');
+            
+            // Import des entreprises
             $companies = $csvImportService->runImport($path, $importerFactory, 'company');
-            $csvImportService->persistImportedEntities($companies, $em);
-            $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($companies)} entreprises).");
+            
+            try {
+                $csvImportService->persistImportedEntities($companies, $em);
+            } catch (UniqueConstraintViolationException $e) {
+                // Extraire le nom de l'entreprise en doublon du message d'erreur
+                preg_match('/Key \(company_name\)=\(([^)]+)\)/', $e->getMessage(), $matches);
+                $companyName = $matches[1] ?? 'inconnue';
+                throw new \RuntimeException("L'entreprise '{$companyName}' existe déjà en base de données.");
+            }
+            
+            // Import dans is_present (si les colonnes existent)
+            $isPresentRows = $this->extractIsPresentDataFromCsv($path);
+            if (!empty($isPresentRows)) {
+                $countPresent = $isPresentService->importFromCsv($isPresentRows);
+                $this->addFlash('success', "Import terminé : {$csvImportService->countItems($companies)} entreprises, {$countPresent} présences forum.");
+            } else {
+                $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($companies)} entreprises).");
+            }
         } catch (\Throwable $e) {
-            $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+            $this->addFlash('danger', 'Échec de l\'import : ' . $e->getMessage());
         }
 
         return $this->redirectToRoute('app_company_index');
     }
 
     /**
-     * Supprime les entreprises avec nom vide.
+     * Extrait les données is_present du CSV
      */
-    #[Route('/clean-invalid', name: 'clean_invalid', methods: ['POST'])]
-    public function cleanInvalid(Request $request, CompanyRepository $repo, EntityManagerInterface $em): Response
+    private function extractIsPresentDataFromCsv(string $path): array
     {
-        if ($this->isCsrfTokenValid('clean_invalid_companies', $request->request->get('_token'))) {
-            $qb = $em->createQueryBuilder();
-            $count = $qb->delete(Company::class, 'c')
-                ->where('c.company_name = :empty')
-                ->setParameter('empty', '')
-                ->getQuery()
-                ->execute();
-
-            if ($count > 0) {
-                $this->addFlash('success', "$count entreprise(s) invalide(s) supprimée(s).");
-            } else {
-                $this->addFlash('info', 'Aucune entreprise invalide trouvée.');
-            }
-        } else {
-            $this->addFlash('error', 'Token CSRF invalide.');
+        $file = new \SplFileObject($path, 'r');
+        $file->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY);
+        
+        // Lire les headers
+        $headers = $file->fgetcsv(',');
+        if (!$headers) {
+            return [];
         }
-
-        return $this->redirectToRoute('app_company_index');
+        
+        // Nettoyer BOM UTF-8
+        $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
+        $headers = array_map('trim', $headers);
+        $headers = array_map('strtolower', $headers);
+        
+        // Vérifier si les colonnes is_present existent (start_time et end_time minimum requis)
+        if (!in_array('start_time', $headers) || !in_array('end_time', $headers)) {
+            return []; // Pas de données is_present dans ce CSV
+        }
+        
+        $rows = [];
+        while (!$file->eof()) {
+            $row = $file->fgetcsv(',');
+            if (!$row || count($row) < count($headers)) {
+                continue;
+            }
+            
+            $assoc = array_combine($headers, $row);
+            if ($assoc) {
+                // Ajouter forum_id = 1 si absent
+                if (empty($assoc['forum_id'])) {
+                    $assoc['forum_id'] = 1;
+                }
+                
+                // Vérifier que company_name existe
+                if (!empty($assoc['company_name'])) {
+                    $rows[] = $assoc;
+                }
+            }
+        }
+        
+        return $rows;
     }
 
 }

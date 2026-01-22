@@ -86,9 +86,9 @@
              <h3 class="import-title">Import CSV Entreprises</h3>
             {{ include('admin/_import_csv.html.twig', {
                 'importForm': importForm,
-                'csvHeader': 'company_name;company_description;company_logo',
-                'csvExample': 'Tech Solutions;Développement...;/uploads/logos/tech.png',
-                'csvImage': 'assets/images/exemple_csv_company.png'
+                'csvHeader': 'company_name;company_description;company_logo;forum_id;start_time;end_time;search_type;search_level',
+                'csvExample': 'Blue Ocean;Description Blue Ocean;/uploads/logos/blue_oc.png;1;2026-02-01 08:00:00;2026-02-01 18:00:00;internship;alternance;B3;M1;M2',
+                'csvImage': 'assets/images/exemple_csv_company_2.png'
             }) }}
         </div>
     {% endif %}
