@@ -1,0 +1,9 @@
+{% if list is not empty %}
+    <form method="post" action="{{ path(action_route) }}" 
+          class="form-inline-delete"
+          onsubmit="return confirm('{{ confirm_message|e('js') }}');">
+        <input type="hidden" name="_token" value="{{ csrf_token(csrf_token_id) }}">
+        <button type="submit" class="btn btn-delete">{{ button_text }}</button>
+    </form>
+{% endif %}
+

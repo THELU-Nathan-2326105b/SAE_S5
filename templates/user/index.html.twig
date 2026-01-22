@@ -137,24 +137,25 @@
     {# ========================================== #}
     <div class="page-actions">
         <a class="btn btn-edit" href="{{ path('app_user_new') }}">+ Ajouter un utilisateur</a>
-
-        {% if users is not empty %}
-            <form method="post" action="{{ path('app_user_delete_non_admins') }}"
-                  onsubmit="return confirm('ATTENTION : Vous allez supprimer TOUS les étudiants.\n\nCette action est irréversible.\n\nConfirmer ?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete_all_non_admins') }}">
-                <button type="submit" class="btn btn-delete">Supprimer tous les étudiants</button>
-            </form>
-        {% endif %}
+        
+        {{ include('admin/_delete_all_button.html.twig', {
+            'list': users,
+            'action_route': 'app_user_delete_non_admins',
+            'csrf_token_id': 'delete_all_non_admins',
+            'button_text': 'Supprimer tous les étudiants',
+            'confirm_message': "ATTENTION : Vous allez supprimer TOUS les étudiants..."
+        }) }}
     </div>
 
     {# Bloc Import #}
     <div class="import-box">
         <h3 class="import-title">Import CSV Utilisateurs</h3>
-        {{ include('_import_csv.html.twig', {
+        {{ include('admin/_import_csv.html.twig', {
             'importForm': importForm,
             'csvHeader': 'user_email;user_firstname;user_lastname;user_role;user_level',
             'csvExample': 'jean.dupont@email.com;Jean;Dupont;user;3',
-            'csvImage': 'assets/images/exemple_csv_users.png'
+            'csvImage': 'assets/images/exemple_csv_users.png',
+            'action_route': 'app_user_import'  
         }) }}
     </div>
 </div>

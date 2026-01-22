@@ -176,6 +176,42 @@ class CompanyController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Supprime toutes les entreprises.
+     *
+     * @param Request $request
+     * @param CompanyRepository $companyRepository
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/delete-all', name: 'delete_all', methods: ['POST'])]
+    public function deleteAll(Request $request, CompanyRepository $companyRepository, EntityManagerInterface $em): Response
+    {
+        // Vérification du token CSRF pour la sécurité
+        if ($this->isCsrfTokenValid('delete_all_companies', $request->request->get('_token'))) {
+            
+            $companies = $companyRepository->findAll();
+            $count = count($companies);
+
+            foreach ($companies as $company) {
+                $em->remove($company);
+            }
+            
+            $em->flush();
+
+            if ($count > 0) {
+                $this->addFlash('success', "$count entreprises ont été supprimées avec succès.");
+            } else {
+                $this->addFlash('info', "Aucune entreprise à supprimer.");
+            }
+        } else {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirectToRoute('app_company_index');
+    }
+
     /**
      * Importe des entreprises depuis un fichier CSV uploadé.
      *
@@ -201,6 +237,32 @@ class CompanyController extends AbstractController
             $this->addFlash('success', "Import terminé avec succès ({$csvImportService->countItems($companies)} entreprises).");
         } catch (\Throwable $e) {
             $this->addFlash('danger', 'Échec de l’import : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_company_index');
+    }
+
+    /**
+     * Supprime les entreprises avec nom vide.
+     */
+    #[Route('/clean-invalid', name: 'clean_invalid', methods: ['POST'])]
+    public function cleanInvalid(Request $request, CompanyRepository $repo, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('clean_invalid_companies', $request->request->get('_token'))) {
+            $qb = $em->createQueryBuilder();
+            $count = $qb->delete(Company::class, 'c')
+                ->where('c.company_name = :empty')
+                ->setParameter('empty', '')
+                ->getQuery()
+                ->execute();
+
+            if ($count > 0) {
+                $this->addFlash('success', "$count entreprise(s) invalide(s) supprimée(s).");
+            } else {
+                $this->addFlash('info', 'Aucune entreprise invalide trouvée.');
+            }
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide.');
         }
 
         return $this->redirectToRoute('app_company_index');
