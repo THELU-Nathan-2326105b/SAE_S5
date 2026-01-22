@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Users Entity
@@ -33,13 +34,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      * @var ?string Email unique de l'utilisateur (max 320 caractères)
      */
     #[ORM\Column(name: 'user_email', length: 320, unique: true, nullable: true)]
+    #[Assert\Email(message: 'Email invalide.')]
+    #[Assert\Length(max: 320, maxMessage: '320 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'L\'email ne peut pas être uniquement des espaces.', match: true)]
     private ?string $user_email = null;
-
+    
     /**
      * @var string Mot de passe hashé (max 60 caractères)
      */
     #[ORM\Column(name: 'user_pwd', length: 60)]
-    private string $user_pwd;
+    private string $user_pwd='';
 
     /**
      * @var string Rôle de l'utilisateur (max 10 caractères, ex: 'student', 'admin')
@@ -57,12 +61,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      * @var ?string Prénom de l'utilisateur (max 50 caractères)
      */
     #[ORM\Column(name: 'user_firstname', length: 50, nullable: true)]
+    #[Assert\Length(max: 50, maxMessage: '50 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'Le prénom ne peut pas être uniquement des espaces.', match: true)]
     private ?string $user_firstname = null;
 
     /**
      * @var ?string Nom de famille de l'utilisateur (max 50 caractères)
      */
     #[ORM\Column(name: 'user_lastname', length: 50, nullable: true)]
+    #[Assert\Length(max: 50, maxMessage: '50 caractères max.')]
+    #[Assert\Regex(pattern: '/\S/', message: 'Le nom ne peut pas être uniquement des espaces.', match: true)]
     private ?string $user_lastname = null;
 
     /**
@@ -139,6 +147,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setUserEmail(?string $user_email): self
     {
+        if ($user_email !== null) {
+            $user_email = trim($user_email);
+            if ($user_email === '') {
+                $user_email = null;
+            }
+        }
         $this->user_email = $user_email;
         return $this;
     }
@@ -227,6 +241,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setUserFirstname(?string $user_firstname): self
     {
+        if ($user_firstname !== null) {
+            $user_firstname = trim($user_firstname);
+            if ($user_firstname === '') {
+                $user_firstname = null;
+            }
+        }
         $this->user_firstname = $user_firstname;
         return $this;
     }
@@ -249,6 +269,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setUserLastname(?string $user_lastname): self
     {
+        if ($user_lastname !== null) {
+            $user_lastname = trim($user_lastname);
+            if ($user_lastname === '') {
+                $user_lastname = null;
+            }
+        }
         $this->user_lastname = $user_lastname;
         return $this;
     }

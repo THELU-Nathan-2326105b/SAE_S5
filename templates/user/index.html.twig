@@ -29,7 +29,7 @@
     {#       TABLEAU 1 : ADMINISTRATEURS          #}
     {# ========================================== #}
     <h3 class="section-title">Administrateurs</h3>
-    
+
     <table class="admin-table">
         <thead>
             <tr>
@@ -42,7 +42,7 @@
         </thead>
         <tbody>
             {% set has_admins = false %}
-            
+
             {% for user in users %}
                 {% if user.userRole is defined and user.userRole|lower == 'admin' %}
                     {% set has_admins = true %}
@@ -56,20 +56,20 @@
                         {# <td class="actions-cell" data-label="Actions">
                             <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
                             <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
-                            
-                            <form method="post" 
-                                  action="{{ path('app_user_delete', { id: user.id }) }}" 
+
+                            <form method="post"
+                                  action="{{ path('app_user_delete', { id: user.id }) }}"
                                   class="form-inline-delete"
                                   onsubmit="return confirm('⚠️ ATTENTION : Vous êtes sur le point de supprimer un ADMINISTRATEUR !\n\nCette action est irréversible.\n\nÊtes-vous VRAIMENT sûr de vouloir continuer ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                                 <button class="btn btn-link-danger">Supprimer</button>
                             </form>
                         </td> #}
-                        
+
                     </tr>
                 {% endif %}
             {% endfor %}
-            
+
             {% if not has_admins %}
                 <tr><td colspan="5" class="no-data">Aucun administrateur trouvé.</td></tr>
             {% endif %}
@@ -100,7 +100,7 @@
             </thead>
             <tbody>
                 {% set has_users = false %}
-                
+
                 {% for user in users %}
                     {% if user.userRole is defined and user.userRole|lower != 'admin' %}
                         {% set has_users = true %}
@@ -115,8 +115,8 @@
                                 <a class="btn btn-view" href="{{ path('app_user_show', { id: user.id }) }}">Voir</a>
                                 <a class="btn btn-edit" href="{{ path('app_user_edit', { id: user.id }) }}">Modifier</a>
 
-                                <form method="post" 
-                                    action="{{ path('app_user_delete', { id: user.id }) }}" 
+                                <form method="post"
+                                    action="{{ path('app_user_delete', { id: user.id }) }}"
                                     class="form-inline-delete"
                                     onsubmit="return confirm('Supprimer cet utilisateur ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">

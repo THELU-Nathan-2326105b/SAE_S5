@@ -36,15 +36,40 @@ final class Mapper implements MapperContract{
     /**
      * Convertit une ligne associative en entité Users.
     */
-    public function fromRow(array $row):object{
-        $user=new Users();
-        // dd($row);
-        $user->setUserFirstname($row['user_firstname']);
-        $user->setUserLastname($row['user_lastname']);
-        $user->setUserEmail($row['user_email']);
-        $user->setUserRole($row['user_role']);
+    public function fromRow(array $row): object
+    {
+        $user = new Users();
+        
+        // Validation des champs obligatoires
+        $email = isset($row['user_email']) ? trim((string) $row['user_email']) : '';
+        $firstname = isset($row['user_firstname']) ? trim((string) $row['user_firstname']) : '';
+        $lastname = isset($row['user_lastname']) ? trim((string) $row['user_lastname']) : '';
+        $role = isset($row['user_role']) ? trim((string) $row['user_role']) : '';
+        $level = isset($row['user_level']) ? trim((string) $row['user_level']) : '';
+        
+        // Vérifier que les champs requis ne sont pas vides
+        if ($email === '') {
+            throw new \RuntimeException(" : L'email d'un des utilisateurs est vide.");
+        }
+        if ($firstname === '') {
+            throw new \RuntimeException(" : Le prénom d'un des utilisateurs est vide.");
+        }
+        if ($lastname === '') {
+            throw new \RuntimeException(" : Le nom d'un des utilisateurs est vide.");
+        }
+        if ($role === '') {
+            throw new \RuntimeException(" : Le rôle d'un des utilisateurs est vide.");
+        }
+        if ($level === '') {
+            throw new \RuntimeException(" : Le niveau d'un des utilisateurs est vide.");
+        }
+        
+        $user->setUserEmail($email);
+        $user->setUserFirstname($firstname);
+        $user->setUserLastname($lastname);
+        $user->setUserRole($role);
+        $user->setUserLevel($level);
         $user->setUserLastconnexion(new DateTimeImmutable('now'));
-        $user->setUserLevel($row['user_level']);
         
         return $user;
     }

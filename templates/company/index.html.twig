@@ -31,6 +31,7 @@
         </thead>
         <tbody>
         {% for company in companies %}
+            {% set name = company.companyName %}
             <tr>
                 <td data-label="Logo">
                     {% if company.companyLogo %}
@@ -40,24 +41,25 @@
                     {% endif %}
                 </td>
                 <td data-label="Nom" class="text-bold">
-                    {{ company.companyName }}
+                    {{ name ?: ' Nom vide' }}
                 </td>
                 <td data-label="Description">
                     {{ company.companyDescription|length > 60 ? company.companyDescription|slice(0, 60) ~ '...' : company.companyDescription ?: '—' }}
                 </td>
                 <td class="actions-cell" data-label="Actions">
-                    <a class="btn btn-view" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>  
-                    {# {% if is_granted('ROLE_ADMIN') %} #}
-                        <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
-
-                        <form method="post" 
-                              action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
-                              class="form-inline-delete"
-                              onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ company.companyName) }}">
+                    {% if name %}
+                        <a class="btn btn-view" href="{{ path('app_company_show', { company_name: name }) }}">Voir</a>
+                        <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: name }) }}">Modifier</a>
+                        <form method="post"
+                            action="{{ path('app_company_delete', { company_name: name }) }}"
+                            class="form-inline-delete"
+                            onsubmit="return confirm('Confirmer la suppression de {{ name }} ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ name) }}">
                             <button class="btn btn-link-danger">Supprimer</button>
                         </form>
-                    {# {% endif %} #}
+                    {% else %}
+                        <span class="text-muted text-danger">Nom manquant - utilisez "Nettoyer les entreprises invalides" ci-dessous</span>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
