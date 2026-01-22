@@ -1,0 +1,51 @@
+{% extends 'company/base.html.twig' %}
+{% block title %}Présences forum - {{ company.companyName }}{% endblock %}
+
+{% block company_content %}
+<div class="admin-page-container">
+    <h1 class="page-title">Présences forum - {{ company.companyName }}</h1>
+    
+    <div class="flash-messages">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message|raw }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <a class="btn btn-edit" href="{{ path('app_company_show', {company_name: company.companyName}) }}">← Retour à l'entreprise</a>
+
+    {% if presences is not empty %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Type de recherche</th>
+                    <th>Niveaux</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for presence in presences %}
+                <tr>
+                    <td>{{ presence.start_time }}</td>
+                    <td>{{ presence.end_time }}</td>
+                    <td>{{ presence.search_type|replace({'internship': 'Stage', 'alternance': 'Alternance', ';': ' et '}) }}</td>
+                    <td>{{ presence.search_level|replace({';': ', '}) }}</td>
+                    <td class="actions-cell">
+                        <a class="btn btn-edit" href="{{ path('app_company_presence_edit', {company_name: company.companyName, forum_id: presence.forum_id}) }}">Modifier</a>
+                        <form method="post" action="{{ path('app_company_presence_delete', {company_name: company.companyName, forum_id: presence.forum_id}) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_presence_' ~ company.companyName ~ '_' ~ presence.forum_id) }}">
+                            <button class="btn btn-link-danger" onclick="return confirm('Supprimer cette présence ?');">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-data">Aucune présence forum enregistrée pour cette entreprise.</p>
+    {% endif %}
+</div>
+{% endblock %}
