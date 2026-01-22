@@ -152,7 +152,7 @@
         <h3 class="import-title">Import CSV Utilisateurs</h3>
         {{ include('admin/_import_csv.html.twig', {
             'importForm': importForm,
-            'csvHeader': 'etudiant1@ecole-test.com;Hugo;Laurent;internship;M2',
+            'csvHeader': 'user_email;user_firstname;user_lastname;user_role;user_level',
             'csvExample': 'jean.dupont@email.com;Jean;Dupont;user;3',
             'csvImage': 'assets/images/exemple_csv_users.png',
             'action_route': 'app_user_import'  

@@ -72,8 +72,6 @@
 
     <div class="page-actions center-text">
         <a class="btn btn-edit" href="{{ path('app_company_new') }}">Nouvelle entreprise</a>
-
-        {# Inclusion du bouton de suppression massive #}
         {{ include('admin/_delete_all_button.html.twig', {
             'list': companies,
             'action_route': 'app_company_delete_all',
@@ -89,9 +87,8 @@
             {{ include('admin/_import_csv.html.twig', {
                 'importForm': importForm,
                 'csvHeader': 'company_name;company_description;company_logo',
-                'csvExample': 'Blue Ocean;Description Blue Ocean;/uploads/logos/blue_oc.png',
-                'csvImage': 'assets/images/exemple_csv_company.png',
-                'action_route': 'app_company_import'
+                'csvExample': 'Tech Solutions;Développement...;/uploads/logos/tech.png',
+                'csvImage': 'assets/images/exemple_csv_company.png'
             }) }}
         </div>
     {% endif %}
