@@ -26,6 +26,7 @@
             <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
             <a class="btn btn-delete" href="{{ path('app_company_delete', { company_name: company.companyName}) }}">Supprimer</a>
         {# {% endif %} #}
+        <a class="btn btn-edit" href="{{ path('app_company_presences', {company_name: company.companyName}) }}">Gérer les présences forum</a>
     </div>
 </div>
 {% endblock %}

@@ -17,6 +17,8 @@ use App\Service\CsvImportService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use App\Service\IsPresentImportService;
+use Doctrine\DBAL\Connection;
+
 
 /**
  * Contrôleur de gestion des entreprises (Company).
@@ -311,6 +313,113 @@ class CompanyController extends AbstractController
         }
         
         return $rows;
+    }
+
+    /**
+     * Affiche les présences forum d'une entreprise
+     */
+    #[Route('/{company_name}/presences', name: 'presences', methods: ['GET'])]
+    public function showPresences(
+        #[MapEntity(mapping: ['company_name' => 'company_name'])] Company $company,
+        Connection $connection
+    ): Response {
+        // Récupérer les présences de cette entreprise
+        $sql = "SELECT * FROM is_present WHERE company_name = :name ORDER BY forum_id";
+        $presences = $connection->fetchAllAssociative($sql, ['name' => $company->getCompanyName()]);
+        
+        return $this->render('company/presences.html.twig', [
+            'company' => $company,
+            'presences' => $presences,
+        ]);
+    }
+
+    /**
+     * Édite une présence forum
+     */
+    #[Route('/{company_name}/presence/{forum_id}/edit', name: 'presence_edit', methods: ['GET', 'POST'])]
+    public function editPresence(
+        Request $request,
+        #[MapEntity(mapping: ['company_name' => 'company_name'])] Company $company,
+        int $forum_id,
+        Connection $connection
+    ): Response {
+        $companyName = $company->getCompanyName();
+        
+        // Récupérer la présence
+        $sql = "SELECT * FROM is_present WHERE company_name = :name AND forum_id = :forum_id";
+        $presence = $connection->fetchAssociative($sql, [
+            'name' => $companyName,
+            'forum_id' => $forum_id
+        ]);
+        
+        if (!$presence) {
+            throw $this->createNotFoundException('Présence non trouvée');
+        }
+        
+        if ($request->isMethod('POST')) {
+            $data = $request->request->all();
+            
+            // Validation
+            if (empty($data['start_time']) || empty($data['end_time'])) {
+                $this->addFlash('error', 'Les horaires sont requis.');
+                return $this->redirectToRoute('app_company_presence_edit', [
+                    'company_name' => $companyName,
+                    'forum_id' => $forum_id
+                ]);
+            }
+            
+            // Mise à jour
+            $updateSql = "UPDATE is_present SET 
+                            start_time = :start_time,
+                            end_time = :end_time,
+                            search_type = :search_type,
+                            search_level = :search_level
+                        WHERE company_name = :name AND forum_id = :forum_id";
+            
+            $connection->executeStatement($updateSql, [
+                'start_time' => $data['start_time'],
+                'end_time' => $data['end_time'],
+                'search_type' => $data['search_type'],
+                'search_level' => $data['search_level'],
+                'name' => $companyName,
+                'forum_id' => $forum_id
+            ]);
+            
+            $this->addFlash('success', 'Présence mise à jour.');
+            return $this->redirectToRoute('app_company_presences', ['company_name' => $companyName]);
+        }
+        
+        return $this->render('company/presence_edit.html.twig', [
+            'company' => $company,
+            'presence' => $presence,
+        ]);
+    }
+
+    /**
+     * Supprime une présence forum
+     */
+    #[Route('/{company_name}/presence/{forum_id}/delete', name: 'presence_delete', methods: ['POST'])]
+    public function deletePresence(
+        Request $request,
+        #[MapEntity(mapping: ['company_name' => 'company_name'])] Company $company,
+        int $forum_id,
+        Connection $connection
+    ): Response {
+        $companyName = $company->getCompanyName();
+        
+        if ($this->isCsrfTokenValid('delete_presence_' . $companyName . '_' . $forum_id, $request->request->get('_token'))) {
+            $sql = "DELETE FROM is_present WHERE company_name = :name AND forum_id = :forum_id";
+            $connection->executeStatement($sql, [
+                'name' => $companyName,
+                'forum_id' => $forum_id
+            ]);
+            
+            $this->addFlash('success', 'Présence supprimée.');
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide.');
+        }
+        
+        return $this->redirectToRoute('app_company_presences', ['company_name' => $companyName]);
     }
 
 }
