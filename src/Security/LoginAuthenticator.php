@@ -75,8 +75,8 @@ class LoginAuthenticator extends AbstractAuthenticator
         $ip = $request->getClientIp() ?? 'unknown';
         $key = 'login_' . str_replace(':', '_', $ip);
 
-        // 5 tentatives max / 15 minutes
-        if ($this->limiter->tooManyAttempts($key, 5, 900)) {
+        // 5 tentatives max / 1 minutes
+        if ($this->limiter->tooManyAttempts($key, 5, 60)) {
             $seconds = $this->limiter->availableIn($key);
 
             throw new AuthenticationException(
@@ -87,6 +87,15 @@ class LoginAuthenticator extends AbstractAuthenticator
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $recaptchaResponse = $request->request->get('g-recaptcha-response');
+
+        $user = $this->usersRepository->findOneBy(['user_email' => $email]);
+    
+        // Vérifier si c'est la première connexion
+        if ($user && $user->isUserFirstconnexion()) {
+            throw new AuthenticationException(
+                'Première connexion : veuillez d\'abord réinitialiser votre mot de passe.'
+            );
+        }
 
         // Vérification reCAPTCHA
         $secretKey = '6LeygQAsAAAAAK-6I0IrVAZGjUk02p4Iw5oguPHq';
@@ -127,8 +136,8 @@ class LoginAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Mise à jour de la date de dernière connexion
         $user = $token->getUser();
+        
         if ($user instanceof \App\Entity\Users) {
             $user->setUserLastconnexion(new \DateTimeImmutable('today'));
             $this->em->flush();

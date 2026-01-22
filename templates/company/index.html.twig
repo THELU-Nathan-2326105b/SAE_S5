@@ -47,11 +47,11 @@
                 </td>
                 <td class="actions-cell" data-label="Actions">
                     <a class="btn btn-view" href="{{ path('app_company_show', { company_name: company.companyName }) }}">Voir</a>
-                    
+
                     {# {% if is_granted('ROLE_ADMIN') %} #}
                         <a class="btn btn-edit" href="{{ path('app_company_edit', { company_name: company.companyName }) }}">Modifier</a>
 
-                        <form method="post" 
+                        <form method="post"
                               action="{{ path('app_company_delete', { company_name: company.companyName }) }}"
                               class="form-inline-delete"
                               onsubmit="return confirm('Confirmer la suppression de {{ company.companyName }} ?');">

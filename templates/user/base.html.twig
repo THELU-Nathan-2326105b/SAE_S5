@@ -3,6 +3,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link rel="icon" href="/assets/images/favicon-32x32.ico"/>
     <link rel="stylesheet" href="{{ asset('assets/styles/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/styles/users.css') }}">
 {% endblock %}

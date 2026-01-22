@@ -89,7 +89,7 @@ class UsersController extends AbstractController
      * Route: GET|POST /user/new (name: app_user_new)
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response{
+    public function new(Request $request, EntityManagerInterface $em, UsersRepository $usersRepository): Response{
 
         $sessionUser = $request->getSession()->get('user');
         // Nouvelle entité Users avec valeur par défaut
@@ -106,12 +106,14 @@ class UsersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string|null $plainPassword */
             // dd($user);
+            if ($user->getUserEmail() && $usersRepository->existsByEmail($user->getUserEmail())) {
+                $this->addFlash('error', 'Cet email est déjà utilisé.');
+                return $this->redirectToRoute('app_user_index');
+            }
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $user->setUserPwd(password_hash($plainPassword, PASSWORD_BCRYPT));
             }
-
-
              // Persistance & flush
             $em->persist($user);
             $em->flush();
