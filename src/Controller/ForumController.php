@@ -66,7 +66,8 @@ class ForumController extends AbstractController
 
         // Récupération des entreprises filtrées selon le niveau de l'éleve connectée
         $studentLevel = $user->getUserLevel();
-        $companies = $companyRepository->findCompaniesForStudent($forum->getId(), $studentLevel);
+        $studentRole = $user->getUserRole();
+        $companies = $companyRepository->findCompaniesForStudent($forum->getId(), $studentLevel, $studentRole);
 
         // Récupération des entreprises déjà sélectionnées
         $selectedAppointments = $appointmentRepository->findSelectedByUserAndForum($user, $forum);
