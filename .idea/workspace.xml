@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba3d16e1-1d30-4c2d-9da6-e87b5874205c" name="Changes" comment="tri css, footer sur la page a propos et profil">
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/MentionLegale.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MentionLegale.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CompanyController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CompanyController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Import/Csv/Importer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Import/Csv/Importer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/CompanyRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/CompanyRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Security/RateLimiter.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Security/RateLimiter.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/IsPresentImportService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/IsPresentImportService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +27,7 @@
       <list>
         <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="PHP File" />
       </list>
     </option>
   </component>
@@ -53,13 +59,17 @@
     &quot;assignee&quot;: &quot;DAUBREGE-Simon-2326036aa&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:THELU-Nathan-2326105b/SAE_S5.git",
-    "accountId": "b2c8414c-a8ef-43fe-b9ec-02ba43764224"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:THELU-Nathan-2326105b/SAE_S5.git&quot;,
+    &quot;accountId&quot;: &quot;c1506962-1fb9-454a-aab3-fa2e36be685d&quot;
   }
-}]]></component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="D:\php-8.3.19-Win32-vs16-x64\php.exe">
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/bin/php">
     <include_path>
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/AMOS_FAMES/vendor/symfony/polyfill-mbstring" />
@@ -319,12 +329,16 @@
       <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
       <path value="$PROJECT_DIR$/vendor/symfony/var-exporter" />
       <path value="$PROJECT_DIR$/vendor/symfony/web-link" />
+      <path value="$PROJECT_DIR$/vendor/symfonycasts/reset-password-bundle" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="32S4BuNuZh24uS6ScjcK6BGlo6v" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -332,10 +346,26 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "PHPUnit.CsvImportServiceTest.executor": "Run",
+    "PHPUnit.IsPresentImportServiceTest.executor": "Run",
+    "PHPUnit.IsPresentImportServiceTest.testImportEchoueSiForumIdEstManquant.executor": "Run",
+    "PHPUnit.IsPresentImportServiceTest.testImportReussiAvecValeursParDefaut.executor": "Run",
+    "PHPUnit.LoginAuthenticatorTest.executor": "Run",
+    "PHPUnit.RateLimiterTest.executor": "Run",
+    "PHPUnit.RateLimiterTest.testHitIncrementsCounter.executor": "Run",
+    "PHPUnit.UsersControllerTest.executor": "Run",
+    "PHPUnit.UsersControllerTest.testDeleteWithoutCsrfTokenIsRejected.executor": "Run",
+    "PHPUnit.UsersControllerTest.testImportRejectsMaliciousFileType.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "footer-propre",
-    "last_opened_file_path": "C:/laragon/www/SAE_S5",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "new-prod",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/bol2riz/Documents/Stage_amos/SAE_S5",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -343,6 +373,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -352,17 +383,45 @@
       <recent name="C:\laragon\www\SAE_S5\public\assets\images" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="PHPUnit.IsPresentImportServiceTest">
     <configuration default="true" type="ComposerRunConfigurationType" factoryName="Composer Script">
       <option name="pathToComposerJson" value="$PROJECT_DIR$/AMOS_FAMES/composer.json" />
       <method v="2" />
     </configuration>
+    <configuration name="CsvImportServiceTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="App\Tests\Service\CsvImportServiceTest" file="$PROJECT_DIR$/tests/Service/CsvImportServiceTest.php" scope="Class" />
+      <method v="2" />
+    </configuration>
+    <configuration name="IsPresentImportServiceTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="App\Tests\Service\IsPresentImportServiceTest" file="$PROJECT_DIR$/tests/Service/IsPresentImportServiceTest.php" scope="Class" />
+      <method v="2" />
+    </configuration>
+    <configuration name="IsPresentImportServiceTest.testImportEchoueSiForumIdEstManquant" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="App\Tests\Service\IsPresentImportServiceTest" file="$PROJECT_DIR$/tests/Service/IsPresentImportServiceTest.php" method="testImportEchoueSiForumIdEstManquant" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="IsPresentImportServiceTest.testImportReussiAvecValeursParDefaut" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="App\Tests\Service\IsPresentImportServiceTest" file="$PROJECT_DIR$/tests/Service/IsPresentImportServiceTest.php" method="testImportReussiAvecValeursParDefaut" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="RateLimiterTest.testHitIncrementsCounter" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="App\Tests\Security\RateLimiterTest" file="$PROJECT_DIR$/tests/Security/RateLimiterTest.php" method="testHitIncrementsCounter" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="PHPUnit.IsPresentImportServiceTest" />
+        <item itemvalue="PHPUnit.IsPresentImportServiceTest.testImportReussiAvecValeursParDefaut" />
+        <item itemvalue="PHPUnit.IsPresentImportServiceTest.testImportEchoueSiForumIdEstManquant" />
+        <item itemvalue="PHPUnit.CsvImportServiceTest" />
+        <item itemvalue="PHPUnit.RateLimiterTest.testHitIncrementsCounter" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
-        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
+        <option value="bundled-php-predefined-a98d8de5180a-a9a4ea3ee0f4-com.jetbrains.php.sharedIndexes-PS-261.22158.283" />
       </set>
     </attachedChunks>
   </component>
@@ -389,6 +448,15 @@
       <workItem from="1758050626644" duration="94000" />
       <workItem from="1758091219862" duration="2126000" />
       <workItem from="1762332848743" duration="267000" />
+      <workItem from="1773998739348" duration="5617000" />
+      <workItem from="1774350643841" duration="227000" />
+      <workItem from="1774353803007" duration="6899000" />
+      <workItem from="1774427421643" duration="2248000" />
+      <workItem from="1774429685249" duration="2701000" />
+      <workItem from="1774442878344" duration="2500000" />
+      <workItem from="1774516334153" duration="12937000" />
+      <workItem from="1774602594583" duration="3827000" />
+      <workItem from="1774854973775" duration="3361000" />
     </task>
     <task id="LOCAL-00001" summary="page d'accueil v1 pur visuel uniquement">
       <option name="closed" value="true" />

@@ -22,7 +22,7 @@ use RuntimeException;
  */
 class Importer implements ImporterContract
 {
-    private string $delimiter = ',';
+    private string $delimiter = ';';
     private string $enclosure = '"';
     private string $escape    = '\\';
     private MapperFactory $mapperFactory;

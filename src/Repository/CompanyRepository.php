@@ -74,6 +74,7 @@ class CompanyRepository extends ServiceEntityRepository
         // Récupère les noms d'entreprises
         $companyNames = array_column($resultSet->fetchAllAssociative(), 'company_name');
 
+
         if (empty($companyNames)) {
             return [];
         }

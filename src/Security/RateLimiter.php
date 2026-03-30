@@ -2,10 +2,10 @@
 
 /**
  * Service de limitation de tentatives (Rate Limiting)
- * 
+ *
  * Gére les tentatives de connexion pour prévenir les attaques par force brute
  * Utilise un système de cache avec TTL
- * 
+ *
  * @package App\Security
  */
 
@@ -16,14 +16,14 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class RateLimiter
- * 
+ *
  * Service de limitation de débit pour sécuriser les opérations sensibles.
  */
 class RateLimiter
 {
     /**
      * Constructeur du service de rate limiting
-     * 
+     *
      * @param CacheInterface $cache
      */
     public function __construct(private CacheInterface $cache)
@@ -32,7 +32,7 @@ class RateLimiter
 
     /**
      * Enregistre une tentative pour une clé donnée
-     * 
+     *
      * @param string $key Clé unique pour l'action
      * @param int $decaySeconds Durée d'expiration en secondes
      * @return void
@@ -53,7 +53,7 @@ class RateLimiter
 
     /**
      * Récupère le nombre de tentatives pour une clé
-     * 
+     *
      * @param string $key
      * @return int Nombre de tentatives
      */
@@ -64,7 +64,7 @@ class RateLimiter
 
     /**
      * Vérifie si le nombre de tentatives a été dépassé
-     * 
+     *
      * @param string $key
      * @param int $maxAttempts Nombre maximal de tentatives autorisées
      * @param int $decaySeconds Durée d'expiration
@@ -77,7 +77,7 @@ class RateLimiter
 
     /**
      * Récupère le nombre de tentatives restantes
-     * 
+     *
      * @param string $key
      * @param int $maxAttempts Nombre maximal de tentatives
      * @return int Tentatives restantes (0 minimum)
@@ -89,7 +89,7 @@ class RateLimiter
 
     /**
      * Récupère le temps d'attente avant la prochaine tentative
-     * 
+     *
      * @param string $key
      * @return int Secondes d'attente (0 minimum)
      */
@@ -100,7 +100,7 @@ class RateLimiter
 
     /**
      * Supprime les données de rate limiting pour une clé
-     * 
+     *
      * @param string $key
      * @return void
      */

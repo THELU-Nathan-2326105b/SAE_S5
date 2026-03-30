@@ -23,7 +23,7 @@ use Doctrine\DBAL\Connection;
 /**
  * Contrôleur de gestion des entreprises (Company).
  *
- * Préfixe de route: /company 
+ * Préfixe de route: /company
  */
 #[Route('/admin/company', name: 'app_company_')]
 class CompanyController extends AbstractController
@@ -45,10 +45,10 @@ class CompanyController extends AbstractController
         // Récupère toutes les entreprises triées par nom via le repository custom
         $companies = $companyRepository->findAllOrderedByName();
         $importForm = $this->createForm(CsvImportType::class, null, [
-            'action' => $this->generateUrl('app_company_import'), 
+            'action' => $this->generateUrl('app_company_import'),
             'method' => 'POST',
         ]);
-        
+
         return $this->render('company/index.html.twig', [
             'companies' => $companies,
             'importForm' => $importForm->createView(),
@@ -193,14 +193,14 @@ class CompanyController extends AbstractController
     {
         // Vérification du token CSRF pour la sécurité
         if ($this->isCsrfTokenValid('delete_all_companies', $request->request->get('_token'))) {
-            
+
             $companies = $companyRepository->findAll();
             $count = count($companies);
 
             foreach ($companies as $company) {
                 $em->remove($company);
             }
-            
+
             $em->flush();
 
             if ($count > 0) {
@@ -221,9 +221,9 @@ class CompanyController extends AbstractController
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
     public function import(
-        Request $request, 
-        EntityManagerInterface $em, 
-        ImporterFactory $importerFactory, 
+        Request $request,
+        EntityManagerInterface $em,
+        ImporterFactory $importerFactory,
         CsvImportService $csvImportService,
         IsPresentImportService $isPresentService
     ): Response
@@ -239,10 +239,10 @@ class CompanyController extends AbstractController
        try {
             $uploaded = $form->get('csvFile')->getData();
             $path = $csvImportService->moveUploadedCsvAndGetPath($uploaded, 'company_import_');
-            
+
             // Import des entreprises
             $companies = $csvImportService->runImport($path, $importerFactory, 'company');
-            
+
             try {
                 $csvImportService->persistImportedEntities($companies, $em);
             } catch (UniqueConstraintViolationException $e) {
@@ -251,7 +251,7 @@ class CompanyController extends AbstractController
                 $companyName = $matches[1] ?? 'inconnue';
                 throw new \RuntimeException("L'entreprise '{$companyName}' existe déjà en base de données.");
             }
-            
+
             // Import dans is_present (si les colonnes existent)
             $isPresentRows = $this->extractIsPresentDataFromCsv($path);
             if (!empty($isPresentRows)) {
@@ -274,44 +274,44 @@ class CompanyController extends AbstractController
     {
         $file = new \SplFileObject($path, 'r');
         $file->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY);
-        
+
         // Lire les headers
-        $headers = $file->fgetcsv(',');
+        $headers = $file->fgetcsv(';');
         if (!$headers) {
             return [];
         }
-        
+
         // Nettoyer BOM UTF-8
         $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
         $headers = array_map('trim', $headers);
         $headers = array_map('strtolower', $headers);
-        
+
         // Vérifier si les colonnes is_present existent (start_time et end_time minimum requis)
         if (!in_array('start_time', $headers) || !in_array('end_time', $headers)) {
             return []; // Pas de données is_present dans ce CSV
         }
-        
+
         $rows = [];
         while (!$file->eof()) {
-            $row = $file->fgetcsv(',');
+            $row = $file->fgetcsv(';');
             if (!$row || count($row) < count($headers)) {
                 continue;
             }
-            
+
             $assoc = array_combine($headers, $row);
             if ($assoc) {
                 // Ajouter forum_id = 1 si absent
                 if (empty($assoc['forum_id'])) {
                     $assoc['forum_id'] = 1;
                 }
-                
+
                 // Vérifier que company_name existe
                 if (!empty($assoc['company_name'])) {
                     $rows[] = $assoc;
                 }
             }
         }
-        
+
         return $rows;
     }
 
@@ -326,7 +326,7 @@ class CompanyController extends AbstractController
         // Récupérer les présences de cette entreprise
         $sql = "SELECT * FROM is_present WHERE company_name = :name ORDER BY forum_id";
         $presences = $connection->fetchAllAssociative($sql, ['name' => $company->getCompanyName()]);
-        
+
         return $this->render('company/presences.html.twig', [
             'company' => $company,
             'presences' => $presences,
@@ -344,21 +344,21 @@ class CompanyController extends AbstractController
         Connection $connection
     ): Response {
         $companyName = $company->getCompanyName();
-        
+
         // Récupérer la présence
         $sql = "SELECT * FROM is_present WHERE company_name = :name AND forum_id = :forum_id";
         $presence = $connection->fetchAssociative($sql, [
             'name' => $companyName,
             'forum_id' => $forum_id
         ]);
-        
+
         if (!$presence) {
             throw $this->createNotFoundException('Présence non trouvée');
         }
-        
+
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
-            
+
             // Validation
             if (empty($data['start_time']) || empty($data['end_time'])) {
                 $this->addFlash('error', 'Les horaires sont requis.');
@@ -367,15 +367,15 @@ class CompanyController extends AbstractController
                     'forum_id' => $forum_id
                 ]);
             }
-            
+
             // Mise à jour
-            $updateSql = "UPDATE is_present SET 
+            $updateSql = "UPDATE is_present SET
                             start_time = :start_time,
                             end_time = :end_time,
                             search_type = :search_type,
                             search_level = :search_level
                         WHERE company_name = :name AND forum_id = :forum_id";
-            
+
             $connection->executeStatement($updateSql, [
                 'start_time' => $data['start_time'],
                 'end_time' => $data['end_time'],
@@ -384,11 +384,11 @@ class CompanyController extends AbstractController
                 'name' => $companyName,
                 'forum_id' => $forum_id
             ]);
-            
+
             $this->addFlash('success', 'Présence mise à jour.');
             return $this->redirectToRoute('app_company_presences', ['company_name' => $companyName]);
         }
-        
+
         return $this->render('company/presence_edit.html.twig', [
             'company' => $company,
             'presence' => $presence,
@@ -406,19 +406,19 @@ class CompanyController extends AbstractController
         Connection $connection
     ): Response {
         $companyName = $company->getCompanyName();
-        
+
         if ($this->isCsrfTokenValid('delete_presence_' . $companyName . '_' . $forum_id, $request->request->get('_token'))) {
             $sql = "DELETE FROM is_present WHERE company_name = :name AND forum_id = :forum_id";
             $connection->executeStatement($sql, [
                 'name' => $companyName,
                 'forum_id' => $forum_id
             ]);
-            
+
             $this->addFlash('success', 'Présence supprimée.');
         } else {
             $this->addFlash('error', 'Token CSRF invalide.');
         }
-        
+
         return $this->redirectToRoute('app_company_presences', ['company_name' => $companyName]);
     }
 
